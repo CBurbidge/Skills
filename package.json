@@ -1,0 +1,14 @@
+{
+  "name": "Skills",
+  "version": "1.0.0",
+  "description": "D3 Skills chart",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chester Burbidge",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1"
+  }
+}
