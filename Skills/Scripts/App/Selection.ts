@@ -1,6 +1,6 @@
-﻿/// <reference path='../CV/_external_references.ts' />
+﻿/// <reference path='_references.ts' />
 
-module CV
+module App
 {
 	export class SelectionSorter
 	{
