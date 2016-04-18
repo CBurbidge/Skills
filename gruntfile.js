@@ -60,4 +60,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-ts");
 
 	grunt.registerTask("default", ["less", "ts", "concat", "jasmine"]);
+	grunt.registerTask("tests", ["ts", "jasmine"]);
 };
