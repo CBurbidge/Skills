@@ -1,4 +1,6 @@
-﻿module CV
+﻿/// <references path='../_external_references.ts' />
+
+module CV
 {
 	export class Metadatas
 	{

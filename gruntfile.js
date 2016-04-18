@@ -24,10 +24,11 @@ module.exports = function(grunt) {
 		jasmine: {
 			pivotal: {
 				src: [
-					"Skills/Scripts/app/CV/*.js"
+					"Skills/Scripts/CV/*.js",
+					"Skills/Scripts/App/*.js",
 				],
 				options: {
-					specs: "Skills/Tests/app/**/*.js",
+					specs: "Skills/Tests/**/*.js",
 					keepRunner: true
 				}
 			}
@@ -36,7 +37,7 @@ module.exports = function(grunt) {
 		concat: {
 			skillsJs: {
 				src: [
-				"Skills/Scripts/app/CV/*.js"
+				"Skills/Scripts/CV/**/*.js"
 				],
 				dest: "SkillsConcated.js"
 			}

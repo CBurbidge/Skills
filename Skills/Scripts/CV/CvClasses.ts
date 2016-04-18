@@ -1,6 +1,35 @@
-﻿module CV
+﻿/// <reference path='_external_references.ts' />
+
+module CV
 {
-	export interface ICvDataInfo
+    export interface ICVData
+	{
+		skills: Skill[];
+		settings: Setting[];
+		skillUsages: SkillUsage[];
+		metadatas: Metadata[];
+	}
+
+	export class CVData
+	{
+		static getData(): ICVData
+		{
+			return {
+				skills: Skills.all,
+				settings: Settings.all,
+				skillUsages: SkillUsages.all,
+				metadatas: Metadatas.all
+			};
+		}
+	}
+    
+    export class DateRange
+	{
+		constructor(public startDate: Date, public endDate: Date)
+		{ }
+	}
+	
+    export interface ICvDataInfo
 	{
 		id: number;
 		name: string;

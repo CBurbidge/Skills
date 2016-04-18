@@ -8,31 +8,31 @@ module CV
 			Settings.counter++,
 			"Personal website",
 			"My own personal website",
-			Dates.chesterBurbidgeDotComDateRange);
+			new DateRange(new Date(2015, 2), new Date(2015, 4)));
 
 		static codeclub = new Setting(
 			Settings.counter++,
 			"Code club",
 			"Teaching a 'code club' to a local school",
-			Dates.codeclub);
+			new DateRange(new Date(2013, 9), new Date(2014, 4)));
 
 		static fundslibrary = new Setting(
 			Settings.counter++,
 			"Fundslibrary",
 			"Fundslibrary - Junior Developer",
-			Dates.fundsLibraryDateRange);
+			new DateRange(new Date(2014, 3), new Date(2015, 2)));
 
 		static hobby = new Setting(
 			Settings.counter++,
 			"Hobby",
 			"Hobby programming",
-			Dates.hobbyProgramming);
+			new DateRange(new Date(2012, 11), new Date(2015, 4)));
 
 		static toplevelComputing = new Setting(
 			Settings.counter++,
 			"Toplevel computing",
-			"Toplevel computing - Grauate Developer",
-			Dates.toplevelComputingDateRange);
+			"Toplevel computing - Graduate Developer",
+			new DateRange(new Date(2013, 3), new Date(2014, 3)));
 
 
 		static all = [

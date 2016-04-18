@@ -1,3 +1,6 @@
-﻿/// <reference path="CVData.ts" />
-/// <reference path="DateRange.ts" />
-/// <reference path="CollectionClasses.ts" />
+﻿/// <reference path="CvClasses.ts" />
+
+/// <reference path="Collections/Metadatas.ts" />
+/// <reference path="Collections/Settings.ts" />
+/// <reference path="Collections/Skills.ts" />
+/// <reference path="Collections/SkillUsages.ts" />
