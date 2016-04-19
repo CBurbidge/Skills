@@ -37,7 +37,9 @@ module.exports = function(grunt) {
 		concat: {
 			skillsJs: {
 				src: [
-				"Skills/Scripts/CV/**/*.js"
+				"Skills/Scripts/CV/**/*.js",
+                "Skills/Scripts/App/**/*.js",
+                "Skills/go.js"
 				],
 				dest: "SkillsConcated.js"
 			}
