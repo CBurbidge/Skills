@@ -27,7 +27,7 @@ describe("id and active sorter tests", () => {
 
     var cvData: CV.ICVData = {
         skills: [skill1WithMeta1, skill2WithMeta2, skill3WithMeta1And2, skill4WithMeta2And3],
-        settings: [setting1, setting2],
+        settings: [setting1, setting2, setting3],
         skillUsages: [suSkill1AtSetting1, suSkill1AtSetting2, suSkill2AtSetting2, suSkill2AtSetting3],
         metadatas: [metadata1, metadata2, metadata3]
     };
