@@ -3,3 +3,5 @@ node_modules
 *.js
 *.js.map
 .tscache
+.grunt
+_SpecRunner.html
