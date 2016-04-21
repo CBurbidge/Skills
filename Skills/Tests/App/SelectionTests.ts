@@ -20,10 +20,10 @@ describe("id and active sorter tests", () => {
     var setting2 = new CV.Setting(2, "Setting2", "SettingDesc2", null);
     var setting3 = new CV.Setting(3, "Setting3", "SettingDesc3", null);
 
-    var suSkill1AtSetting1 = new CV.SkillUsage(1, "Skill1AtSetting1", 1, 1);
-    var suSkill1AtSetting2 = new CV.SkillUsage(2, "Skill1AtSetting2", 1, 2);
-    var suSkill2AtSetting2 = new CV.SkillUsage(3, "Skill2AtSetting2", 2, 2);
-    var suSkill2AtSetting3 = new CV.SkillUsage(4, "Skill2AtSetting3", 2, 3);
+    var suSkill1AtSetting1 = new CV.SkillUsage(1, "Skill1AtSetting1", skill1WithMeta1.id, setting1.id);
+    var suSkill1AtSetting2 = new CV.SkillUsage(2, "Skill1AtSetting2", skill1WithMeta1.id, setting2.id);
+    var suSkill2AtSetting2 = new CV.SkillUsage(3, "Skill2AtSetting2", skill2WithMeta2.id, setting2.id);
+    var suSkill2AtSetting3 = new CV.SkillUsage(4, "Skill2AtSetting3", skill2WithMeta2.id, setting3.id);
 
     var cvData: CV.ICVData = {
         skills: [skill1WithMeta1, skill2WithMeta2, skill3WithMeta1And2, skill4WithMeta2And3],
@@ -144,7 +144,7 @@ describe("id and active sorter tests", () => {
 
                 var allActive = skills.map(s => s.isActive).filter(a => a === true)
                 expect(allActive.length).toEqual(1);
-                expect(skills[0].id).toEqual(skill2WithMeta2.id);
+                expect(skills[1].id).toEqual(skill2WithMeta2.id);
                 expect(skills[2].id).toEqual(skill3WithMeta1And2.id);
                 expect(skills[3].id).toEqual(skill4WithMeta2And3.id);
             });

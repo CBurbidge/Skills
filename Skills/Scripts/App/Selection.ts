@@ -38,7 +38,18 @@ module App
 		}
 		
 		forSetting(settingId:number):IdAndActiveCvData{
-			return null;
+			var settings = this.cVData.settings.map(s => {
+				return new IdAndActive(s.id, s.id === settingId)
+			});
+			var skillIdsUsedInSetting = this.cVData.skillUsages
+				.filter(su => su.settingId === settingId)
+				.map(su => su.skillId);
+			var skills = this.cVData.skills.map(s => {
+				var used = skillIdsUsedInSetting.indexOf(s.id) > -1;
+				return new IdAndActive(s.id, used);
+			});
+			var metadatas = this.cVData.metadatas.map(m => new IdAndActive(m.id, false));
+			return new IdAndActiveCvData(skills, [], settings, metadatas);
 		}
 		
 		forMetadata(metadataId:number):IdAndActiveCvData{
