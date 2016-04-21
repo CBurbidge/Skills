@@ -175,5 +175,51 @@ describe("id and active sorter tests", () => {
         });
             
     });
+ 
+    describe("forMetadata", () => {
+        
+        describe("metadata1", () => {
+            var result = sorter.forMetadata(metadata1.id);
+
+            it("should have only skill 1 and 3 active", () => {
+                var skills = result.skills;
+                expect(skills[0].id).toEqual(skill1WithMeta1.id);
+                expect(skills[0].isActive).toEqual(true);
+                
+                expect(skills[2].id).toEqual(skill3WithMeta1And2.id);
+                expect(skills[2].isActive).toEqual(true);
+
+                var allActive = skills.map(s => s.isActive).filter(a => a === true)
+                expect(allActive.length).toEqual(2);
+                expect(skills[1].id).toEqual(skill2WithMeta2.id);
+                expect(skills[3].id).toEqual(skill4WithMeta2And3.id);
+            });
+
+            it("should have no active settings", () => {
+                var settings = result.settings;
+                expect(settings[0].id).toEqual(setting1.id);
+                expect(settings[0].isActive).toEqual(false);
+
+                expect(settings[1].id).toEqual(setting2.id);
+                expect(settings[1].isActive).toEqual(false);
+
+                expect(settings[2].id).toEqual(setting3.id);
+                expect(settings[2].isActive).toEqual(false);
+            });
+
+            it("should have only metadata1 active", () => {
+                var metas = result.metadatas;
+                expect(metas[0].id).toEqual(metadata1.id);
+                expect(metas[0].isActive).toEqual(true);
+
+                expect(metas[1].id).toEqual(metadata2.id);
+                expect(metas[1].isActive).toEqual(false);
+
+                expect(metas[2].id).toEqual(metadata3.id);
+                expect(metas[2].isActive).toEqual(false);
+            });
+        });
+            
+    });
     
 });

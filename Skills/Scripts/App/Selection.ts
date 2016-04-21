@@ -53,7 +53,14 @@ module App
 		}
 		
 		forMetadata(metadataId:number):IdAndActiveCvData{
-			return null;
+			var skills = this.cVData.skills.map(s => {
+				var skillContainsMetadata = s.metadatas.some(m => m.id === metadataId);
+				return new IdAndActive(s.id, skillContainsMetadata);
+			});
+			var settings = this.cVData.settings.map(s => new IdAndActive(s.id, false));
+			var metadatas = this.cVData.metadatas.map(m => new IdAndActive(m.id, m.id === metadataId));
+			
+			return new IdAndActiveCvData(skills, [], settings, metadatas);
 		}
 	}
 	
