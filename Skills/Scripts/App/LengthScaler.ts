@@ -11,7 +11,15 @@ module App
 		}
 		
 		getMetadatas():ScaleAndLevel[]{
-			return null;
+			var numberOfMetadatas = this.cVData.metadatas.length;
+			var scaleForEach = 1 / numberOfMetadatas;
+			var c = 0;
+			return this.cVData.metadatas.map(m => {
+				var start = c * scaleForEach;
+				var end = start + scaleForEach;
+				c++;
+				return new ScaleAndLevel(m.id, start, end, 1);
+			});
 		}
 	}
 	
