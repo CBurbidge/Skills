@@ -42,6 +42,16 @@ module App
 							return (d.id * f) / 2;
 						}).duration(1000);
 				});
+				
+				var arc = d3.svg.arc()
+					.innerRadius(50)
+					.outerRadius(70)
+					.startAngle(0)
+					.endAngle(2 * Math.PI);
+
+				svg.append("path")
+					.attr("class", "arc")
+					.attr("d", arc);
         }
 	}
 }
