@@ -40,7 +40,7 @@ module App
 						})
 						.attr("cy", d => {
 							return (d.id * f) / 2;
-						}).duration(2000);
+						}).duration(1000);
 				});
         }
 	}
