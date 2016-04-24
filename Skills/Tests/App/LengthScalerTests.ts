@@ -12,6 +12,7 @@ describe("length scaler tests", () => {
     var setting3 = new CV.Setting(3, "Setting3", "SettingDesc3", new CV.DateRange(new Date(2016, 5), new Date(2016, 11)));
     
     describe("settings tests", () => {
+        var precision = 0.05;
         describe("settings 1 and 2", () => {
             var scaler = new App.LengthScaler({
                 skills: [], skillUsages: [], metadatas: [],
@@ -22,15 +23,15 @@ describe("length scaler tests", () => {
             
             it("should have a first setting with a start of 0 and an end of 0.4", () => {
                 var setting = result[0];
-                expect(setting.start).toEqual(0);
-                expect(setting.end).toEqual(0.4);
+                expect(setting.start).toBeCloseTo(0, precision);
+                expect(setting.end).toBeCloseTo(0.4, precision);
                 expect(setting.id).toEqual(setting1.id);
             });
             
             it("should have a second setting with a start of 0.4 and an end of 1", () => {
                 var setting = result[1];
-                expect(setting.start).toEqual(0.4);
-                expect(setting.end).toEqual(1);
+                expect(setting.start).toBeCloseTo(0.4, precision);
+                expect(setting.end).toBeCloseTo(1, precision);
                 expect(setting.id).toEqual(setting2.id);
             });
         });
@@ -45,22 +46,22 @@ describe("length scaler tests", () => {
             
             it("should have a first setting with a start of 0 and an end of 0.2", () => {
                 var setting = result[0];
-                expect(setting.start).toEqual(0);
-                expect(setting.end).toEqual(0.2);
+                expect(setting.start).toBeCloseTo(0, precision);
+                expect(setting.end).toBeCloseTo(0.2, precision);
                 expect(setting.id).toEqual(setting1.id);
             });
             
             it("should have a second setting with a start of 0.2 and an end of 0.5", () => {
                 var setting = result[1];
-                expect(setting.start).toEqual(0.2);
-                expect(setting.end).toEqual(0.5);
+                expect(setting.start).toBeCloseTo(0.2, precision);
+                expect(setting.end).toBeCloseTo(0.5, precision);
                 expect(setting.id).toEqual(setting2.id);
             });
             
             it("should have a third setting with a start of 0.4 and an end of 1", () => {
                 var setting = result[2];
-                expect(setting.start).toEqual(0.4);
-                expect(setting.end).toEqual(1);
+                expect(setting.start).toBeCloseTo(0.4, precision);
+                expect(setting.end).toBeCloseTo(1, precision);
                 expect(setting.id).toEqual(setting3.id);
             });
         });

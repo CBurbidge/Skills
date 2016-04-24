@@ -7,7 +7,23 @@ module App
 		constructor(public cVData:CV.ICVData){}
 		
 		getSettings():ScaleAndLevel[]{
-			return null;
+			var minDate = this.cVData.settings.reduce((acc:Date, s:CV.Setting) => {
+				if(acc < s.dateRange.startDate) return acc;
+				return s.dateRange.startDate
+			}, new Date());
+			
+			var maxDate = this.cVData.settings.reduce((acc:Date, s:CV.Setting) => {
+				if(acc > s.dateRange.endDate) return acc;
+				return s.dateRange.endDate
+			}, new Date(2000, 1));
+			
+			var diff = maxDate.valueOf() - minDate.valueOf();
+			
+			return this.cVData.settings.map(s => {
+				var start = (s.dateRange.startDate.valueOf() - minDate.valueOf()) / diff;
+				var end = (s.dateRange.endDate.valueOf() - minDate.valueOf()) / diff;
+				return new ScaleAndLevel(s.id, start, end, 1);
+			});
 		}
 		
 		getMetadatas():ScaleAndLevel[]{
