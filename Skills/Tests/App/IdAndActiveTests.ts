@@ -1,11 +1,5 @@
 /// <reference path='./_references.ts' />
 
-describe("selection sorter tests", () => {
-    it("should determine which is selected and which is not", () => {
-        expect(true).toBe(true);
-    });
-});
-
 describe("id and active sorter tests", () => {
     var metadata1 = new CV.Metadata(1, "Meta1", "Desc1");
     var metadata2 = new CV.Metadata(2, "Meta2", "Desc2");

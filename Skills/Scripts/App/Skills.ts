@@ -43,15 +43,26 @@ module App
 						}).duration(1000);
 				});
 				
-				var arc = d3.svg.arc()
-					.innerRadius(50)
+				var arc1 = d3.svg.arc()
+					.innerRadius(65)
 					.outerRadius(70)
 					.startAngle(0)
-					.endAngle(2 * Math.PI);
-
-				svg.append("path")
+					.endAngle(0.4 * Math.PI);
+				var arc2 = d3.svg.arc()
+					.innerRadius(65)
+					.outerRadius(70)
+					.startAngle(0.5 * Math.PI)
+					.endAngle(1.9 * Math.PI);
+				var semiSvg = svg
+					.append("g")
+					.attr("transform", "translate(100,100)");
+				semiSvg.append("path")
 					.attr("class", "arc")
-					.attr("d", arc);
+					.attr("d", arc1);
+					
+				semiSvg.append("path")
+					.attr("class", "arc")
+					.attr("d", arc2);
         }
 	}
 }
