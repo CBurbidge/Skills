@@ -22,14 +22,14 @@ describe("length scaler tests", () => {
             var result = scaler.getSettings();
             
             it("should have a first setting with a start of 0 and an end of 0.4", () => {
-                var setting = result[0];
+                var setting = result.scaled[0];
                 expect(setting.start).toBeCloseTo(0, precision);
                 expect(setting.end).toBeCloseTo(0.4, precision);
                 expect(setting.id).toEqual(setting1.id);
             });
             
             it("should have a second setting with a start of 0.4 and an end of 1", () => {
-                var setting = result[1];
+                var setting = result.scaled[1];
                 expect(setting.start).toBeCloseTo(0.4, precision);
                 expect(setting.end).toBeCloseTo(1, precision);
                 expect(setting.id).toEqual(setting2.id);
@@ -45,21 +45,21 @@ describe("length scaler tests", () => {
             var result = scaler.getSettings();
             
             it("should have a first setting with a start of 0 and an end of 0.2", () => {
-                var setting = result[0];
+                var setting = result.scaled[0];
                 expect(setting.start).toBeCloseTo(0, precision);
                 expect(setting.end).toBeCloseTo(0.2, precision);
                 expect(setting.id).toEqual(setting1.id);
             });
             
             it("should have a second setting with a start of 0.2 and an end of 0.5", () => {
-                var setting = result[1];
+                var setting = result.scaled[1];
                 expect(setting.start).toBeCloseTo(0.2, precision);
                 expect(setting.end).toBeCloseTo(0.5, precision);
                 expect(setting.id).toEqual(setting2.id);
             });
             
             it("should have a third setting with a start of 0.4 and an end of 1", () => {
-                var setting = result[2];
+                var setting = result.scaled[2];
                 expect(setting.start).toBeCloseTo(0.4, precision);
                 expect(setting.end).toBeCloseTo(1, precision);
                 expect(setting.id).toEqual(setting3.id);
@@ -75,8 +75,8 @@ describe("length scaler tests", () => {
                 metadatas: [metadata1, metadata2]
             });
             var result = scaler.getMetadatas();
-            var firstResult = result[0];
-            var secondResult = result[1];
+            var firstResult = result.scaled[0];
+            var secondResult = result.scaled[1];
             
             it("should have the first metadata with a start of 0 and an end of 0.5", () => {
                 expect(firstResult.start).toEqual(0);
@@ -97,10 +97,10 @@ describe("length scaler tests", () => {
                 metadatas: [metadata1, metadata2, metadata3, metadata4]
             });
             var result = scaler.getMetadatas();
-            var firstResult = result[0];
-            var secondResult = result[1];
-            var thirdResult = result[2];
-            var fourthResult = result[3];
+            var firstResult = result.scaled[0];
+            var secondResult = result.scaled[1];
+            var thirdResult = result.scaled[2];
+            var fourthResult = result.scaled[3];
             
             it("should have the first metadata with a start of 0 and an end of 0.25", () => {
                 expect(firstResult.start).toEqual(0);

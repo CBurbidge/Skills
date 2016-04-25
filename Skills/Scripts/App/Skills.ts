@@ -2,67 +2,112 @@
 
 module App
 {
+	class ChartConfig
+	{
+		constructor(
+			public width:number,
+			public height: number,
+			public innerRadius:number,
+			public outerRadius:number
+		){}
+		
+		static Standard = new ChartConfig(600, 600, 250, 300);
+	}
+	
 	export class Skills
 	{
 		static go(){            
             var divSvg = d3.select("#skills_svg");
 			divSvg.select("svg").remove();
-            
+			
+            var config = ChartConfig.Standard;
+			
             var svg = divSvg.append("svg")
-				.attr("width", 600)
-				.attr("height", 600)
+				.attr("width", config.width)
+				.attr("height", config.height)
 				.style("background-color", "green");
+			
 			var cvData = CV.CVData.getData();
 			
-			var f = 10;
-			var g = 5;
+			var lengthScaler = new App.LengthScaler(cvData);
 			
-			var circles = svg.selectAll("circle")
-				.data(cvData.skills)
+			var moveToMiddle = "translate(" + config.width / 2 + "," + config.height / 2 + ")"
+			
+			var settingsScaled = lengthScaler.getSettings();
+			
+			var settingsArc = d3.svg.arc()
+				.innerRadius(config.innerRadius)
+				.outerRadius(config.outerRadius)
+				.startAngle(
+					(d:any) => {
+					var scaledSetting = settingsScaled.getForId(d.id);
+					var value = Math.PI * scaledSetting.start + Math.PI / 2;
+					return value;
+				})
+				.endAngle(
+					(d:any) => {
+					var scaledSetting = settingsScaled.getForId(d.id);
+					var value = Math.PI * scaledSetting.end + Math.PI / 2
+					return value;
+				});
+			
+			var settingsGroup = svg
+				.append("g")
+				.attr("transform", moveToMiddle)
+				.attr("class", "settings");
+			
+			settingsGroup
+				.selectAll("path")
+				.data(cvData.settings)
 				.enter()
-				.append("circle");
-				
-			var attributes = circles
-				.attr("cx", d => {
-					return d.id * f;
-				})
-				.attr("cy", d => {
-					return d.id * f;
-				})
-				.attr("r", d => {
-					return g;
+				.append("path")
+				.attr("d", <any>settingsArc)
+				.on("click", (d, i) => {
+					alert( "the setting is " + d.name)
 				});
-				
-				divSvg.on("click", (a, i) => {
-					circles.transition()
-						.attr("cx", d => {
-							return (d.id * f) * 1.3;
-						})
-						.attr("cy", d => {
-							return (d.id * f) / 2;
-						}).duration(1000);
+			
+			// Metadatas
+			
+			var metadatasScaled = lengthScaler.getMetadatas();
+			
+			var metadatasArc = d3.svg.arc()
+				.innerRadius(config.innerRadius)
+				.outerRadius(config.outerRadius)
+				.startAngle(
+					(d:any) => {
+					var scaledMetadata = metadatasScaled.getForId(d.id);
+					var value = Math.PI * scaledMetadata.start - Math.PI / 2;
+					return value;
+				})
+				.endAngle(
+					(d:any) => {
+					var scaledMetadata = metadatasScaled.getForId(d.id);
+					var value = Math.PI * scaledMetadata.end - Math.PI / 2
+					return value;
 				});
-				
-				var arc1 = d3.svg.arc()
-					.innerRadius(65)
-					.outerRadius(70)
-					.startAngle(0)
-					.endAngle(0.4 * Math.PI);
-				var arc2 = d3.svg.arc()
-					.innerRadius(65)
-					.outerRadius(70)
-					.startAngle(0.5 * Math.PI)
-					.endAngle(1.9 * Math.PI);
-				var semiSvg = svg
-					.append("g")
-					.attr("transform", "translate(100,100)");
-				semiSvg.append("path")
-					.attr("class", "arc")
-					.attr("d", arc1);
-					
-				semiSvg.append("path")
-					.attr("class", "arc")
-					.attr("d", arc2);
+			
+			var metadatasGroup = svg
+				.append("g")
+				.attr("transform", moveToMiddle)
+				.attr("class", "metadatas");
+			
+			metadatasGroup
+				.selectAll("path")
+				.data(cvData.metadatas)
+				.enter()
+				.append("path")
+				.attr("d", <any>metadatasArc)
+				.on("click", (d, i) => {
+					alert( "the metadata is " + d.name)
+				});
+			
+			// skills 
+			
+			var skillsGroup = svg
+				.append("g")
+				.attr("transform", moveToMiddle)
+				.attr("class", "circles");
+			
         }
 	}
 }

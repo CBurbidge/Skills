@@ -2,11 +2,20 @@
 
 module App
 {
+	export class Scaled 
+	{
+		constructor(public scaled:ScaleAndLevel[]) {}
+		getForId(id:number){
+			var result = this.scaled.filter(s => s.id === id);
+			return result[0];
+		}	
+	}	
+	
 	export class LengthScaler
 	{
 		constructor(public cVData:CV.ICVData){}
 		
-		getSettings():ScaleAndLevel[]{
+		getSettings():Scaled{
 			var minDate = this.cVData.settings.reduce((acc:Date, s:CV.Setting) => {
 				if(acc < s.dateRange.startDate) return acc;
 				return s.dateRange.startDate
@@ -19,21 +28,21 @@ module App
 			
 			var diff = maxDate.valueOf() - minDate.valueOf();
 			
-			return this.cVData.settings.map(s => {
+			return new Scaled(this.cVData.settings.map(s => {
 				var start = (s.dateRange.startDate.valueOf() - minDate.valueOf()) / diff;
 				var end = (s.dateRange.endDate.valueOf() - minDate.valueOf()) / diff;
 				return new ScaleAndLevel(s.id, start, end, 1);
-			});
+			}));
 		}
 		
-		getMetadatas():ScaleAndLevel[]{
+		getMetadatas():Scaled{
 			var numberOfMetadatas = this.cVData.metadatas.length;
 			var scaleForEach = 1 / numberOfMetadatas;
-			return this.cVData.metadatas.map((value, index, arr) => {
+			return new Scaled(this.cVData.metadatas.map((value, index, arr) => {
 				var start = index * scaleForEach;
 				var end = start + scaleForEach;
 				return new ScaleAndLevel(value.id, start, end, 1);
-			});
+			}));
 		}
 	}
 	
