@@ -8,10 +8,15 @@ module App
 			public width:number,
 			public height: number,
 			public innerRadius:number,
-			public outerRadius:number
+			public radiusWidth:number,
+			public colours: string[]
 		){}
 		
-		static Standard = new ChartConfig(600, 600, 250, 300);
+		static Standard = new ChartConfig(600, 600, 250, 25,
+			[//"black", "silver", "gray", "white",
+			"maroon", "red", "purple", "fuchsia",
+			"green", "lime", "olive", "yellow"]
+			);
 	}
 	
 	export class Skills
@@ -21,14 +26,17 @@ module App
 			divSvg.select("svg").remove();
 			
             var config = ChartConfig.Standard;
-			
+						
             var svg = divSvg.append("svg")
 				.attr("width", config.width)
 				.attr("height", config.height)
-				.style("background-color", "green");
+				//.style("background-color", "green")
+				;
 			
 			var cvData = CV.CVData.getData();
 			
+			var colours = new App.Colours(cvData, new ColourRandomiser(config.colours));
+						
 			var lengthScaler = new App.LengthScaler(cvData);
 			
 			var moveToMiddle = "translate(" + config.width / 2 + "," + config.height / 2 + ")"
@@ -37,7 +45,7 @@ module App
 			
 			var settingsArc = d3.svg.arc()
 				.innerRadius(config.innerRadius)
-				.outerRadius(config.outerRadius)
+				.outerRadius(config.innerRadius + config.radiusWidth)
 				.startAngle(
 					(d:any) => {
 					var scaledSetting = settingsScaled.getForId(d.id);
@@ -62,6 +70,7 @@ module App
 				.enter()
 				.append("path")
 				.attr("d", <any>settingsArc)
+				.attr("fill", d => colours.getSetting(d.id))
 				.on("click", (d, i) => {
 					alert( "the setting is " + d.name)
 				});
@@ -72,7 +81,7 @@ module App
 			
 			var metadatasArc = d3.svg.arc()
 				.innerRadius(config.innerRadius)
-				.outerRadius(config.outerRadius)
+				.outerRadius(config.innerRadius + config.radiusWidth)
 				.startAngle(
 					(d:any) => {
 					var scaledMetadata = metadatasScaled.getForId(d.id);
@@ -97,6 +106,7 @@ module App
 				.enter()
 				.append("path")
 				.attr("d", <any>metadatasArc)
+				.attr("fill", d => colours.getMetadata(d.id))
 				.on("click", (d, i) => {
 					alert( "the metadata is " + d.name)
 				});
