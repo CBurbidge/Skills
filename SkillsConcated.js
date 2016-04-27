@@ -1,4 +1,55 @@
-//# sourceMappingURL=_external_references.js.map
+var CV;
+(function (CV) {
+    var DateRange = (function () {
+        function DateRange(startDate, endDate) {
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+        return DateRange;
+    }());
+    CV.DateRange = DateRange;
+    var Metadata = (function () {
+        function Metadata(id, name, description) {
+            this.id = id;
+            this.name = name;
+            this.description = description;
+        }
+        return Metadata;
+    }());
+    CV.Metadata = Metadata;
+    var Setting = (function () {
+        function Setting(id, name, description, dateRange) {
+            this.id = id;
+            this.name = name;
+            this.description = description;
+            this.dateRange = dateRange;
+        }
+        return Setting;
+    }());
+    CV.Setting = Setting;
+    var Skill = (function () {
+        function Skill(id, name, description, metadatas, imageUrl) {
+            this.id = id;
+            this.name = name;
+            this.description = description;
+            this.metadatas = metadatas;
+            this.imageUrl = imageUrl;
+        }
+        return Skill;
+    }());
+    CV.Skill = Skill;
+    var SkillUsage = (function () {
+        function SkillUsage(skillUsageId, description, skillId, settingId) {
+            this.skillUsageId = skillUsageId;
+            this.description = description;
+            this.skillId = skillId;
+            this.settingId = settingId;
+        }
+        return SkillUsage;
+    }());
+    CV.SkillUsage = SkillUsage;
+})(CV || (CV = {}));
+//# sourceMappingURL=CvClasses.js.map
 var CV;
 (function (CV) {
     var Metadatas = (function () {
@@ -468,58 +519,6 @@ var CV;
 //# sourceMappingURL=SkillUsages.js.map
 var CV;
 (function (CV) {
-    var DateRange = (function () {
-        function DateRange(startDate, endDate) {
-            this.startDate = startDate;
-            this.endDate = endDate;
-        }
-        return DateRange;
-    }());
-    CV.DateRange = DateRange;
-    var Metadata = (function () {
-        function Metadata(id, name, description) {
-            this.id = id;
-            this.name = name;
-            this.description = description;
-        }
-        return Metadata;
-    }());
-    CV.Metadata = Metadata;
-    var Setting = (function () {
-        function Setting(id, name, description, dateRange) {
-            this.id = id;
-            this.name = name;
-            this.description = description;
-            this.dateRange = dateRange;
-        }
-        return Setting;
-    }());
-    CV.Setting = Setting;
-    var Skill = (function () {
-        function Skill(id, name, description, metadatas, imageUrl) {
-            this.id = id;
-            this.name = name;
-            this.description = description;
-            this.metadatas = metadatas;
-            this.imageUrl = imageUrl;
-        }
-        return Skill;
-    }());
-    CV.Skill = Skill;
-    var SkillUsage = (function () {
-        function SkillUsage(skillUsageId, description, skillId, settingId) {
-            this.skillUsageId = skillUsageId;
-            this.description = description;
-            this.skillId = skillId;
-            this.settingId = settingId;
-        }
-        return SkillUsage;
-    }());
-    CV.SkillUsage = SkillUsage;
-})(CV || (CV = {}));
-//# sourceMappingURL=CvClasses.js.map
-var CV;
-(function (CV) {
     var CVData = (function () {
         function CVData() {
         }
@@ -536,51 +535,6 @@ var CV;
     CV.CVData = CVData;
 })(CV || (CV = {}));
 //# sourceMappingURL=CvData.js.map
-//# sourceMappingURL=_external_references.js.map
-//# sourceMappingURL=_references.js.map
-var App;
-(function (App) {
-    var ColourRandomiser = (function () {
-        function ColourRandomiser(colours) {
-            this.colours = colours;
-        }
-        ColourRandomiser.prototype.mix = function () {
-            var index = Math.floor(Math.random() * this.colours.length);
-            return this.colours[index];
-        };
-        return ColourRandomiser;
-    }());
-    App.ColourRandomiser = ColourRandomiser;
-    var Colours = (function () {
-        function Colours(cVData, mixer) {
-            this.cVData = cVData;
-            this.mixer = mixer;
-            this.settings = cVData.settings.map(function (s) { return new IdAndColour(s.id, mixer.mix()); });
-            this.skills = cVData.skills.map(function (s) { return new IdAndColour(s.id, mixer.mix()); });
-            this.metadatas = cVData.metadatas.map(function (s) { return new IdAndColour(s.id, mixer.mix()); });
-        }
-        Colours.prototype.getMetadata = function (id) {
-            return this.metadatas.filter(function (m) { return m.id === id; })[0].colour;
-        };
-        Colours.prototype.getSetting = function (id) {
-            return this.settings.filter(function (m) { return m.id === id; })[0].colour;
-        };
-        Colours.prototype.getSkill = function (id) {
-            return this.skills.filter(function (m) { return m.id === id; })[0].colour;
-        };
-        return Colours;
-    }());
-    App.Colours = Colours;
-    var IdAndColour = (function () {
-        function IdAndColour(id, colour) {
-            this.id = id;
-            this.colour = colour;
-        }
-        return IdAndColour;
-    }());
-    App.IdAndColour = IdAndColour;
-})(App || (App = {}));
-//# sourceMappingURL=Colours.js.map
 var App;
 (function (App) {
     var IdAndActiveSorter = (function () {
@@ -715,77 +669,47 @@ var App;
 //# sourceMappingURL=LengthScaler.js.map
 var App;
 (function (App) {
-    var IdAndActiveSorter = (function () {
-        function IdAndActiveSorter(cVData) {
+    var ColourRandomiser = (function () {
+        function ColourRandomiser(colours) {
+            this.colours = colours;
+        }
+        ColourRandomiser.prototype.mix = function () {
+            var index = Math.floor(Math.random() * this.colours.length);
+            return this.colours[index];
+        };
+        return ColourRandomiser;
+    }());
+    App.ColourRandomiser = ColourRandomiser;
+    var Colours = (function () {
+        function Colours(cVData, mixer) {
             this.cVData = cVData;
+            this.mixer = mixer;
+            this.settings = cVData.settings.map(function (s) { return new IdAndColour(s.id, mixer.mix()); });
+            this.skills = cVData.skills.map(function (s) { return new IdAndColour(s.id, mixer.mix()); });
+            this.metadatas = cVData.metadatas.map(function (s) { return new IdAndColour(s.id, mixer.mix()); });
         }
-        IdAndActiveSorter.prototype.forInitial = function () {
-            return new IdAndActiveCvData(this.cVData.skills.map(function (s) { return new IdAndActive(s.id, true); }), this.cVData.skillUsages.map(function (su) { return new IdAndActive(su.skillUsageId, true); }), this.cVData.settings.map(function (s) { return new IdAndActive(s.id, true); }), this.cVData.metadatas.map(function (m) { return new IdAndActive(m.id, true); }));
+        Colours.prototype.getMetadata = function (id) {
+            return this.metadatas.filter(function (m) { return m.id === id; })[0].colour;
         };
-        IdAndActiveSorter.prototype.forSkill = function (skillId) {
-            var skills = this.cVData.skills.map(function (s) {
-                return new IdAndActive(s.id, s.id === skillId);
-            });
-            var skillUsagesWithSkill = this.cVData.skillUsages.filter(function (su) { return su.skillId === skillId; });
-            var settingIdsSkillsUsedIn = skillUsagesWithSkill.map(function (su) { return su.settingId; });
-            var settings = this.cVData.settings.map(function (s) {
-                var exists = settingIdsSkillsUsedIn.indexOf(s.id) > -1;
-                return new IdAndActive(s.id, exists);
-            });
-            var skill = this.cVData.skills.filter(function (s) { return s.id === skillId; })[0];
-            var metadataIds = skill.metadatas.map(function (m) { return m.id; });
-            var metadatas = this.cVData.metadatas.map(function (m) {
-                var exists = metadataIds.indexOf(m.id) > -1;
-                return new IdAndActive(m.id, exists);
-            });
-            return new IdAndActiveCvData(skills, [], settings, metadatas);
+        Colours.prototype.getSetting = function (id) {
+            return this.settings.filter(function (m) { return m.id === id; })[0].colour;
         };
-        IdAndActiveSorter.prototype.forSetting = function (settingId) {
-            var settings = this.cVData.settings.map(function (s) {
-                return new IdAndActive(s.id, s.id === settingId);
-            });
-            var skillIdsUsedInSetting = this.cVData.skillUsages
-                .filter(function (su) { return su.settingId === settingId; })
-                .map(function (su) { return su.skillId; });
-            var skills = this.cVData.skills.map(function (s) {
-                var used = skillIdsUsedInSetting.indexOf(s.id) > -1;
-                return new IdAndActive(s.id, used);
-            });
-            var metadatas = this.cVData.metadatas.map(function (m) { return new IdAndActive(m.id, false); });
-            return new IdAndActiveCvData(skills, [], settings, metadatas);
+        Colours.prototype.getSkill = function (id) {
+            return this.skills.filter(function (m) { return m.id === id; })[0].colour;
         };
-        IdAndActiveSorter.prototype.forMetadata = function (metadataId) {
-            var skills = this.cVData.skills.map(function (s) {
-                var skillContainsMetadata = s.metadatas.some(function (m) { return m.id === metadataId; });
-                return new IdAndActive(s.id, skillContainsMetadata);
-            });
-            var settings = this.cVData.settings.map(function (s) { return new IdAndActive(s.id, false); });
-            var metadatas = this.cVData.metadatas.map(function (m) { return new IdAndActive(m.id, m.id === metadataId); });
-            return new IdAndActiveCvData(skills, [], settings, metadatas);
-        };
-        return IdAndActiveSorter;
+        return Colours;
     }());
-    App.IdAndActiveSorter = IdAndActiveSorter;
-    var IdAndActive = (function () {
-        function IdAndActive(id, isActive) {
+    App.Colours = Colours;
+    var IdAndColour = (function () {
+        function IdAndColour(id, colour) {
             this.id = id;
-            this.isActive = isActive;
+            this.colour = colour;
         }
-        return IdAndActive;
+        return IdAndColour;
     }());
-    App.IdAndActive = IdAndActive;
-    var IdAndActiveCvData = (function () {
-        function IdAndActiveCvData(skills, skillUsages, settings, metadatas) {
-            this.skills = skills;
-            this.skillUsages = skillUsages;
-            this.settings = settings;
-            this.metadatas = metadatas;
-        }
-        return IdAndActiveCvData;
-    }());
-    App.IdAndActiveCvData = IdAndActiveCvData;
+    App.IdAndColour = IdAndColour;
 })(App || (App = {}));
-//# sourceMappingURL=Selection.js.map
+//# sourceMappingURL=Colours.js.map
 var App;
 (function (App) {
     var ChartConfig = (function () {

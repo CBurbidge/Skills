@@ -37,8 +37,19 @@ module.exports = function(grunt) {
 		concat: {
 			skillsJs: {
 				src: [
-				"Skills/Scripts/CV/**/*.js",
-                "Skills/Scripts/App/**/*.js"
+				"Skills/Scripts/CV/CvClasses.js",
+
+				"Skills/Scripts/CV/Collections/Metadatas.js",
+				"Skills/Scripts/CV/Collections/Settings.js",
+				"Skills/Scripts/CV/Collections/Skills.js",
+				"Skills/Scripts/CV/Collections/SkillUsages.js",
+
+				"Skills/Scripts/CV/CvData.js",
+
+				"Skills/Scripts/App/IdAndActive.js",
+				"Skills/Scripts/App/LengthScaler.js",
+				"Skills/Scripts/App/Colours.js",
+				"Skills/Scripts/App/Skills.js"
 				],
 				dest: "SkillsConcated.js"
 			}
