@@ -720,7 +720,7 @@ var App;
             this.radiusWidth = radiusWidth;
             this.colours = colours;
         }
-        ChartConfig.Standard = new ChartConfig(600, 600, 250, 25, [
+        ChartConfig.Standard = new ChartConfig(600, 600, 150, 25, [
             "maroon", "red", "purple", "fuchsia",
             "green", "lime", "olive", "yellow"]);
         return ChartConfig;
@@ -739,20 +739,51 @@ var App;
             var colours = new App.Colours(cvData, new App.ColourRandomiser(config.colours));
             var lengthScaler = new App.LengthScaler(cvData);
             var moveToMiddle = "translate(" + config.width / 2 + "," + config.height / 2 + ")";
+            var layersOfMetadatas = 5;
+            var layersDownStarting = 2;
+            function steppingInnerRadius(d, i) {
+                return config.innerRadius + i % layersOfMetadatas * config.radiusWidth - layersDownStarting * config.radiusWidth;
+            }
+            function steppingOuterRadius(d, i) {
+                return config.innerRadius + config.radiusWidth + i % layersOfMetadatas * config.radiusWidth - layersDownStarting * config.radiusWidth;
+            }
+            function fanningOutInnerRadius(d, i) {
+                return config.innerRadius + i * config.radiusWidth;
+            }
+            function fanningOutOuterRadius(d, i) {
+                return config.innerRadius + config.radiusWidth + i * config.radiusWidth;
+            }
+            function circleInnerRadius(d, i) {
+                return config.innerRadius;
+            }
+            function circleOuterRadius(d, i) {
+                return config.innerRadius + config.radiusWidth;
+            }
+            function radialBitsStartAngle(d, scaled, radialOffset) {
+                var scaledValue = scaled.getForId(d.id);
+                return Math.PI * scaledValue.start + radialOffset;
+            }
+            function radialBitsEndAngle(d, scaled, radialOffset) {
+                var scaledValue = scaled.getForId(d.id);
+                return Math.PI * scaledValue.end + radialOffset;
+            }
+            var halfRadialGap = 0.005;
+            function slightlyShrunkRadialBitsStartAngle(d, scaled, radialOffset) {
+                return radialBitsStartAngle(d, scaled, radialOffset) + halfRadialGap;
+            }
+            function slightlyShrunkRadialBitsEndAngle(d, scaled, radialOffset) {
+                return radialBitsEndAngle(d, scaled, radialOffset) - halfRadialGap;
+            }
+            var chosenInnerFunction = circleInnerRadius;
+            var chosenOuterFunction = circleOuterRadius;
+            var chosenStartFunction = slightlyShrunkRadialBitsStartAngle;
+            var chosenEndFunction = slightlyShrunkRadialBitsEndAngle;
             var settingsScaled = lengthScaler.getSettings();
             var settingsArc = d3.svg.arc()
-                .innerRadius(config.innerRadius)
-                .outerRadius(config.innerRadius + config.radiusWidth)
-                .startAngle(function (d) {
-                var scaledSetting = settingsScaled.getForId(d.id);
-                var value = Math.PI * scaledSetting.start + Math.PI / 2;
-                return value;
-            })
-                .endAngle(function (d) {
-                var scaledSetting = settingsScaled.getForId(d.id);
-                var value = Math.PI * scaledSetting.end + Math.PI / 2;
-                return value;
-            });
+                .innerRadius(function (d, i) { return fanningOutInnerRadius(d, i); })
+                .outerRadius(function (d, i) { return fanningOutOuterRadius(d, i); })
+                .startAngle(function (d) { return radialBitsStartAngle(d, settingsScaled, Math.PI / 2); })
+                .endAngle(function (d) { return radialBitsEndAngle(d, settingsScaled, Math.PI / 2); });
             var settingsGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
@@ -769,18 +800,10 @@ var App;
             });
             var metadatasScaled = lengthScaler.getMetadatas();
             var metadatasArc = d3.svg.arc()
-                .innerRadius(config.innerRadius)
-                .outerRadius(config.innerRadius + config.radiusWidth)
-                .startAngle(function (d) {
-                var scaledMetadata = metadatasScaled.getForId(d.id);
-                var value = Math.PI * scaledMetadata.start - Math.PI / 2;
-                return value;
-            })
-                .endAngle(function (d) {
-                var scaledMetadata = metadatasScaled.getForId(d.id);
-                var value = Math.PI * scaledMetadata.end - Math.PI / 2;
-                return value;
-            });
+                .innerRadius(function (d, i) { return chosenInnerFunction(d, i); })
+                .outerRadius(function (d, i) { return chosenOuterFunction(d, i); })
+                .startAngle(function (d) { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
+                .endAngle(function (d) { return chosenEndFunction(d, metadatasScaled, -Math.PI / 2); });
             var metadatasGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
