@@ -51,7 +51,7 @@ module.exports = function(grunt) {
 				"Skills/Scripts/App/Colours.js",
 				"Skills/Scripts/App/Skills.js"
 				],
-				dest: "SkillsConcated.js"
+				dest: "Skills.js"
 			}
 		},
 
