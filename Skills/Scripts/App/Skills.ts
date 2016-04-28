@@ -116,19 +116,22 @@ module App
 				"," + config.semiCircleRadius + ")"
 			
 			var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
-			var gapBetweenSettings = 3;
+			var gapBetweenSettings = 2;
+			
 			var settingsGroup = svg
+				// .append("rect")
+				// .attr("width", diameter)
+				// .attr("height", cvData.settings.length * config.settingWidth)
+				// .attr("fill", "silver")
 				.append("g")
-				.attr("fill", "blue")
 				.attr("transform", moveToLeftHandSideOfSemiCircle)
 				.attr("class", "settings");
-			var heightOfSettings = 30;
 			settingsGroup
 				.selectAll("rect")
 				.data(cvData.settings)
 				.enter()
 				.append("rect")
-				.attr("height", (d:any) => {return heightOfSettings;})
+				.attr("height", (d:any) => {return config.settingWidth - gapBetweenSettings;})
 				.attr("width", d => {
 					var setting = settingsScaled.getForId(d.id);
 					var width = (setting.end - setting.start) * diameter;
@@ -140,7 +143,7 @@ module App
 				})
 				.attr("y", (d:any) => {
 					var setting = settingsScaled.getForId(d.id);
-					return setting.id * heightOfSettings + gapBetweenSettings;
+					return setting.id * config.settingWidth;
 				})
 				//.attr("d", <any>settingsArc)
 				.attr("fill", d => colours.getSetting(d.id))
