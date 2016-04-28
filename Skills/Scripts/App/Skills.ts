@@ -116,6 +116,7 @@ module App
 				"," + config.semiCircleRadius + ")"
 			
 			var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
+			var gapBetweenSettings = 3;
 			var settingsGroup = svg
 				.append("g")
 				.attr("fill", "blue")
@@ -139,7 +140,7 @@ module App
 				})
 				.attr("y", (d:any) => {
 					var setting = settingsScaled.getForId(d.id);
-					return setting.id * heightOfSettings;
+					return setting.id * heightOfSettings + gapBetweenSettings;
 				})
 				//.attr("d", <any>settingsArc)
 				.attr("fill", d => colours.getSetting(d.id))
