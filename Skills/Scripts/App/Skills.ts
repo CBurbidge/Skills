@@ -4,15 +4,22 @@ module App
 {
 	class ChartConfig
 	{
-		constructor(
-			public width:number,
-			public height: number,
-			public innerRadius:number,
-			public radiusWidth:number,
-			public colours: string[]
-		){}
+		public width:number;
+		public height:number;
+		public innerRadius;
 		
-		static Standard = new ChartConfig(600, 600, 150, 25,
+		constructor(
+			public semiCircleRadius:number,
+			public semiCircleWidth:number,
+			public settingWidth:number,
+			public colours: string[]
+		){
+			this.width = 2 * semiCircleRadius + 2 * semiCircleWidth;
+			this.height = semiCircleRadius * 1.5 + semiCircleWidth;
+			this.innerRadius = semiCircleRadius - semiCircleWidth;	
+		}
+		
+		static Standard = new ChartConfig(400, 25, 30,
 			[//"black", "silver", "gray", "white",
 			"maroon", "red", "purple", "fuchsia",
 			"green", "lime", "olive", "yellow"]
@@ -39,26 +46,26 @@ module App
 						
 			var lengthScaler = new App.LengthScaler(cvData);
 			
-			var moveToMiddle = "translate(" + config.width / 2 + "," + config.height / 2 + ")"
+			var moveToMiddle = "translate(" + config.width / 2 + "," + config.semiCircleRadius + ")"
 			
 			
 			var layersOfMetadatas = 5
 			var layersDownStarting = 2;
 			
 			function steppingInnerRadius(d, i){
-				return config.innerRadius + i % layersOfMetadatas * config.radiusWidth - layersDownStarting * config.radiusWidth;
+				return config.innerRadius + i % layersOfMetadatas * config.semiCircleWidth - layersDownStarting * config.semiCircleWidth;
 			}
 			
 			function steppingOuterRadius(d, i){
-				return config.innerRadius + config.radiusWidth + i % layersOfMetadatas * config.radiusWidth - layersDownStarting * config.radiusWidth;
+				return config.innerRadius + config.semiCircleWidth + i % layersOfMetadatas * config.semiCircleWidth - layersDownStarting * config.semiCircleWidth;
 			}
 			
 			function fanningOutInnerRadius(d, i){
-				return config.innerRadius + i * config.radiusWidth;
+				return config.innerRadius + i * config.semiCircleWidth;
 			}
 			
 			function fanningOutOuterRadius(d, i){
-				return config.innerRadius + config.radiusWidth + i * config.radiusWidth;
+				return config.innerRadius + config.semiCircleWidth + i * config.semiCircleWidth;
 			}
 			
 			function circleInnerRadius(d, i){
@@ -66,7 +73,7 @@ module App
 			}
 			
 			function circleOuterRadius(d, i){
-				return config.innerRadius + config.radiusWidth;
+				return config.innerRadius + config.semiCircleWidth;
 			}
 			
 			function radialBitsStartAngle(d:any, scaled:Scaled, radialOffset){
@@ -104,17 +111,37 @@ module App
 				.startAngle((d:any) => radialBitsStartAngle(d, settingsScaled, Math.PI / 2))
 				.endAngle((d:any) => radialBitsEndAngle(d, settingsScaled , Math.PI / 2 ));
 			
+			var moveToLeftHandSideOfSemiCircle = "translate(" + 
+				((config.width / 2) - config.innerRadius - config.semiCircleWidth).toString() + 
+				"," + config.semiCircleRadius + ")"
+			
+			var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
 			var settingsGroup = svg
 				.append("g")
-				.attr("transform", moveToMiddle)
+				.attr("fill", "blue")
+				.attr("transform", moveToLeftHandSideOfSemiCircle)
 				.attr("class", "settings");
-			
+			var heightOfSettings = 30;
 			settingsGroup
-				.selectAll("path")
+				.selectAll("rect")
 				.data(cvData.settings)
 				.enter()
-				.append("path")
-				.attr("d", <any>settingsArc)
+				.append("rect")
+				.attr("height", (d:any) => {return heightOfSettings;})
+				.attr("width", d => {
+					var setting = settingsScaled.getForId(d.id);
+					var width = (setting.end - setting.start) * diameter;
+					return width;
+				})
+				.attr("x", (d:any) => {
+					var setting = settingsScaled.getForId(d.id);
+					return setting.start * diameter;
+				})
+				.attr("y", (d:any) => {
+					var setting = settingsScaled.getForId(d.id);
+					return setting.id * heightOfSettings;
+				})
+				//.attr("d", <any>settingsArc)
 				.attr("fill", d => colours.getSetting(d.id))
 				.on("click", (d, i) => {
 					alert( "the setting is " + d.name)
