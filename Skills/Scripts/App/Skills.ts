@@ -123,7 +123,7 @@ module App
 				// .attr("width", diameter)
 				// .attr("height", cvData.settings.length * config.settingWidth)
 				// .attr("fill", "silver")
-				.append("g")
+				.append("g")  
 				.attr("transform", moveToLeftHandSideOfSemiCircle)
 				.attr("class", "settings");
 			settingsGroup
@@ -147,6 +147,7 @@ module App
 				})
 				//.attr("d", <any>settingsArc)
 				.attr("fill", d => colours.getSetting(d.id))
+				//.attr("fill", "red")
 				.on("click", (d, i) => {
 					alert( "the setting is " + d.name)
 				});

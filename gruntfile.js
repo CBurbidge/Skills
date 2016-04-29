@@ -21,6 +21,42 @@ module.exports = function(grunt) {
 			}
 		},
 		
+		watch: {
+			files: '**/*.ts',
+			tasks: ['ts'],
+			options: {
+				livereload: true,
+			},
+		},
+		
+		open: {
+    		dev: {
+				path: 'http://localhost:9000/index.html'
+			}
+		},
+		
+		connect: {
+			server: {
+				options: {
+					port: 35729,
+					base: './'
+				}
+			}
+		},
+		
+		express: {
+			all: {
+				options: {
+				port: 9000,
+				hostname: "0.0.0.0",
+				bases: ["F:\\Repos\\Skills"] // Replace with the directory you want the files served from
+									// Make sure you don't use `.` or `..` in the path as Express
+									// is likely to return 403 Forbidden responses if you do
+									// http://stackoverflow.com/questions/14594121/express-res-sendfile-throwing-forbidden-error
+				}
+			}
+		},
+		
 		jasmine: {
 			pivotal: {
 				src: [
@@ -66,11 +102,15 @@ module.exports = function(grunt) {
 			}
 		}
 	});
-	grunt.loadNpmTasks("grunt-contrib-less");
+	grunt.loadNpmTasks("grunt-express");
+	grunt.loadNpmTasks("grunt-open");
+	grunt.loadNpmTasks("grunt-contrib-connect");
+	grunt.loadNpmTasks("grunt-contrib-watch");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-jasmine");
 	grunt.loadNpmTasks("grunt-ts");
 
-	grunt.registerTask("default", ["less", "ts", "concat", "jasmine"]);
+	grunt.registerTask("default", ["less", "ts", "concat", "open", "watch"]);
 	grunt.registerTask("tests", ["ts", "jasmine"]);
+	grunt.registerTask("dev", ["express", "open", "watch"]);
 };
