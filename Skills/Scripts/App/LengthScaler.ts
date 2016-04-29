@@ -15,16 +15,23 @@ module App
 	{
 		constructor(public cVData:CV.ICVData){}
 		
-		getSettings():Scaled{
-			var minDate = this.cVData.settings.reduce((acc:Date, s:CV.Setting) => {
+		static getMinDate(settings):Date{
+			return settings.reduce((acc:Date, s:CV.Setting) => {
 				if(acc < s.dateRange.startDate) return acc;
 				return s.dateRange.startDate
 			}, new Date());
-			
-			var maxDate = this.cVData.settings.reduce((acc:Date, s:CV.Setting) => {
+		}
+		
+		static getMaxDate(settings):Date{
+			return settings.reduce((acc:Date, s:CV.Setting) => {
 				if(acc > s.dateRange.endDate) return acc;
 				return s.dateRange.endDate
 			}, new Date(2000, 1));
+		}
+		
+		getSettings():Scaled{
+			var minDate = LengthScaler.getMinDate(this.cVData.settings);
+			var maxDate = LengthScaler.getMaxDate(this.cVData.settings);
 			
 			var diff = maxDate.valueOf() - minDate.valueOf();
 			

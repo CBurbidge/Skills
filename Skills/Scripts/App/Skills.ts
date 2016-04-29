@@ -113,7 +113,7 @@ module App
 			
 			var moveToLeftHandSideOfSemiCircle = "translate(" + 
 				((config.width / 2) - config.innerRadius - config.semiCircleWidth).toString() + 
-				"," + config.semiCircleRadius + ")"
+				"," + (config.semiCircleRadius + (config.settingWidth * 2)) + ")"
 			
 			var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
 			var gapBetweenSettings = 2;
@@ -127,9 +127,14 @@ module App
 				.attr("transform", moveToLeftHandSideOfSemiCircle)
 				.attr("class", "settings");
 			settingsGroup
-				.selectAll("rect")
+				.selectAll("g")
 				.data(cvData.settings)
 				.enter()
+				.append("g")
+				.attr("class", "setting");
+			
+			settingsGroup
+				.selectAll("g.setting")
 				.append("rect")
 				.attr("height", (d:any) => {return config.settingWidth - gapBetweenSettings;})
 				.attr("width", d => {
@@ -151,8 +156,35 @@ module App
 				.on("click", (d, i) => {
 					alert( "the setting is " + d.name)
 				});
+			settingsGroup
+				.selectAll("g.setting")
+				.append("text")
+				.text(d => d.name)
+				.attr("y", (d:any) => (d.id + 0.5) * config.settingWidth);
 			
+			var minDate = LengthScaler.getMinDate(cvData.settings);
+			var maxDate = LengthScaler.getMaxDate(cvData.settings);
 			
+			var x = d3.time.scale()
+				.domain([minDate, d3.time.month.offset(maxDate, 1)])
+    			.rangeRound([0, diameter]);
+				// .domain([new Date(data[0].date), d3.time.month.offset(new Date(data[data.length - 1].date), 1)])
+    			// .rangeRound([0, width - margin.left - margin.right]);
+
+			
+			var showTickEveryMonths = 4;
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.orient('bottom')
+				.ticks(d3.time.month, showTickEveryMonths)
+				.tickFormat(d3.time.format('%m/%Y'))
+				.tickSize(3)
+				.tickPadding(5); 
+			
+			svg.append('g')
+				.attr('class', 'x axis')
+				.attr('transform', 'translate(' + config.semiCircleWidth + ', ' + (diameter / 2 + config.settingWidth) + ')')
+				.call(xAxis);
 			
 			
 			// Metadatas
