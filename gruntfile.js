@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 		
 		open: {
     		dev: {
-				path: 'http://localhost:9000/index.html'
+				path: 'http://localhost:9000/index_debug.html'
 			}
 		},
 		
@@ -97,7 +97,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-jasmine");
 	grunt.loadNpmTasks("grunt-ts");
 
-	grunt.registerTask("default", ["less", "ts", "concat", "open", "watch"]);
+	grunt.registerTask("default", [ "ts", "concat", "jasmine"]);
 	grunt.registerTask("tests", ["ts", "jasmine"]);
 	grunt.registerTask("dev", ["express", "open", "watch"]);
 };

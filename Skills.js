@@ -625,17 +625,23 @@ var App;
         function LengthScaler(cVData) {
             this.cVData = cVData;
         }
-        LengthScaler.prototype.getSettings = function () {
-            var minDate = this.cVData.settings.reduce(function (acc, s) {
+        LengthScaler.getMinDate = function (settings) {
+            return settings.reduce(function (acc, s) {
                 if (acc < s.dateRange.startDate)
                     return acc;
                 return s.dateRange.startDate;
             }, new Date());
-            var maxDate = this.cVData.settings.reduce(function (acc, s) {
+        };
+        LengthScaler.getMaxDate = function (settings) {
+            return settings.reduce(function (acc, s) {
                 if (acc > s.dateRange.endDate)
                     return acc;
                 return s.dateRange.endDate;
             }, new Date(2000, 1));
+        };
+        LengthScaler.prototype.getSettings = function () {
+            var minDate = LengthScaler.getMinDate(this.cVData.settings);
+            var maxDate = LengthScaler.getMaxDate(this.cVData.settings);
             var diff = maxDate.valueOf() - minDate.valueOf();
             return new Scaled(this.cVData.settings.map(function (s) {
                 var start = (s.dateRange.startDate.valueOf() - minDate.valueOf()) / diff;
@@ -788,7 +794,7 @@ var App;
                 .endAngle(function (d) { return radialBitsEndAngle(d, settingsScaled, Math.PI / 2); });
             var moveToLeftHandSideOfSemiCircle = "translate(" +
                 ((config.width / 2) - config.innerRadius - config.semiCircleWidth).toString() +
-                "," + config.semiCircleRadius + ")";
+                "," + (config.semiCircleRadius + (config.settingWidth * 2)) + ")";
             var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
             var gapBetweenSettings = 2;
             var settingsGroup = svg
@@ -796,9 +802,13 @@ var App;
                 .attr("transform", moveToLeftHandSideOfSemiCircle)
                 .attr("class", "settings");
             settingsGroup
-                .selectAll("rect")
+                .selectAll("g")
                 .data(cvData.settings)
                 .enter()
+                .append("g")
+                .attr("class", "setting");
+            settingsGroup
+                .selectAll("g.setting")
                 .append("rect")
                 .attr("height", function (d) { return config.settingWidth - gapBetweenSettings; })
                 .attr("width", function (d) {
@@ -818,6 +828,28 @@ var App;
                 .on("click", function (d, i) {
                 alert("the setting is " + d.name);
             });
+            settingsGroup
+                .selectAll("g.setting")
+                .append("text")
+                .text(function (d) { return d.name; })
+                .attr("y", function (d) { return (d.id + 0.5) * config.settingWidth; });
+            var minDate = App.LengthScaler.getMinDate(cvData.settings);
+            var maxDate = App.LengthScaler.getMaxDate(cvData.settings);
+            var x = d3.time.scale()
+                .domain([minDate, d3.time.month.offset(maxDate, 1)])
+                .rangeRound([0, diameter]);
+            var showTickEveryMonths = 4;
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient('bottom')
+                .ticks(d3.time.month, showTickEveryMonths)
+                .tickFormat(d3.time.format('%m/%Y'))
+                .tickSize(3)
+                .tickPadding(5);
+            svg.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(' + config.semiCircleWidth + ', ' + (diameter / 2 + config.settingWidth) + ')')
+                .call(xAxis);
             var metadatasScaled = lengthScaler.getMetadatas();
             var metadatasArc = d3.svg.arc()
                 .innerRadius(function (d, i) { return chosenInnerFunction(d, i); })
