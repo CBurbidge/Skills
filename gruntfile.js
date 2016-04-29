@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 		
 		open: {
     		dev: {
-				path: 'http://localhost:9000/index_debug.html'
+				path: 'http://localhost:9000/debug_index.html'
 			}
 		},
 		

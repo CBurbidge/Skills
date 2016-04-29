@@ -150,9 +150,7 @@ module App
 					var setting = settingsScaled.getForId(d.id);
 					return setting.id * config.settingWidth;
 				})
-				//.attr("d", <any>settingsArc)
 				.attr("fill", d => colours.getSetting(d.id))
-				//.attr("fill", "red")
 				.on("click", (d, i) => {
 					alert( "the setting is " + d.name)
 				});
@@ -168,10 +166,7 @@ module App
 			var x = d3.time.scale()
 				.domain([minDate, d3.time.month.offset(maxDate, 1)])
     			.rangeRound([0, diameter]);
-				// .domain([new Date(data[0].date), d3.time.month.offset(new Date(data[data.length - 1].date), 1)])
-    			// .rangeRound([0, width - margin.left - margin.right]);
-
-			
+				
 			var showTickEveryMonths = 4;
 			var xAxis = d3.svg.axis()
 				.scale(x)
@@ -203,9 +198,13 @@ module App
 				.attr("class", "metadatas");
 			
 			metadatasGroup
-				.selectAll("path")
+				.selectAll("g")
 				.data(cvData.metadatas)
 				.enter()
+				.append("g")
+				.attr("class", "metadata");
+			metadatasGroup
+				.selectAll("g.metadata")
 				.append("path")
 				.attr("d", <any>metadatasArc)
 				.attr("fill", d => colours.getMetadata(d.id))
