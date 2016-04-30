@@ -46,7 +46,7 @@ module App
 						
 			var lengthScaler = new App.LengthScaler(cvData);
 			
-			var moveToMiddle = "translate(" + config.width / 2 + "," + config.semiCircleRadius + ")"
+			var moveToMiddle = "translate(" + config.width / 2 + "," + (config.semiCircleRadius + config.semiCircleWidth) + ")"
 			
 			
 			var layersOfMetadatas = 5
@@ -74,6 +74,17 @@ module App
 			
 			function circleOuterRadius(d, i){
 				return config.innerRadius + config.semiCircleWidth;
+			}
+			
+			var textOffset = config.semiCircleWidth * 0.7;
+			function inThenOutInner(d, i){
+				var multiplyBy = i % 2 === 0 ? 1 : -1;
+				return config.innerRadius + multiplyBy * config.semiCircleWidth - textOffset;
+			}
+			
+			function inThenOutOuter(d, i){
+				var multiplyBy = i % 2 === 0 ? 1 : -1;
+				return config.innerRadius + config.semiCircleWidth + multiplyBy * config.semiCircleWidth - textOffset;
 			}
 			
 			function radialBitsStartAngle(d:any, scaled:Scaled, radialOffset){
@@ -192,6 +203,12 @@ module App
 				.startAngle((d:any) => { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
 				.endAngle((d:any) => { return chosenEndFunction(d, metadatasScaled, -Math.PI / 2); });
 			
+			var metadatasTextArc = d3.svg.arc()
+				.innerRadius((d, i) => { return inThenOutInner(d, i); })
+				.outerRadius((d, i) => { return inThenOutOuter(d, i); })
+				.startAngle((d:any) => { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
+				.endAngle((d:any) => { return chosenEndFunction(d, metadatasScaled, -Math.PI / 2); });
+			
 			var metadatasGroup = svg
 				.append("g")
 				.attr("transform", moveToMiddle)
@@ -203,6 +220,7 @@ module App
 				.enter()
 				.append("g")
 				.attr("class", "metadata");
+			
 			metadatasGroup
 				.selectAll("g.metadata")
 				.append("path")
@@ -211,7 +229,21 @@ module App
 				.on("click", (d, i) => {
 					alert( "the metadata is " + d.name)
 				});
-			
+				
+			metadatasGroup
+				.selectAll("g.metadata")
+				.append("path")
+				.attr("d", <any>metadatasTextArc)
+				.attr("fill", "none")
+				.attr("id", d => "met" + d.id);
+				
+			metadatasGroup
+				.selectAll("g.metadata")
+				.append("text")
+				.append("textPath")
+				.attr("xlink:href", d => "#met" + d.id)
+				.text((d:any) => d.name);
+				
 			// skills 
 			
 			var skillsGroup = svg
