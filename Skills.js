@@ -746,7 +746,7 @@ var App;
             var cvData = CV.CVData.getData();
             var colours = new App.Colours(cvData, new App.ColourRandomiser(config.colours));
             var lengthScaler = new App.LengthScaler(cvData);
-            var moveToMiddle = "translate(" + config.width / 2 + "," + config.semiCircleRadius + ")";
+            var moveToMiddle = "translate(" + config.width / 2 + "," + (config.semiCircleRadius + config.semiCircleWidth) + ")";
             var layersOfMetadatas = 5;
             var layersDownStarting = 2;
             function steppingInnerRadius(d, i) {
@@ -766,6 +766,15 @@ var App;
             }
             function circleOuterRadius(d, i) {
                 return config.innerRadius + config.semiCircleWidth;
+            }
+            var textOffset = config.semiCircleWidth * 0.7;
+            function inThenOutInner(d, i) {
+                var multiplyBy = i % 2 === 0 ? 1 : -1;
+                return config.innerRadius + multiplyBy * config.semiCircleWidth - textOffset;
+            }
+            function inThenOutOuter(d, i) {
+                var multiplyBy = i % 2 === 0 ? 1 : -1;
+                return config.innerRadius + config.semiCircleWidth + multiplyBy * config.semiCircleWidth - textOffset;
             }
             function radialBitsStartAngle(d, scaled, radialOffset) {
                 var scaledValue = scaled.getForId(d.id);
@@ -856,20 +865,41 @@ var App;
                 .outerRadius(function (d, i) { return chosenOuterFunction(d, i); })
                 .startAngle(function (d) { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
                 .endAngle(function (d) { return chosenEndFunction(d, metadatasScaled, -Math.PI / 2); });
+            var metadatasTextArc = d3.svg.arc()
+                .innerRadius(function (d, i) { return inThenOutInner(d, i); })
+                .outerRadius(function (d, i) { return inThenOutOuter(d, i); })
+                .startAngle(function (d) { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
+                .endAngle(function (d) { return chosenEndFunction(d, metadatasScaled, -Math.PI / 2); });
             var metadatasGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
                 .attr("class", "metadatas");
             metadatasGroup
-                .selectAll("path")
+                .selectAll("g")
                 .data(cvData.metadatas)
                 .enter()
+                .append("g")
+                .attr("class", "metadata");
+            metadatasGroup
+                .selectAll("g.metadata")
                 .append("path")
                 .attr("d", metadatasArc)
                 .attr("fill", function (d) { return colours.getMetadata(d.id); })
                 .on("click", function (d, i) {
                 alert("the metadata is " + d.name);
             });
+            metadatasGroup
+                .selectAll("g.metadata")
+                .append("path")
+                .attr("d", metadatasTextArc)
+                .attr("fill", "none")
+                .attr("id", function (d) { return "met" + d.id; });
+            metadatasGroup
+                .selectAll("g.metadata")
+                .append("text")
+                .append("textPath")
+                .attr("xlink:href", function (d) { return "#met" + d.id; })
+                .text(function (d) { return d.name; });
             var skillsGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
