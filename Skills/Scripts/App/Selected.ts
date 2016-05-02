@@ -16,5 +16,17 @@ module App
 		public skillSelected:boolean;
 		public settingSelected:boolean;
 		public metadataSelected:boolean;
+		
+		static fromMetadata(id:number){
+			return new Selected(null, null, id);
+		}
+		
+		static fromSkill(id:number){
+			return new Selected(id, null, null);
+		}
+		
+		static fromSetting(id:number){
+			return new Selected(null, id, null);
+		}
 	}
 }
