@@ -718,6 +718,75 @@ var App;
 //# sourceMappingURL=Colours.js.map
 var App;
 (function (App) {
+    var Selected = (function () {
+        function Selected(skill, setting, metadata) {
+            this.skill = skill;
+            this.setting = setting;
+            this.metadata = metadata;
+            this.allSelected = skill == null && setting == null && metadata == null;
+            this.skillSelected = skill != null;
+            this.settingSelected = setting != null;
+            this.metadataSelected = metadata != null;
+        }
+        Selected.fromMetadata = function (id) {
+            return new Selected(null, null, id);
+        };
+        Selected.fromSkill = function (id) {
+            return new Selected(id, null, null);
+        };
+        Selected.fromSetting = function (id) {
+            return new Selected(null, id, null);
+        };
+        Selected.initial = function () {
+            return new Selected(null, null, null);
+        };
+        return Selected;
+    }());
+    App.Selected = Selected;
+})(App || (App = {}));
+//# sourceMappingURL=Selected.js.map
+var App;
+(function (App) {
+    var SkillCirclesCalculator = (function () {
+        function SkillCirclesCalculator(cvData) {
+            this.cvData = cvData;
+        }
+        SkillCirclesCalculator.prototype.forSelected = function (selected) {
+            var _this = this;
+            return new SkillCircles(this.cvData.skills.map(function (s) {
+                var sqRootModulus = Math.ceil(_this.cvData.skills.length ^ 0.5);
+                var x = (s.id % sqRootModulus) * 10;
+                var y = Math.floor(s.id / sqRootModulus) + (s.id % sqRootModulus) * 10;
+                return new SkillCircle(s.id, -x, -y, 5);
+            }));
+        };
+        return SkillCirclesCalculator;
+    }());
+    App.SkillCirclesCalculator = SkillCirclesCalculator;
+    var SkillCircles = (function () {
+        function SkillCircles(circles) {
+            this.circles = circles;
+        }
+        SkillCircles.prototype.forId = function (id) {
+            return this.circles.filter(function (c) { return c.id === id; })[0];
+        };
+        return SkillCircles;
+    }());
+    App.SkillCircles = SkillCircles;
+    var SkillCircle = (function () {
+        function SkillCircle(id, x, y, radius) {
+            this.id = id;
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+        }
+        return SkillCircle;
+    }());
+    App.SkillCircle = SkillCircle;
+})(App || (App = {}));
+//# sourceMappingURL=SkillCircle.js.map
+var App;
+(function (App) {
     var ChartConfig = (function () {
         function ChartConfig(semiCircleRadius, semiCircleWidth, settingWidth, colours) {
             this.semiCircleRadius = semiCircleRadius;
@@ -747,65 +816,7 @@ var App;
             var colours = new App.Colours(cvData, new App.ColourRandomiser(config.colours));
             var lengthScaler = new App.LengthScaler(cvData);
             var moveToMiddle = "translate(" + config.width / 2 + "," + (config.semiCircleRadius + config.semiCircleWidth) + ")";
-            var layersOfMetadatas = 5;
-            var layersDownStarting = 2;
-            function steppingInnerRadius(d, i) {
-                return config.innerRadius + i % layersOfMetadatas * config.semiCircleWidth - layersDownStarting * config.semiCircleWidth;
-            }
-            function steppingOuterRadius(d, i) {
-                return config.innerRadius + config.semiCircleWidth + i % layersOfMetadatas * config.semiCircleWidth - layersDownStarting * config.semiCircleWidth;
-            }
-            function fanningOutInnerRadius(d, i) {
-                return config.innerRadius + i * config.semiCircleWidth;
-            }
-            function fanningOutOuterRadius(d, i) {
-                return config.innerRadius + config.semiCircleWidth + i * config.semiCircleWidth;
-            }
-            function circleInnerRadius(d, i) {
-                return config.innerRadius;
-            }
-            function circleOuterRadius(d, i) {
-                return config.innerRadius + config.semiCircleWidth;
-            }
-            var textOffset = config.semiCircleWidth * 0.7;
-            function inThenOutInner(d, i) {
-                var multiplyBy = i % 2 === 0 ? 1 : -1;
-                return config.innerRadius + multiplyBy * config.semiCircleWidth - textOffset;
-            }
-            function inThenOutOuter(d, i) {
-                var multiplyBy = i % 2 === 0 ? 1 : -1;
-                return config.innerRadius + config.semiCircleWidth + multiplyBy * config.semiCircleWidth - textOffset;
-            }
-            function radialBitsStartAngle(d, scaled, radialOffset) {
-                var scaledValue = scaled.getForId(d.id);
-                return Math.PI * scaledValue.start + radialOffset;
-            }
-            function radialBitsEndAngle(d, scaled, radialOffset) {
-                var scaledValue = scaled.getForId(d.id);
-                return Math.PI * scaledValue.end + radialOffset;
-            }
-            var halfRadialGap = 0.005;
-            function slightlyShrunkRadialBitsStartAngle(d, scaled, radialOffset) {
-                return radialBitsStartAngle(d, scaled, radialOffset) + halfRadialGap;
-            }
-            function slightlyShrunkRadialBitsEndAngle(d, scaled, radialOffset) {
-                return radialBitsEndAngle(d, scaled, radialOffset) - halfRadialGap;
-            }
-            function twiceLongRadialEndAngle(d, scaled, radialOffset) {
-                var end = radialBitsEndAngle(d, scaled, radialOffset);
-                var start = radialBitsStartAngle(d, scaled, radialOffset);
-                return (end - start) * 2 + start;
-            }
-            var chosenInnerFunction = circleInnerRadius;
-            var chosenOuterFunction = circleOuterRadius;
-            var chosenStartFunction = slightlyShrunkRadialBitsStartAngle;
-            var chosenEndFunction = slightlyShrunkRadialBitsEndAngle;
             var settingsScaled = lengthScaler.getSettings();
-            var settingsArc = d3.svg.arc()
-                .innerRadius(function (d, i) { return fanningOutInnerRadius(d, i); })
-                .outerRadius(function (d, i) { return fanningOutOuterRadius(d, i); })
-                .startAngle(function (d) { return radialBitsStartAngle(d, settingsScaled, Math.PI / 2); })
-                .endAngle(function (d) { return radialBitsEndAngle(d, settingsScaled, Math.PI / 2); });
             var moveToLeftHandSideOfSemiCircle = "translate(" +
                 ((config.width / 2) - config.innerRadius - config.semiCircleWidth).toString() +
                 "," + (config.semiCircleRadius + (config.settingWidth * 2)) + ")";
@@ -838,10 +849,7 @@ var App;
                 var setting = settingsScaled.getForId(d.id);
                 return setting.id * config.settingWidth;
             })
-                .attr("fill", function (d) { return colours.getSetting(d.id); })
-                .on("click", function (d, i) {
-                alert("the setting is " + d.name);
-            });
+                .attr("fill", function (d) { return colours.getSetting(d.id); });
             settingsGroup
                 .selectAll("g.setting")
                 .append("text")
@@ -864,16 +872,45 @@ var App;
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(' + config.semiCircleWidth + ', ' + (diameter / 2 + config.settingWidth) + ')')
                 .call(xAxis);
+            var textOffset = config.semiCircleWidth * 0.7;
+            function inThenOutInner(d, i) {
+                var multiplyBy = i % 2 === 0 ? 1 : -1;
+                return config.innerRadius + multiplyBy * config.semiCircleWidth - textOffset;
+            }
+            function inThenOutOuter(d, i) {
+                var multiplyBy = i % 2 === 0 ? 1 : -1;
+                return config.innerRadius + config.semiCircleWidth + multiplyBy * config.semiCircleWidth - textOffset;
+            }
+            function radialBitsStartAngle(d, scaled, radialOffset) {
+                var scaledValue = scaled.getForId(d.id);
+                return Math.PI * scaledValue.start + radialOffset;
+            }
+            function radialBitsEndAngle(d, scaled, radialOffset) {
+                var scaledValue = scaled.getForId(d.id);
+                return Math.PI * scaledValue.end + radialOffset;
+            }
+            var halfRadialGap = 0.005;
+            function slightlyShrunkRadialBitsStartAngle(d, scaled, radialOffset) {
+                return radialBitsStartAngle(d, scaled, radialOffset) + halfRadialGap;
+            }
+            function slightlyShrunkRadialBitsEndAngle(d, scaled, radialOffset) {
+                return radialBitsEndAngle(d, scaled, radialOffset) - halfRadialGap;
+            }
+            function twiceLongRadialEndAngle(d, scaled, radialOffset) {
+                var end = radialBitsEndAngle(d, scaled, radialOffset);
+                var start = radialBitsStartAngle(d, scaled, radialOffset);
+                return (end - start) * 2 + start;
+            }
             var metadatasScaled = lengthScaler.getMetadatas();
             var metadatasArc = d3.svg.arc()
-                .innerRadius(function (d, i) { return chosenInnerFunction(d, i); })
-                .outerRadius(function (d, i) { return chosenOuterFunction(d, i); })
-                .startAngle(function (d) { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
-                .endAngle(function (d) { return chosenEndFunction(d, metadatasScaled, -Math.PI / 2); });
+                .innerRadius(function (d, i) { return config.innerRadius; })
+                .outerRadius(function (d, i) { return config.innerRadius + config.semiCircleWidth; })
+                .startAngle(function (d) { return slightlyShrunkRadialBitsStartAngle(d, metadatasScaled, -Math.PI / 2); })
+                .endAngle(function (d) { return slightlyShrunkRadialBitsEndAngle(d, metadatasScaled, -Math.PI / 2); });
             var metadatasTextArc = d3.svg.arc()
                 .innerRadius(function (d, i) { return inThenOutInner(d, i); })
                 .outerRadius(function (d, i) { return inThenOutOuter(d, i); })
-                .startAngle(function (d) { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
+                .startAngle(function (d) { return slightlyShrunkRadialBitsStartAngle(d, metadatasScaled, -Math.PI / 2); })
                 .endAngle(function (d) { return twiceLongRadialEndAngle(d, metadatasScaled, -Math.PI / 2); });
             var metadatasGroup = svg
                 .append("g")
@@ -889,10 +926,7 @@ var App;
                 .selectAll("g.metadata")
                 .append("path")
                 .attr("d", metadatasArc)
-                .attr("fill", function (d) { return colours.getMetadata(d.id); })
-                .on("click", function (d, i) {
-                alert("the metadata is " + d.name);
-            });
+                .attr("fill", function (d) { return colours.getMetadata(d.id); });
             metadatasGroup
                 .selectAll("g.metadata")
                 .append("path")
@@ -905,10 +939,34 @@ var App;
                 .append("textPath")
                 .attr("xlink:href", function (d) { return "#met" + d.id; })
                 .text(function (d) { return d.name; });
+            var skillCirclesCalculator = new App.SkillCirclesCalculator(cvData);
+            var initialLocation = skillCirclesCalculator.forSelected(App.Selected.initial());
             var skillsGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
                 .attr("class", "circles");
+            skillsGroup
+                .selectAll("g")
+                .data(cvData.skills)
+                .enter()
+                .append("circle")
+                .attr("r", function (d, i) { return initialLocation.forId(d.id).radius; })
+                .attr("cx", function (d, i) { return initialLocation.forId(d.id).x; })
+                .attr("cy", function (d, i) { return initialLocation.forId(d.id).y; });
+            function refresh(selected) {
+                alert("refresh!!");
+                var thing = 0;
+            }
+            metadatasGroup
+                .selectAll("path")
+                .on("click", function (d, i) {
+                refresh(App.Selected.fromMetadata(d.id));
+            });
+            settingsGroup
+                .selectAll("rect")
+                .on("click", function (d, i) {
+                refresh(App.Selected.fromSetting(d.id));
+            });
         };
         return Skills;
     }());

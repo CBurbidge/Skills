@@ -86,10 +86,7 @@ module App
 					var setting = settingsScaled.getForId(d.id);
 					return setting.id * config.settingWidth;
 				})
-				.attr("fill", d => colours.getSetting(d.id))
-				.on("click", (d, i) => {
-					alert( "the setting is " + d.name)
-				});
+				.attr("fill", d => colours.getSetting(d.id));
 				
 			settingsGroup
 				.selectAll("g.setting")
@@ -209,21 +206,39 @@ module App
 				.text((d:any) => d.name);
 				
 			// skills 
+			var skillCirclesCalculator = new SkillCirclesCalculator(cvData); 
+			var initialLocation = skillCirclesCalculator.forSelected(Selected.initial());
 			
 			var skillsGroup = svg
 				.append("g")
 				.attr("transform", moveToMiddle)
 				.attr("class", "circles");
 			
+			skillsGroup
+				.selectAll("g")
+				.data(cvData.skills)
+				.enter()
+				.append("circle")
+				.attr("r", (d, i) => initialLocation.forId(d.id).radius)
+				.attr("cx", (d, i) => initialLocation.forId(d.id).x)
+				.attr("cy", (d, i) => initialLocation.forId(d.id).y)
+				;
 			
 			function refresh(selected:Selected){
-				alert( "the id is " + selected.metadata)
+				alert( "refresh!!");
+				var thing = 0;
 			}
 			
-			metadatasGroup.selectAll("g.metadata").on("click", (d, i) => {
+			metadatasGroup
+				.selectAll("path")
+				.on("click", (d, i) => {
 					refresh(Selected.fromMetadata(d.id));
 				})
-			
+			settingsGroup
+				.selectAll("rect")
+				.on("click", (d, i) => {
+					refresh(Selected.fromSetting(d.id))
+				});
         }
 	}
 }

@@ -28,5 +28,9 @@ module App
 		static fromSetting(id:number){
 			return new Selected(null, id, null);
 		}
+		
+		static initial(){
+			return new Selected(null, null, null);
+		}
 	}
 }
