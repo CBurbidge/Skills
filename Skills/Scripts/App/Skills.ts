@@ -36,9 +36,7 @@ module App
 						
             var svg = divSvg.append("svg")
 				.attr("width", config.width)
-				.attr("height", config.height)
-				//.style("background-color", "green")
-				;
+				.attr("height", config.height);
 			
 			var cvData = CV.CVData.getData();
 			
@@ -105,6 +103,12 @@ module App
 				return radialBitsEndAngle(d, scaled, radialOffset) - halfRadialGap;
 			}
 			
+			function twiceLongRadialEndAngle(d:any, scaled:Scaled, radialOffset){
+				var end = radialBitsEndAngle(d, scaled, radialOffset)
+				var start = radialBitsStartAngle(d, scaled, radialOffset)
+				return (end - start) * 2 + start;
+			}
+			
 			var chosenInnerFunction = circleInnerRadius;
 			var chosenOuterFunction = circleOuterRadius;
 			
@@ -130,13 +134,10 @@ module App
 			var gapBetweenSettings = 2;
 			
 			var settingsGroup = svg
-				// .append("rect")
-				// .attr("width", diameter)
-				// .attr("height", cvData.settings.length * config.settingWidth)
-				// .attr("fill", "silver")
 				.append("g")  
 				.attr("transform", moveToLeftHandSideOfSemiCircle)
 				.attr("class", "settings");
+				
 			settingsGroup
 				.selectAll("g")
 				.data(cvData.settings)
@@ -165,6 +166,7 @@ module App
 				.on("click", (d, i) => {
 					alert( "the setting is " + d.name)
 				});
+				
 			settingsGroup
 				.selectAll("g.setting")
 				.append("text")
@@ -207,7 +209,7 @@ module App
 				.innerRadius((d, i) => { return inThenOutInner(d, i); })
 				.outerRadius((d, i) => { return inThenOutOuter(d, i); })
 				.startAngle((d:any) => { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
-				.endAngle((d:any) => { return chosenEndFunction(d, metadatasScaled, -Math.PI / 2); });
+				.endAngle((d:any) => { return twiceLongRadialEndAngle(d, metadatasScaled, -Math.PI / 2); }); 
 			
 			var metadatasGroup = svg
 				.append("g")

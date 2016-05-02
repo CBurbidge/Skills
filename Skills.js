@@ -791,6 +791,11 @@ var App;
             function slightlyShrunkRadialBitsEndAngle(d, scaled, radialOffset) {
                 return radialBitsEndAngle(d, scaled, radialOffset) - halfRadialGap;
             }
+            function twiceLongRadialEndAngle(d, scaled, radialOffset) {
+                var end = radialBitsEndAngle(d, scaled, radialOffset);
+                var start = radialBitsStartAngle(d, scaled, radialOffset);
+                return (end - start) * 2 + start;
+            }
             var chosenInnerFunction = circleInnerRadius;
             var chosenOuterFunction = circleOuterRadius;
             var chosenStartFunction = slightlyShrunkRadialBitsStartAngle;
@@ -869,7 +874,7 @@ var App;
                 .innerRadius(function (d, i) { return inThenOutInner(d, i); })
                 .outerRadius(function (d, i) { return inThenOutOuter(d, i); })
                 .startAngle(function (d) { return chosenStartFunction(d, metadatasScaled, -Math.PI / 2); })
-                .endAngle(function (d) { return chosenEndFunction(d, metadatasScaled, -Math.PI / 2); });
+                .endAngle(function (d) { return twiceLongRadialEndAngle(d, metadatasScaled, -Math.PI / 2); });
             var metadatasGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
