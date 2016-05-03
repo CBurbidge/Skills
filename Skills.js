@@ -585,6 +585,17 @@ var App;
             var metadatas = this.cVData.metadatas.map(function (m) { return new IdAndActive(m.id, m.id === metadataId); });
             return new IdAndActiveCvData(skills, [], settings, metadatas);
         };
+        IdAndActiveSorter.prototype.forSelected = function (selected) {
+            if (selected.allSelected)
+                return this.forInitial();
+            if (selected.metadataSelected)
+                return this.forMetadata(selected.metadata);
+            if (selected.skillSelected)
+                return this.forSkill(selected.skill);
+            if (selected.settingSelected)
+                return this.forSetting(selected.setting);
+            throw "Aww shiz";
+        };
         return IdAndActiveSorter;
     }());
     App.IdAndActiveSorter = IdAndActiveSorter;
@@ -603,6 +614,15 @@ var App;
             this.settings = settings;
             this.metadatas = metadatas;
         }
+        IdAndActiveCvData.prototype.skillActive = function (id) {
+            return this.skills.filter(function (s) { return s.id === id; })[0].isActive;
+        };
+        IdAndActiveCvData.prototype.settingActive = function (id) {
+            return this.settings.filter(function (s) { return s.id === id; })[0].isActive;
+        };
+        IdAndActiveCvData.prototype.metadataActive = function (id) {
+            return this.metadatas.filter(function (s) { return s.id === id; })[0].isActive;
+        };
         return IdAndActiveCvData;
     }());
     App.IdAndActiveCvData = IdAndActiveCvData;
@@ -694,13 +714,43 @@ var App;
             this.skills = cVData.skills.map(function (s) { return new IdAndColour(s.id, mixer.mix()); });
             this.metadatas = cVData.metadatas.map(function (s) { return new IdAndColour(s.id, mixer.mix()); });
         }
-        Colours.prototype.getMetadata = function (id) {
+        Colours.prototype.getMetadata = function (id, selected, idsAndActives) {
+            if (selected.allSelected || selected.settingSelected || selected.metadataSelected) {
+                return this.getOriginalMetadata(id);
+            }
+            if (idsAndActives.metadataActive(id)) {
+                return this.getOriginalSkill(selected.skill);
+            }
+            return this.getOriginalMetadata(id);
+        };
+        Colours.prototype.getSetting = function (id, selected, idsAndActives) {
+            if (selected.allSelected || selected.metadataSelected || selected.settingSelected) {
+                return this.getOriginalSetting(id);
+            }
+            if (idsAndActives.settingActive(id)) {
+                return this.getOriginalSkill(selected.skill);
+            }
+            this.getOriginalSkill(selected.skill);
+        };
+        Colours.prototype.getSkill = function (id, selected, idsAndActives) {
+            if (selected.allSelected || selected.skillSelected) {
+                return this.getOriginalSkill(id);
+            }
+            if (selected.metadataSelected && idsAndActives.skillActive(id)) {
+                return this.getOriginalMetadata(selected.metadata);
+            }
+            if (selected.settingSelected && idsAndActives.skillActive(id)) {
+                return this.getOriginalSetting(selected.setting);
+            }
+            return this.getOriginalSkill(id);
+        };
+        Colours.prototype.getOriginalMetadata = function (id) {
             return this.metadatas.filter(function (m) { return m.id === id; })[0].colour;
         };
-        Colours.prototype.getSetting = function (id) {
+        Colours.prototype.getOriginalSetting = function (id) {
             return this.settings.filter(function (m) { return m.id === id; })[0].colour;
         };
-        Colours.prototype.getSkill = function (id) {
+        Colours.prototype.getOriginalSkill = function (id) {
             return this.skills.filter(function (m) { return m.id === id; })[0].colour;
         };
         return Colours;
@@ -753,13 +803,15 @@ var App;
             this.cvData = cvData;
             this.forSelected = function (selected) {
                 var that = _this;
+                var distanceBetweenCircles = 10;
+                var circleRadius = 4;
                 return new SkillCircles(_this.cvData.skills.map(function (s) {
                     var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length));
                     var sqrtMod = s.id % sqRootModulus;
-                    var x = sqrtMod * 10;
+                    var x = sqrtMod * distanceBetweenCircles;
                     var propOfTotal = s.id / sqRootModulus;
-                    var y = Math.floor(propOfTotal) * 10 + sqrtMod * 10;
-                    return new SkillCircle(s.id, -x, -y, 5);
+                    var y = Math.floor(propOfTotal) * distanceBetweenCircles;
+                    return new SkillCircle(s.id, -x, -y, circleRadius);
                 }));
             };
         }
@@ -816,6 +868,7 @@ var App;
                 .attr("width", config.width)
                 .attr("height", config.height);
             var cvData = CV.CVData.getData();
+            var idAndActiveSorter = new App.IdAndActiveSorter(cvData);
             var colours = new App.Colours(cvData, new App.ColourRandomiser(config.colours));
             var lengthScaler = new App.LengthScaler(cvData);
             var moveToMiddle = "translate(" + config.width / 2 + "," + (config.semiCircleRadius + config.semiCircleWidth) + ")";
@@ -852,7 +905,7 @@ var App;
                 var setting = settingsScaled.getForId(d.id);
                 return setting.id * config.settingWidth;
             })
-                .attr("fill", function (d) { return colours.getSetting(d.id); });
+                .attr("fill", function (d) { return colours.getSetting(d.id, App.Selected.initial(), idAndActiveSorter.forInitial()); });
             settingsGroup
                 .selectAll("g.setting")
                 .append("text")
@@ -929,7 +982,7 @@ var App;
                 .selectAll("g.metadata")
                 .append("path")
                 .attr("d", metadatasArc)
-                .attr("fill", function (d) { return colours.getMetadata(d.id); });
+                .attr("fill", function (d) { return colours.getMetadata(d.id, App.Selected.initial(), idAndActiveSorter.forInitial()); });
             metadatasGroup
                 .selectAll("g.metadata")
                 .append("path")
@@ -955,10 +1008,16 @@ var App;
                 .append("circle")
                 .attr("r", function (d, i) { return initialLocation.forId(d.id).radius; })
                 .attr("cx", function (d, i) { return initialLocation.forId(d.id).x; })
-                .attr("cy", function (d, i) { return initialLocation.forId(d.id).y; });
+                .attr("cy", function (d, i) { return initialLocation.forId(d.id).y; })
+                .attr("fill", function (d, i) { return colours.getSkill(d.id, App.Selected.initial(), idAndActiveSorter.forInitial()); });
+            var transitionLength = 1000;
             function refresh(selected) {
-                alert("refresh!!");
-                var thing = 0;
+                var idAndActiveCv = idAndActiveSorter.forSelected(selected);
+                skillsGroup
+                    .selectAll("circle")
+                    .transition()
+                    .duration(transitionLength)
+                    .attr("fill", function (d, i) { return colours.getSkill(d.id, selected, idAndActiveCv); });
             }
             metadatasGroup
                 .selectAll("path")

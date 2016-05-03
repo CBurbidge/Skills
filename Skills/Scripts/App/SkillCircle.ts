@@ -7,15 +7,19 @@ module App
 		constructor(public cvData: CV.ICVData){ }
 		
 		public forSelected = (selected:Selected) => {
+			// todo, why do i have to do this in ts?
 			var that = this;
+			
+			var distanceBetweenCircles = 10;
+			var circleRadius = 4;
 			return new SkillCircles(
 				this.cvData.skills.map(s => {
 					var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length)); 
 					var sqrtMod = s.id % sqRootModulus;
-					var x = sqrtMod * 10;
+					var x = sqrtMod * distanceBetweenCircles;
 					var propOfTotal = s.id / sqRootModulus;
-					var y = Math.floor(propOfTotal) * 10 + sqrtMod * 10;
-					return new SkillCircle(s.id, -x, -y, 5);
+					var y = Math.floor(propOfTotal) * distanceBetweenCircles;
+					return new SkillCircle(s.id, -x, -y, circleRadius);
 				})
 			);
 		}

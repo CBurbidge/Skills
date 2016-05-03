@@ -40,6 +40,8 @@ module App
 			
 			var cvData = CV.CVData.getData();
 			
+			var idAndActiveSorter = new IdAndActiveSorter(cvData);
+			
 			var colours = new App.Colours(cvData, new ColourRandomiser(config.colours));
 						
 			var lengthScaler = new App.LengthScaler(cvData);
@@ -86,7 +88,7 @@ module App
 					var setting = settingsScaled.getForId(d.id);
 					return setting.id * config.settingWidth;
 				})
-				.attr("fill", d => colours.getSetting(d.id));
+				.attr("fill", d => colours.getSetting(d.id, Selected.initial(), idAndActiveSorter.forInitial()));
 				
 			settingsGroup
 				.selectAll("g.setting")
@@ -188,7 +190,7 @@ module App
 				.selectAll("g.metadata")
 				.append("path")
 				.attr("d", <any>metadatasArc)
-				.attr("fill", d => colours.getMetadata(d.id));
+				.attr("fill", d => colours.getMetadata(d.id, Selected.initial(), idAndActiveSorter.forInitial()));
 				
 				
 			metadatasGroup
@@ -222,11 +224,18 @@ module App
 				.attr("r", (d, i) => initialLocation.forId(d.id).radius)
 				.attr("cx", (d, i) => initialLocation.forId(d.id).x)
 				.attr("cy", (d, i) => initialLocation.forId(d.id).y)
+				.attr("fill", (d, i) => colours.getSkill(d.id, Selected.initial(), idAndActiveSorter.forInitial()))
 				;
-			
+				
+			var transitionLength = 1000;
 			function refresh(selected:Selected){
-				alert( "refresh!!");
-				var thing = 0;
+				var idAndActiveCv = idAndActiveSorter.forSelected(selected);
+				
+				skillsGroup
+					.selectAll("circle")
+					.transition()
+					.duration(transitionLength)
+					.attr("fill", (d, i) => colours.getSkill(d.id, selected, idAndActiveCv))
 			}
 			
 			metadatasGroup

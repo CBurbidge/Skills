@@ -62,6 +62,14 @@ module App
 			
 			return new IdAndActiveCvData(skills, [], settings, metadatas);
 		}
+		
+		forSelected(selected:Selected):IdAndActiveCvData{
+			if(selected.allSelected) return this.forInitial();
+			if(selected.metadataSelected) return this.forMetadata(selected.metadata);
+			if(selected.skillSelected) return this.forSkill(selected.skill);
+			if(selected.settingSelected) return this.forSetting(selected.setting);
+			throw "Aww shiz";
+		}
 	}
 	
 	export class IdAndActive
@@ -76,5 +84,17 @@ module App
 			public skillUsages: IdAndActive[], 
 			public settings: IdAndActive[], 
 			public metadatas: IdAndActive[] ){}
+		
+		skillActive(id:number){
+			return this.skills.filter(s => s.id === id)[0].isActive;
+		}
+		
+		settingActive(id:number){
+			return this.settings.filter(s => s.id === id)[0].isActive;
+		}
+		
+		metadataActive(id:number){
+			return this.metadatas.filter(s => s.id === id)[0].isActive;
+		}
 	}
 }

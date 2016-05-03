@@ -30,15 +30,55 @@ module App
 			this.metadatas = cVData.metadatas.map(s => new IdAndColour(s.id, mixer.mix()));
 		}
 		
-		getMetadata(id:number):string{
+		getMetadata(id:number, selected:Selected, idsAndActives:IdAndActiveCvData):string{
+			if(selected.allSelected || selected.settingSelected || selected.metadataSelected){
+				return this.getOriginalMetadata(id);
+			}
+			
+			if(idsAndActives.metadataActive(id)){
+				return this.getOriginalSkill(selected.skill);
+			}
+			
+			return this.getOriginalMetadata(id);
+		}
+		
+		getSetting(id:number, selected:Selected, idsAndActives:IdAndActiveCvData):string{
+			if(selected.allSelected || selected.metadataSelected || selected.settingSelected){
+				return this.getOriginalSetting(id);
+			}
+			
+			if(idsAndActives.settingActive(id)){
+				return this.getOriginalSkill(selected.skill);
+			}
+			
+			this.getOriginalSkill(selected.skill);
+		}
+		
+		getSkill(id:number, selected:Selected, idsAndActives:IdAndActiveCvData):string{
+			if(selected.allSelected || selected.skillSelected){
+				return this.getOriginalSkill(id);
+			}
+			
+			if(selected.metadataSelected && idsAndActives.skillActive(id)){
+				return this.getOriginalMetadata(selected.metadata);
+			}
+			
+			if(selected.settingSelected && idsAndActives.skillActive(id)){
+				return this.getOriginalSetting(selected.setting);
+			}
+			
+			return this.getOriginalSkill(id); 
+		}
+		
+		getOriginalMetadata(id:number):string{
 			return this.metadatas.filter(m => m.id === id)[0].colour;
 		}
 		
-		getSetting(id:number):string{
+		getOriginalSetting(id:number):string{
 			return this.settings.filter(m => m.id === id)[0].colour;
 		}
 		
-		getSkill(id:number):string{
+		getOriginalSkill(id:number):string{
 			return this.skills.filter(m => m.id === id)[0].colour;
 		}
 	}
