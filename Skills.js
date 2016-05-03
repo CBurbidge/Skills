@@ -749,17 +749,20 @@ var App;
 (function (App) {
     var SkillCirclesCalculator = (function () {
         function SkillCirclesCalculator(cvData) {
-            this.cvData = cvData;
-        }
-        SkillCirclesCalculator.prototype.forSelected = function (selected) {
             var _this = this;
-            return new SkillCircles(this.cvData.skills.map(function (s) {
-                var sqRootModulus = Math.ceil(_this.cvData.skills.length ^ 0.5);
-                var x = (s.id % sqRootModulus) * 10;
-                var y = Math.floor(s.id / sqRootModulus) + (s.id % sqRootModulus) * 10;
-                return new SkillCircle(s.id, -x, -y, 5);
-            }));
-        };
+            this.cvData = cvData;
+            this.forSelected = function (selected) {
+                var that = _this;
+                return new SkillCircles(_this.cvData.skills.map(function (s) {
+                    var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length));
+                    var sqrtMod = s.id % sqRootModulus;
+                    var x = sqrtMod * 10;
+                    var propOfTotal = s.id / sqRootModulus;
+                    var y = Math.floor(propOfTotal) * 10 + sqrtMod * 10;
+                    return new SkillCircle(s.id, -x, -y, 5);
+                }));
+            };
+        }
         return SkillCirclesCalculator;
     }());
     App.SkillCirclesCalculator = SkillCirclesCalculator;

@@ -7,11 +7,14 @@ module App
 		constructor(public cvData: CV.ICVData){ }
 		
 		public forSelected = (selected:Selected) => {
+			var that = this;
 			return new SkillCircles(
 				this.cvData.skills.map(s => {
-					var sqRootModulus = Math.ceil(this.cvData.skills.length ^ 0.5);
-					var x = (s.id % sqRootModulus) * 10;
-					var y = Math.floor(s.id / sqRootModulus) + (s.id % sqRootModulus) * 10;
+					var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length)); 
+					var sqrtMod = s.id % sqRootModulus;
+					var x = sqrtMod * 10;
+					var propOfTotal = s.id / sqRootModulus;
+					var y = Math.floor(propOfTotal) * 10 + sqrtMod * 10;
 					return new SkillCircle(s.id, -x, -y, 5);
 				})
 			);
