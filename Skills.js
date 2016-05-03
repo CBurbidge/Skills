@@ -803,14 +803,14 @@ var App;
             this.cvData = cvData;
             this.forSelected = function (selected) {
                 var that = _this;
-                var distanceBetweenCircles = 10;
-                var circleRadius = 4;
+                var circleRadius = 20;
+                var distanceBetweenCircles = circleRadius * 2 + 5;
                 return new SkillCircles(_this.cvData.skills.map(function (s) {
                     var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length));
                     var sqrtMod = s.id % sqRootModulus;
-                    var x = sqrtMod * distanceBetweenCircles;
+                    var x = sqrtMod * distanceBetweenCircles - sqRootModulus * 0.5 * distanceBetweenCircles;
                     var propOfTotal = s.id / sqRootModulus;
-                    var y = Math.floor(propOfTotal) * distanceBetweenCircles;
+                    var y = Math.floor(propOfTotal) * distanceBetweenCircles + distanceBetweenCircles;
                     return new SkillCircle(s.id, -x, -y, circleRadius);
                 }));
             };
@@ -981,6 +981,7 @@ var App;
             metadatasGroup
                 .selectAll("g.metadata")
                 .append("path")
+                .attr("class", "metadata-path")
                 .attr("d", metadatasArc)
                 .attr("fill", function (d) { return colours.getMetadata(d.id, App.Selected.initial(), idAndActiveSorter.forInitial()); });
             metadatasGroup
@@ -1010,19 +1011,38 @@ var App;
                 .attr("cx", function (d, i) { return initialLocation.forId(d.id).x; })
                 .attr("cy", function (d, i) { return initialLocation.forId(d.id).y; })
                 .attr("fill", function (d, i) { return colours.getSkill(d.id, App.Selected.initial(), idAndActiveSorter.forInitial()); });
-            var transitionLength = 1000;
+            var transitionLength = 500;
             function refresh(selected) {
                 var idAndActiveCv = idAndActiveSorter.forSelected(selected);
+                var lessOpaque = 0.2;
                 skillsGroup
                     .selectAll("circle")
                     .transition()
                     .duration(transitionLength)
-                    .attr("fill", function (d, i) { return colours.getSkill(d.id, selected, idAndActiveCv); });
+                    .attr("fill", function (d, i) { return colours.getSkill(d.id, selected, idAndActiveCv); })
+                    .attr("opacity", function (d, i) { return idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque; });
+                settingsGroup
+                    .selectAll("rect")
+                    .transition()
+                    .duration(transitionLength)
+                    .attr("fill", function (d, i) { return colours.getSetting(d.id, selected, idAndActiveCv); })
+                    .attr("opacity", function (d, i) { return idAndActiveCv.settingActive(d.id) ? 1.0 : lessOpaque; });
+                metadatasGroup
+                    .selectAll("path.metadata-path")
+                    .transition()
+                    .duration(transitionLength)
+                    .attr("fill", function (d, i) { return colours.getMetadata(d.id, selected, idAndActiveCv); })
+                    .attr("opacity", function (d, i) { return idAndActiveCv.metadataActive(d.id) ? 1.0 : lessOpaque; });
             }
             metadatasGroup
                 .selectAll("path")
                 .on("click", function (d, i) {
                 refresh(App.Selected.fromMetadata(d.id));
+            });
+            skillsGroup
+                .selectAll("circle")
+                .on("click", function (d, i) {
+                refresh(App.Selected.fromSkill(d.id));
             });
             settingsGroup
                 .selectAll("rect")

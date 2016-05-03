@@ -189,6 +189,7 @@ module App
 			metadatasGroup
 				.selectAll("g.metadata")
 				.append("path")
+				.attr("class", "metadata-path")
 				.attr("d", <any>metadatasArc)
 				.attr("fill", d => colours.getMetadata(d.id, Selected.initial(), idAndActiveSorter.forInitial()));
 				
@@ -227,22 +228,48 @@ module App
 				.attr("fill", (d, i) => colours.getSkill(d.id, Selected.initial(), idAndActiveSorter.forInitial()))
 				;
 				
-			var transitionLength = 1000;
+			
+			var transitionLength = 500;
+			
 			function refresh(selected:Selected){
 				var idAndActiveCv = idAndActiveSorter.forSelected(selected);
+				var lessOpaque = 0.2 ;
 				
 				skillsGroup
 					.selectAll("circle")
 					.transition()
 					.duration(transitionLength)
 					.attr("fill", (d, i) => colours.getSkill(d.id, selected, idAndActiveCv))
+					.attr("opacity", (d, i) => idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque)
+				
+				settingsGroup
+					.selectAll("rect")
+					.transition()
+					.duration(transitionLength)
+					.attr("fill", (d, i) => colours.getSetting(d.id, selected, idAndActiveCv))
+					.attr("opacity", (d, i) => idAndActiveCv.settingActive(d.id) ? 1.0 : lessOpaque)
+				
+				metadatasGroup
+					.selectAll("path.metadata-path")
+					.transition()
+					.duration(transitionLength)
+					.attr("fill", (d, i) => colours.getMetadata(d.id, selected, idAndActiveCv))
+					.attr("opacity", (d, i) => idAndActiveCv.metadataActive(d.id) ? 1.0 : lessOpaque)
 			}
+			
 			
 			metadatasGroup
 				.selectAll("path")
 				.on("click", (d, i) => {
 					refresh(Selected.fromMetadata(d.id));
-				})
+				});
+				
+			skillsGroup
+				.selectAll("circle")
+				.on("click", (d, i) => {
+					refresh(Selected.fromSkill(d.id));
+				});
+				
 			settingsGroup
 				.selectAll("rect")
 				.on("click", (d, i) => {

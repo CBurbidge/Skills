@@ -10,15 +10,16 @@ module App
 			// todo, why do i have to do this in ts?
 			var that = this;
 			
-			var distanceBetweenCircles = 10;
-			var circleRadius = 4;
+			var circleRadius = 20;
+			var distanceBetweenCircles = circleRadius * 2 + 5;
+			
 			return new SkillCircles(
 				this.cvData.skills.map(s => {
 					var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length)); 
 					var sqrtMod = s.id % sqRootModulus;
-					var x = sqrtMod * distanceBetweenCircles;
+					var x = sqrtMod * distanceBetweenCircles - sqRootModulus * 0.5 * distanceBetweenCircles;
 					var propOfTotal = s.id / sqRootModulus;
-					var y = Math.floor(propOfTotal) * distanceBetweenCircles;
+					var y = Math.floor(propOfTotal) * distanceBetweenCircles + distanceBetweenCircles;
 					return new SkillCircle(s.id, -x, -y, circleRadius);
 				})
 			);
