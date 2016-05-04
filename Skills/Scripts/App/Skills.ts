@@ -223,8 +223,8 @@ module App
 				.enter()
 				.append("circle")
 				.attr("r", (d, i) => initialLocation.forId(d.id).radius)
-				.attr("cx", (d, i) => initialLocation.forId(d.id).x)
-				.attr("cy", (d, i) => initialLocation.forId(d.id).y)
+				.attr("cx", (d, i) => initialLocation.forId(d.id).cx)
+				.attr("cy", (d, i) => initialLocation.forId(d.id).cy)
 				.attr("fill", (d, i) => colours.getSkill(d.id, Selected.initial(), idAndActiveSorter.forInitial()))
 				;
 				
@@ -241,7 +241,10 @@ module App
 					.duration(transitionLength)
 					.attr("fill", (d, i) => colours.getSkill(d.id, selected, idAndActiveCv))
 					.attr("opacity", (d, i) => idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque)
-				
+					.attr("cy", (d, i) => skillCirclesCalculator.forSelected(selected).forId(d.id).cy)
+					.attr("cx", (d, i) => skillCirclesCalculator.forSelected(selected).forId(d.id).cx)
+					.attr("r", (d, i) => skillCirclesCalculator.forSelected(selected).forId(d.id).radius)
+					
 				settingsGroup
 					.selectAll("rect")
 					.transition()

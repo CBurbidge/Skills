@@ -797,6 +797,72 @@ var App;
 //# sourceMappingURL=Selected.js.map
 var App;
 (function (App) {
+    var Center = (function () {
+        function Center(cx, cy) {
+            this.cx = cx;
+            this.cy = cy;
+        }
+        return Center;
+    }());
+    App.Center = Center;
+    var SelectedSkillInMiddleOfOthers = (function () {
+        function SelectedSkillInMiddleOfOthers(cvData, maxWidth) {
+            this.cvData = cvData;
+            this.maxWidth = maxWidth;
+            this.circleNumberByRadiuses = {
+                3: 7, 4: 10, 5: 13,
+                6: 18, 7: 14, 8: 20
+            };
+        }
+        SelectedSkillInMiddleOfOthers.prototype.getNumberOfRadiusAndRemainder = function (numberOfSkills) {
+            var circles = 1;
+            var currentIndex = 3;
+            while (currentIndex < 100) {
+                if (circles + this.circleNumberByRadiuses[currentIndex] > numberOfSkills) {
+                    var remainder = numberOfSkills - circles;
+                    return {
+                        radii: currentIndex,
+                        remainder: remainder
+                    };
+                }
+                circles += this.circleNumberByRadiuses[currentIndex];
+                currentIndex++;
+            }
+        };
+        SelectedSkillInMiddleOfOthers.prototype.getPositionsForCircles = function (fullRadii, remainder, circleRadius) {
+            var positions = [];
+            for (var index = 3; index < fullRadii; index++) {
+                var circlesInShell = this.circleNumberByRadiuses[index];
+                var radsPerCircle = Math.PI * 2 / circlesInShell;
+                for (var circleNum = 0; circleNum < circlesInShell; circleNum++) {
+                    var rads = circleNum * radsPerCircle;
+                    var cy = Math.sin(rads) * index * circleRadius * 2;
+                    var cx = Math.cos(rads) * index * circleRadius * 2;
+                    positions.push(new Center(cx, cy));
+                }
+            }
+            var lastIndex = fullRadii + 1;
+            var radsPerRemainder = Math.PI * 2 / remainder;
+            for (var circleNum = 0; circleNum < remainder; circleNum++) {
+                var rads = circleNum * radsPerRemainder;
+                var cy = Math.sin(rads) * index * circleRadius * 2;
+                var cx = Math.cos(rads) * index * circleRadius * 2;
+                positions.push(new Center(cx, cy));
+            }
+            return positions;
+        };
+        SelectedSkillInMiddleOfOthers.prototype.forSkill = function (idOfSelected) {
+            var skillRadius = 10;
+            var middleCircle = new SkillCircle(idOfSelected, 0, 0, skillRadius);
+            var radiiAndRemainder = this.getNumberOfRadiusAndRemainder(this.cvData.skills.length);
+            var positions = this.getPositionsForCircles(radiiAndRemainder.radii, radiiAndRemainder.remainder, skillRadius);
+            var skillsOnOutside = this.cvData.skills.filter(function (s) { return s.id !== idOfSelected; });
+            var skillsPositions = skillsOnOutside.map(function (s, i) { return new SkillCircle(s.id, positions[i].cx, positions[i].cy, skillRadius); });
+            return new SkillCircles([middleCircle].concat(skillsPositions));
+        };
+        return SelectedSkillInMiddleOfOthers;
+    }());
+    App.SelectedSkillInMiddleOfOthers = SelectedSkillInMiddleOfOthers;
     var SkillCirclesCalculator = (function () {
         function SkillCirclesCalculator(cvData) {
             var _this = this;
@@ -805,6 +871,10 @@ var App;
                 var that = _this;
                 var circleRadius = 20;
                 var distanceBetweenCircles = circleRadius * 2 + 5;
+                if (selected.skillSelected) {
+                    var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(_this.cvData, 200);
+                    return selectedSkillInMiddle.forSkill(selected.skill);
+                }
                 return new SkillCircles(_this.cvData.skills.map(function (s) {
                     var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length));
                     var sqrtMod = s.id % sqRootModulus;
@@ -829,10 +899,10 @@ var App;
     }());
     App.SkillCircles = SkillCircles;
     var SkillCircle = (function () {
-        function SkillCircle(id, x, y, radius) {
+        function SkillCircle(id, cx, cy, radius) {
             this.id = id;
-            this.x = x;
-            this.y = y;
+            this.cx = cx;
+            this.cy = cy;
             this.radius = radius;
         }
         return SkillCircle;
@@ -1008,8 +1078,8 @@ var App;
                 .enter()
                 .append("circle")
                 .attr("r", function (d, i) { return initialLocation.forId(d.id).radius; })
-                .attr("cx", function (d, i) { return initialLocation.forId(d.id).x; })
-                .attr("cy", function (d, i) { return initialLocation.forId(d.id).y; })
+                .attr("cx", function (d, i) { return initialLocation.forId(d.id).cx; })
+                .attr("cy", function (d, i) { return initialLocation.forId(d.id).cy; })
                 .attr("fill", function (d, i) { return colours.getSkill(d.id, App.Selected.initial(), idAndActiveSorter.forInitial()); });
             var transitionLength = 500;
             function refresh(selected) {
@@ -1020,7 +1090,10 @@ var App;
                     .transition()
                     .duration(transitionLength)
                     .attr("fill", function (d, i) { return colours.getSkill(d.id, selected, idAndActiveCv); })
-                    .attr("opacity", function (d, i) { return idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque; });
+                    .attr("opacity", function (d, i) { return idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque; })
+                    .attr("cy", function (d, i) { return skillCirclesCalculator.forSelected(selected).forId(d.id).cy; })
+                    .attr("cx", function (d, i) { return skillCirclesCalculator.forSelected(selected).forId(d.id).cx; })
+                    .attr("r", function (d, i) { return skillCirclesCalculator.forSelected(selected).forId(d.id).radius; });
                 settingsGroup
                     .selectAll("rect")
                     .transition()

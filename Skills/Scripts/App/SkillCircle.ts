@@ -1,7 +1,72 @@
 ﻿/// <reference path='_references.ts' />
 
 module App
-{
+{	
+	export class Center {
+		constructor(public cx:number, public cy:number) {}
+	}
+	
+	export class SelectedSkillInMiddleOfOthers {
+		constructor(public cvData:CV.ICVData, public maxWidth:number) {}
+		
+		private circleNumberByRadiuses = {
+			3:7, 4:10, 5:13,
+			6:18, 7:14, 8:20
+		}
+		
+		private getNumberOfRadiusAndRemainder(numberOfSkills:number){
+			var circles = 1;
+			var currentIndex = 3;
+			
+			while (currentIndex < 100) {
+				if(circles + this.circleNumberByRadiuses[currentIndex] > numberOfSkills){
+					var remainder = numberOfSkills - circles;
+					return {
+						radii: currentIndex,
+						remainder: remainder
+					}
+				}
+				circles += this.circleNumberByRadiuses[currentIndex];
+				currentIndex++
+			}
+		}
+		
+		private getPositionsForCircles(fullRadii:number, remainder:number, circleRadius:number):Center[]{
+			var positions = [];
+			for (var index = 3; index < fullRadii; index++) {
+				var circlesInShell = this.circleNumberByRadiuses[index];
+				var radsPerCircle = Math.PI * 2 / circlesInShell;
+				
+				for (var circleNum = 0; circleNum < circlesInShell; circleNum++) {
+					var rads = circleNum * radsPerCircle;
+					var cy = Math.sin(rads) * index * circleRadius * 2;
+					var cx = Math.cos(rads) * index * circleRadius * 2;
+					positions.push(new Center(cx, cy)); 
+				}
+			}
+			
+			var lastIndex = fullRadii + 1;
+			var radsPerRemainder = Math.PI * 2 / remainder;
+			for (var circleNum = 0; circleNum < remainder; circleNum++) {
+				var rads = circleNum * radsPerRemainder;
+				var cy = Math.sin(rads) * index * circleRadius * 2;
+				var cx = Math.cos(rads) * index * circleRadius * 2;
+				positions.push(new Center(cx, cy)); 
+			}
+			return positions;
+		}
+		
+		forSkill(idOfSelected:number):SkillCircles{
+			var skillRadius = 10;
+			var middleCircle = new SkillCircle(idOfSelected, 0, 0, skillRadius);
+			var radiiAndRemainder = this.getNumberOfRadiusAndRemainder(this.cvData.skills.length);
+			var positions = this.getPositionsForCircles(radiiAndRemainder.radii, radiiAndRemainder.remainder, skillRadius);
+			var skillsOnOutside = this.cvData.skills.filter(s => s.id !== idOfSelected);
+			var skillsPositions = skillsOnOutside.map((s, i) => new SkillCircle(s.id, positions[i].cx, positions[i].cy, skillRadius));
+			return new SkillCircles([middleCircle].concat(skillsPositions));
+		}
+	}
+	
 	export class SkillCirclesCalculator
 	{
 		constructor(public cvData: CV.ICVData){ }
@@ -12,6 +77,11 @@ module App
 			
 			var circleRadius = 20;
 			var distanceBetweenCircles = circleRadius * 2 + 5;
+			
+			if(selected.skillSelected){
+				var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(this.cvData, 200);
+				return selectedSkillInMiddle.forSkill(selected.skill);
+			}
 			
 			return new SkillCircles(
 				this.cvData.skills.map(s => {
@@ -36,8 +106,8 @@ module App
 	export class SkillCircle {
 		constructor(
 			public id:number,
-			public x:number, 
-			public y:number, 
+			public cx:number, 
+			public cy:number, 
 			public radius:number) {
 			
 		}
