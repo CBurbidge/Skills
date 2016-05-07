@@ -94,13 +94,12 @@ var CV;
         Settings.chesterBurbidgeDotCom = new CV.Setting(Settings.counter++, "Personal website", "My own personal website", new CV.DateRange(new Date(2015, 2), new Date(2015, 4)));
         Settings.codeclub = new CV.Setting(Settings.counter++, "Code club", "Teaching a 'code club' to a local school", new CV.DateRange(new Date(2013, 9), new Date(2014, 4)));
         Settings.fundslibrary = new CV.Setting(Settings.counter++, "Fundslibrary", "Fundslibrary - Junior Developer", new CV.DateRange(new Date(2014, 3), new Date(2015, 2)));
-        Settings.hobby = new CV.Setting(Settings.counter++, "Hobby", "Hobby programming", new CV.DateRange(new Date(2012, 11), new Date(2015, 4)));
+        Settings.hobby = new CV.Setting(-1, "Hobby", "Hobby programming", new CV.DateRange(new Date(2012, 11), new Date(2015, 4)));
         Settings.toplevelComputing = new CV.Setting(Settings.counter++, "Toplevel computing", "Toplevel computing - Graduate Developer", new CV.DateRange(new Date(2013, 3), new Date(2014, 3)));
         Settings.all = [
             Settings.chesterBurbidgeDotCom,
             Settings.codeclub,
             Settings.fundslibrary,
-            Settings.hobby,
             Settings.toplevelComputing
         ];
         return Settings;
@@ -768,6 +767,15 @@ var App;
 //# sourceMappingURL=Colours.js.map
 var App;
 (function (App) {
+    var SelectedLocation = (function () {
+        function SelectedLocation(midMetadataAngle, settingScaleAndLevel, diameter) {
+            this.midMetadataAngle = midMetadataAngle;
+            this.settingScaleAndLevel = settingScaleAndLevel;
+            this.diameter = diameter;
+        }
+        return SelectedLocation;
+    }());
+    App.SelectedLocation = SelectedLocation;
     var Selected = (function () {
         function Selected(skill, setting, metadata) {
             this.skill = skill;
@@ -806,9 +814,8 @@ var App;
     }());
     App.Center = Center;
     var SelectedSkillInMiddleOfOthers = (function () {
-        function SelectedSkillInMiddleOfOthers(cvData, maxWidth) {
+        function SelectedSkillInMiddleOfOthers(cvData) {
             this.cvData = cvData;
-            this.maxWidth = maxWidth;
             this.circleNumberByRadiuses = {
                 3: 7, 4: 10, 5: 13,
                 6: 18, 7: 14, 8: 20
@@ -851,29 +858,46 @@ var App;
             }
             return positions;
         };
-        SelectedSkillInMiddleOfOthers.prototype.forSkill = function (idOfSelected) {
-            var skillRadius = 10;
-            var middleCircle = new SkillCircle(idOfSelected, 0, 0, skillRadius);
+        SelectedSkillInMiddleOfOthers.prototype.forSkill = function (idOfSelected, circleRadius) {
+            var middleCircle = new SkillCircle(idOfSelected, 0, 0, circleRadius);
             var radiiAndRemainder = this.getNumberOfRadiusAndRemainder(this.cvData.skills.length);
-            var positions = this.getPositionsForCircles(radiiAndRemainder.radii, radiiAndRemainder.remainder, skillRadius);
+            var positions = this.getPositionsForCircles(radiiAndRemainder.radii, radiiAndRemainder.remainder, circleRadius);
             var skillsOnOutside = this.cvData.skills.filter(function (s) { return s.id !== idOfSelected; });
-            var skillsPositions = skillsOnOutside.map(function (s, i) { return new SkillCircle(s.id, positions[i].cx, positions[i].cy, skillRadius); });
+            var skillsPositions = skillsOnOutside.map(function (s, i) { return new SkillCircle(s.id, positions[i].cx, positions[i].cy, circleRadius); });
             return new SkillCircles([middleCircle].concat(skillsPositions));
         };
         return SelectedSkillInMiddleOfOthers;
     }());
     App.SelectedSkillInMiddleOfOthers = SelectedSkillInMiddleOfOthers;
+    var SkillsInLineToMiddleOfMetaData = (function () {
+        function SkillsInLineToMiddleOfMetaData(cvData) {
+            this.cvData = cvData;
+        }
+        SkillsInLineToMiddleOfMetaData.prototype.forSkill = function (idsAndActiveCvData, selectedLocation, circleRadius) {
+            var radius = selectedLocation.diameter / 2;
+            var endX = radius * Math.cos(selectedLocation.midMetadataAngle);
+            var endY = radius * Math.sin(selectedLocation.midMetadataAngle);
+            var numberOfTimeCirclesFitOntoLine = radius / circleRadius;
+            return null;
+        };
+        return SkillsInLineToMiddleOfMetaData;
+    }());
+    App.SkillsInLineToMiddleOfMetaData = SkillsInLineToMiddleOfMetaData;
     var SkillCirclesCalculator = (function () {
         function SkillCirclesCalculator(cvData) {
             var _this = this;
             this.cvData = cvData;
-            this.forSelected = function (selected) {
+            this.forSelected = function (selected, selectedLocation, idsAndActiveCvData) {
                 var that = _this;
-                var circleRadius = 20;
+                var circleRadius = 10;
                 var distanceBetweenCircles = circleRadius * 2 + 5;
                 if (selected.skillSelected) {
-                    var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(_this.cvData, 200);
-                    return selectedSkillInMiddle.forSkill(selected.skill);
+                    var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(_this.cvData);
+                    return selectedSkillInMiddle.forSkill(selected.skill, circleRadius);
+                }
+                if (selected.metadataSelected) {
+                    var skillsInLineToMiddleOfMetaData = new SkillsInLineToMiddleOfMetaData(_this.cvData);
+                    return skillsInLineToMiddleOfMetaData.forSkill(idsAndActiveCvData, selectedLocation, circleRadius);
                 }
                 return new SkillCircles(_this.cvData.skills.map(function (s) {
                     var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length));
@@ -1007,37 +1031,45 @@ var App;
                 var multiplyBy = i % 2 === 0 ? 1 : -1;
                 return config.innerRadius + config.semiCircleWidth + multiplyBy * config.semiCircleWidth - textOffset;
             }
-            function radialBitsStartAngle(d, scaled, radialOffset) {
-                var scaledValue = scaled.getForId(d.id);
+            function radialBitsStartAngle(id, scaled, radialOffset) {
+                var scaledValue = scaled.getForId(id);
                 return Math.PI * scaledValue.start + radialOffset;
             }
-            function radialBitsEndAngle(d, scaled, radialOffset) {
-                var scaledValue = scaled.getForId(d.id);
+            function radialBitsEndAngle(id, scaled, radialOffset) {
+                var scaledValue = scaled.getForId(id);
                 return Math.PI * scaledValue.end + radialOffset;
             }
             var halfRadialGap = 0.005;
-            function slightlyShrunkRadialBitsStartAngle(d, scaled, radialOffset) {
-                return radialBitsStartAngle(d, scaled, radialOffset) + halfRadialGap;
+            function slightlyShrunkRadialBitsStartAngle(id, scaled, radialOffset) {
+                return radialBitsStartAngle(id, scaled, radialOffset) + halfRadialGap;
             }
-            function slightlyShrunkRadialBitsEndAngle(d, scaled, radialOffset) {
-                return radialBitsEndAngle(d, scaled, radialOffset) - halfRadialGap;
+            function slightlyShrunkRadialBitsEndAngle(id, scaled, radialOffset) {
+                return radialBitsEndAngle(id, scaled, radialOffset) - halfRadialGap;
             }
-            function twiceLongRadialEndAngle(d, scaled, radialOffset) {
-                var end = radialBitsEndAngle(d, scaled, radialOffset);
-                var start = radialBitsStartAngle(d, scaled, radialOffset);
+            function twiceLongRadialEndAngle(id, scaled, radialOffset) {
+                var end = radialBitsEndAngle(id, scaled, radialOffset);
+                var start = radialBitsStartAngle(id, scaled, radialOffset);
                 return (end - start) * 2 + start;
             }
             var metadatasScaled = lengthScaler.getMetadatas();
+            function getMetadataStartAngle(id) {
+                var scaled = metadatasScaled;
+                return slightlyShrunkRadialBitsStartAngle(id, scaled, -Math.PI / 2);
+            }
+            function getMetadataEndAngle(id) {
+                var scaled = metadatasScaled;
+                return slightlyShrunkRadialBitsEndAngle(id, scaled, -Math.PI / 2);
+            }
             var metadatasArc = d3.svg.arc()
                 .innerRadius(function (d, i) { return config.innerRadius; })
                 .outerRadius(function (d, i) { return config.innerRadius + config.semiCircleWidth; })
-                .startAngle(function (d) { return slightlyShrunkRadialBitsStartAngle(d, metadatasScaled, -Math.PI / 2); })
-                .endAngle(function (d) { return slightlyShrunkRadialBitsEndAngle(d, metadatasScaled, -Math.PI / 2); });
+                .startAngle(function (d) { return getMetadataStartAngle(d.id); })
+                .endAngle(function (d) { return getMetadataEndAngle(d.id); });
             var metadatasTextArc = d3.svg.arc()
                 .innerRadius(function (d, i) { return inThenOutInner(d, i); })
                 .outerRadius(function (d, i) { return inThenOutOuter(d, i); })
-                .startAngle(function (d) { return slightlyShrunkRadialBitsStartAngle(d, metadatasScaled, -Math.PI / 2); })
-                .endAngle(function (d) { return twiceLongRadialEndAngle(d, metadatasScaled, -Math.PI / 2); });
+                .startAngle(function (d) { return getMetadataStartAngle(d.id); })
+                .endAngle(function (d) { return getMetadataEndAngle(d.id); });
             var metadatasGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
@@ -1067,7 +1099,7 @@ var App;
                 .attr("xlink:href", function (d) { return "#met" + d.id; })
                 .text(function (d) { return d.name; });
             var skillCirclesCalculator = new App.SkillCirclesCalculator(cvData);
-            var initialLocation = skillCirclesCalculator.forSelected(App.Selected.initial());
+            var initialLocation = skillCirclesCalculator.forSelected(App.Selected.initial(), null, null);
             var skillsGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
@@ -1085,15 +1117,28 @@ var App;
             function refresh(selected) {
                 var idAndActiveCv = idAndActiveSorter.forSelected(selected);
                 var lessOpaque = 0.2;
+                var metaDataMidAngle = null;
+                if (selected.metadataSelected) {
+                    var start = getMetadataStartAngle(selected.metadata);
+                    var end = getMetadataEndAngle(selected.metadata);
+                    var diff = end - start;
+                    metaDataMidAngle = start + diff / 2;
+                }
+                var settingRange = null;
+                if (selected.settingSelected) {
+                    var scaled = settingsScaled.getForId(selected.setting);
+                    settingRange = new App.ScaleAndLevel(selected.setting, diameter * scaled.start, diameter * scaled.end, null);
+                }
+                var selectedLocation = new App.SelectedLocation(metaDataMidAngle, settingRange, diameter);
                 skillsGroup
                     .selectAll("circle")
                     .transition()
                     .duration(transitionLength)
                     .attr("fill", function (d, i) { return colours.getSkill(d.id, selected, idAndActiveCv); })
                     .attr("opacity", function (d, i) { return idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque; })
-                    .attr("cy", function (d, i) { return skillCirclesCalculator.forSelected(selected).forId(d.id).cy; })
-                    .attr("cx", function (d, i) { return skillCirclesCalculator.forSelected(selected).forId(d.id).cx; })
-                    .attr("r", function (d, i) { return skillCirclesCalculator.forSelected(selected).forId(d.id).radius; });
+                    .attr("cy", function (d, i) { return skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cy; })
+                    .attr("cx", function (d, i) { return skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cx; })
+                    .attr("r", function (d, i) { return skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).radius; });
                 settingsGroup
                     .selectAll("rect")
                     .transition()
