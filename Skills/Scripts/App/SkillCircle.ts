@@ -7,7 +7,7 @@ module App
 	}
 	
 	export class SelectedSkillInMiddleOfOthers {
-		constructor(public cvData:CV.ICVData, public maxWidth:number) {}
+		constructor(public cvData:CV.ICVData) {}
 		
 		private circleNumberByRadiuses = {
 			3:7, 4:10, 5:13,
@@ -56,14 +56,29 @@ module App
 			return positions;
 		}
 		
-		forSkill(idOfSelected:number):SkillCircles{
-			var skillRadius = 10;
-			var middleCircle = new SkillCircle(idOfSelected, 0, 0, skillRadius);
+		forSkill(idOfSelected:number, circleRadius:number):SkillCircles{
+			var middleCircle = new SkillCircle(idOfSelected, 0, 0, circleRadius);
 			var radiiAndRemainder = this.getNumberOfRadiusAndRemainder(this.cvData.skills.length);
-			var positions = this.getPositionsForCircles(radiiAndRemainder.radii, radiiAndRemainder.remainder, skillRadius);
+			var positions = this.getPositionsForCircles(radiiAndRemainder.radii, radiiAndRemainder.remainder, circleRadius);
 			var skillsOnOutside = this.cvData.skills.filter(s => s.id !== idOfSelected);
-			var skillsPositions = skillsOnOutside.map((s, i) => new SkillCircle(s.id, positions[i].cx, positions[i].cy, skillRadius));
+			var skillsPositions = skillsOnOutside.map((s, i) => new SkillCircle(s.id, positions[i].cx, positions[i].cy, circleRadius));
 			return new SkillCircles([middleCircle].concat(skillsPositions));
+		}
+	}
+	
+	export class SkillsInLineToMiddleOfMetaData
+	{
+		constructor(public cvData:CV.ICVData){}
+		
+		forSkill(idsAndActiveCvData:IdAndActiveCvData, selectedLocation:SelectedLocation, circleRadius:number):SkillCircles
+		{
+			var radius = selectedLocation.diameter / 2
+			var endX = radius * Math.cos(selectedLocation.midMetadataAngle);
+			var endY = radius * Math.sin(selectedLocation.midMetadataAngle);
+			
+			var numberOfTimeCirclesFitOntoLine = radius / circleRadius; 
+			
+			return null;
 		}
 	}
 	
@@ -71,16 +86,21 @@ module App
 	{
 		constructor(public cvData: CV.ICVData){ }
 		
-		public forSelected = (selected:Selected) => {
+		public forSelected = (selected:Selected, selectedLocation:SelectedLocation, idsAndActiveCvData:IdAndActiveCvData):SkillCircles => {
 			// todo, why do i have to do this in ts?
 			var that = this;
 			
-			var circleRadius = 20;
+			var circleRadius = 10;
 			var distanceBetweenCircles = circleRadius * 2 + 5;
 			
 			if(selected.skillSelected){
-				var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(this.cvData, 200);
-				return selectedSkillInMiddle.forSkill(selected.skill);
+				var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(this.cvData);
+				return selectedSkillInMiddle.forSkill(selected.skill, circleRadius);
+			}
+			
+			if(selected.metadataSelected){
+				var skillsInLineToMiddleOfMetaData = new SkillsInLineToMiddleOfMetaData(this.cvData);
+				return skillsInLineToMiddleOfMetaData.forSkill(idsAndActiveCvData, selectedLocation, circleRadius);
 			}
 			
 			return new SkillCircles(

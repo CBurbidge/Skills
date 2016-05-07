@@ -132,47 +132,56 @@ module App
 				return config.innerRadius + config.semiCircleWidth + multiplyBy * config.semiCircleWidth - textOffset;
 			}
 			
-			function radialBitsStartAngle(d:any, scaled:Scaled, radialOffset){
-				var scaledValue = scaled.getForId(d.id);
+			function radialBitsStartAngle(id:number, scaled:Scaled, radialOffset){
+				var scaledValue = scaled.getForId(id);
 				return Math.PI * scaledValue.start + radialOffset;
 			}
 			
-			function radialBitsEndAngle(d:any, scaled:Scaled, radialOffset){
-				var scaledValue = scaled.getForId(d.id);
+			function radialBitsEndAngle(id:number, scaled:Scaled, radialOffset){
+				var scaledValue = scaled.getForId(id);
 				return Math.PI * scaledValue.end + radialOffset;
 			}
 			
 			var halfRadialGap = 0.005;
-			function slightlyShrunkRadialBitsStartAngle(d:any, scaled:Scaled, radialOffset){
-				return radialBitsStartAngle(d, scaled, radialOffset) + halfRadialGap;
+			function slightlyShrunkRadialBitsStartAngle(id:number, scaled:Scaled, radialOffset){
+				return radialBitsStartAngle(id, scaled, radialOffset) + halfRadialGap;
 			}
 			
-			function slightlyShrunkRadialBitsEndAngle(d:any, scaled:Scaled, radialOffset){
-				return radialBitsEndAngle(d, scaled, radialOffset) - halfRadialGap;
+			function slightlyShrunkRadialBitsEndAngle(id:number, scaled:Scaled, radialOffset){
+				return radialBitsEndAngle(id, scaled, radialOffset) - halfRadialGap;
 			}
 			
-			function twiceLongRadialEndAngle(d:any, scaled:Scaled, radialOffset){
-				var end = radialBitsEndAngle(d, scaled, radialOffset)
-				var start = radialBitsStartAngle(d, scaled, radialOffset)
+			function twiceLongRadialEndAngle(id:number, scaled:Scaled, radialOffset){
+				var end = radialBitsEndAngle(id, scaled, radialOffset)
+				var start = radialBitsStartAngle(id, scaled, radialOffset)
 				return (end - start) * 2 + start;
 			}
-			
 			
 			// Metadatas
 			
 			var metadatasScaled = lengthScaler.getMetadatas();
 			
+			function getMetadataStartAngle(id:number){
+				var scaled = metadatasScaled;
+				return slightlyShrunkRadialBitsStartAngle(id, scaled, -Math.PI / 2);
+			}
+			
+			function getMetadataEndAngle(id:number){
+				var scaled = metadatasScaled;
+				return slightlyShrunkRadialBitsEndAngle(id, scaled, -Math.PI / 2);
+			}
+			
 			var metadatasArc = d3.svg.arc()
 				.innerRadius((d, i) => config.innerRadius)
 				.outerRadius((d, i) => { return config.innerRadius + config.semiCircleWidth; })
-				.startAngle((d:any) => { return slightlyShrunkRadialBitsStartAngle(d, metadatasScaled, -Math.PI / 2); })
-				.endAngle((d:any) => { return slightlyShrunkRadialBitsEndAngle(d, metadatasScaled, -Math.PI / 2); });
+				.startAngle((d:any) => { return getMetadataStartAngle(d.id); })
+				.endAngle((d:any) => { return getMetadataEndAngle(d.id); });
 			
 			var metadatasTextArc = d3.svg.arc()
 				.innerRadius((d, i) => { return inThenOutInner(d, i); })
 				.outerRadius((d, i) => { return inThenOutOuter(d, i); })
-				.startAngle((d:any) => { return slightlyShrunkRadialBitsStartAngle(d, metadatasScaled, -Math.PI / 2); })
-				.endAngle((d:any) => { return twiceLongRadialEndAngle(d, metadatasScaled, -Math.PI / 2); }); 
+				.startAngle((d:any) => { return getMetadataStartAngle(d.id); })
+				.endAngle((d:any) => { return getMetadataEndAngle(d.id); }); 
 			
 			var metadatasGroup = svg
 				.append("g")
@@ -210,7 +219,7 @@ module App
 				
 			// skills 
 			var skillCirclesCalculator = new SkillCirclesCalculator(cvData); 
-			var initialLocation = skillCirclesCalculator.forSelected(Selected.initial());
+			var initialLocation = skillCirclesCalculator.forSelected(Selected.initial(), null, null);
 			
 			var skillsGroup = svg
 				.append("g")
@@ -235,15 +244,33 @@ module App
 				var idAndActiveCv = idAndActiveSorter.forSelected(selected);
 				var lessOpaque = 0.2 ;
 				
+				var metaDataMidAngle = null;
+				if(selected.metadataSelected){
+					var start = getMetadataStartAngle(selected.metadata);
+					var end = getMetadataEndAngle(selected.metadata);
+					var diff = end - start;
+					metaDataMidAngle = start + diff / 2;
+				}
+				
+				var settingRange = null;
+				if(selected.settingSelected){
+					var scaled = settingsScaled.getForId(selected.setting);
+					settingRange = new ScaleAndLevel(selected.setting, diameter * scaled.start, diameter * scaled.end, null);
+				}
+				
+				var selectedLocation = new SelectedLocation(
+					metaDataMidAngle, settingRange, diameter
+				);
+				
 				skillsGroup
 					.selectAll("circle")
 					.transition()
 					.duration(transitionLength)
 					.attr("fill", (d, i) => colours.getSkill(d.id, selected, idAndActiveCv))
 					.attr("opacity", (d, i) => idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque)
-					.attr("cy", (d, i) => skillCirclesCalculator.forSelected(selected).forId(d.id).cy)
-					.attr("cx", (d, i) => skillCirclesCalculator.forSelected(selected).forId(d.id).cx)
-					.attr("r", (d, i) => skillCirclesCalculator.forSelected(selected).forId(d.id).radius)
+					.attr("cy", (d, i) => skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cy)
+					.attr("cx", (d, i) => skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cx)
+					.attr("r", (d, i) => skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).radius)
 					
 				settingsGroup
 					.selectAll("rect")

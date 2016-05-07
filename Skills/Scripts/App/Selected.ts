@@ -2,6 +2,15 @@
 
 module App
 {
+	export class SelectedLocation
+	{
+		constructor(
+			public midMetadataAngle:number,
+			public settingScaleAndLevel:ScaleAndLevel,
+			public diameter:number){}
+			
+	}
+	
 	export class Selected
 	{
 		constructor(public skill:number, public setting:number, public metadata:number)

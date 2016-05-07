@@ -23,7 +23,7 @@ module CV
 			new DateRange(new Date(2014, 3), new Date(2015, 2)));
 
 		static hobby = new Setting(
-			Settings.counter++,
+			-1,//Settings.counter++,
 			"Hobby",
 			"Hobby programming",
 			new DateRange(new Date(2012, 11), new Date(2015, 4)));
@@ -39,7 +39,7 @@ module CV
 			Settings.chesterBurbidgeDotCom,
 			Settings.codeclub,
 			Settings.fundslibrary,
-			Settings.hobby,
+			// Settings.hobby,
 			Settings.toplevelComputing
 		];
 	}
