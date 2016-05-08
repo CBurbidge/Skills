@@ -7,7 +7,7 @@ module App
 	}
 	
 	export class SelectedSkillInMiddleOfOthers {
-		constructor(public cvData:CV.ICVData) {}
+		constructor(public cvData:CV.ICVData, public offset:Center) {}
 		
 		private circleNumberByRadiuses = {
 			3:7, 4:10, 5:13,
@@ -53,11 +53,13 @@ module App
 				var cx = Math.cos(rads) * index * circleRadius * 2;
 				positions.push(new Center(cx, cy)); 
 			}
-			return positions;
+			return positions.map(p => new Center(
+				p.cx + this.offset.cx,
+				p.cy + this.offset.cy));
 		}
 		
 		forSkill(idOfSelected:number, circleRadius:number):SkillCircles{
-			var middleCircle = new SkillCircle(idOfSelected, 0, 0, circleRadius);
+			var middleCircle = new SkillCircle(idOfSelected, this.offset.cx, this.offset.cy, circleRadius);
 			var radiiAndRemainder = this.getNumberOfRadiusAndRemainder(this.cvData.skills.length);
 			var positions = this.getPositionsForCircles(radiiAndRemainder.radii, radiiAndRemainder.remainder, circleRadius);
 			var skillsOnOutside = this.cvData.skills.filter(s => s.id !== idOfSelected);
@@ -112,7 +114,9 @@ module App
 			var distanceBetweenCircles = circleRadius * 2 + 5;
 			
 			if(selected.skillSelected){
-				var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(this.cvData);
+				var halfRadiusUp = -1 * (selectedLocation.diameter / 2 / 2);
+				var offset = new Center(0, halfRadiusUp); 
+				var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(this.cvData, offset);
 				return selectedSkillInMiddle.forSkill(selected.skill, circleRadius);
 			}
 			

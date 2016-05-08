@@ -265,7 +265,7 @@ module App
 				}
 				
 				var selectedLocation = new SelectedLocation(
-					metaDataMidAngle, settingRange, diameter
+					metaDataMidAngle, settingRange, (diameter - 2 * config.settingWidth)
 				);
 				
 				skillsGroup

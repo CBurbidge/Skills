@@ -814,8 +814,9 @@ var App;
     }());
     App.Center = Center;
     var SelectedSkillInMiddleOfOthers = (function () {
-        function SelectedSkillInMiddleOfOthers(cvData) {
+        function SelectedSkillInMiddleOfOthers(cvData, offset) {
             this.cvData = cvData;
+            this.offset = offset;
             this.circleNumberByRadiuses = {
                 3: 7, 4: 10, 5: 13,
                 6: 18, 7: 14, 8: 20
@@ -837,6 +838,7 @@ var App;
             }
         };
         SelectedSkillInMiddleOfOthers.prototype.getPositionsForCircles = function (fullRadii, remainder, circleRadius) {
+            var _this = this;
             var positions = [];
             for (var index = 3; index < fullRadii; index++) {
                 var circlesInShell = this.circleNumberByRadiuses[index];
@@ -856,10 +858,10 @@ var App;
                 var cx = Math.cos(rads) * index * circleRadius * 2;
                 positions.push(new Center(cx, cy));
             }
-            return positions;
+            return positions.map(function (p) { return new Center(p.cx + _this.offset.cx, p.cy + _this.offset.cy); });
         };
         SelectedSkillInMiddleOfOthers.prototype.forSkill = function (idOfSelected, circleRadius) {
-            var middleCircle = new SkillCircle(idOfSelected, 0, 0, circleRadius);
+            var middleCircle = new SkillCircle(idOfSelected, this.offset.cx, this.offset.cy, circleRadius);
             var radiiAndRemainder = this.getNumberOfRadiusAndRemainder(this.cvData.skills.length);
             var positions = this.getPositionsForCircles(radiiAndRemainder.radii, radiiAndRemainder.remainder, circleRadius);
             var skillsOnOutside = this.cvData.skills.filter(function (s) { return s.id !== idOfSelected; });
@@ -909,7 +911,9 @@ var App;
                 var circleRadius = 10;
                 var distanceBetweenCircles = circleRadius * 2 + 5;
                 if (selected.skillSelected) {
-                    var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(_this.cvData);
+                    var halfRadiusUp = -1 * (selectedLocation.diameter / 2 / 2);
+                    var offset = new Center(0, halfRadiusUp);
+                    var selectedSkillInMiddle = new SelectedSkillInMiddleOfOthers(_this.cvData, offset);
                     return selectedSkillInMiddle.forSkill(selected.skill, circleRadius);
                 }
                 if (selected.metadataSelected) {
@@ -1151,7 +1155,7 @@ var App;
                     var scaled = settingsScaled.getForId(selected.setting);
                     settingRange = new App.ScaleAndLevel(selected.setting, diameter * scaled.start, diameter * scaled.end, null);
                 }
-                var selectedLocation = new App.SelectedLocation(metaDataMidAngle, settingRange, diameter);
+                var selectedLocation = new App.SelectedLocation(metaDataMidAngle, settingRange, (diameter - 2 * config.settingWidth));
                 skillsGroup
                     .selectAll("circle")
                     .transition()
