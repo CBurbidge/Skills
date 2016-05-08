@@ -124,12 +124,9 @@ module App
 					var cy = endY * position.scaled;
 					return new SkillCircle(value.id, cx, cy, circleRadius);
 			});
-			var inactiveCircles = inactiveSkills.map(
-				(value, index, arr) => {
-					var cx = index * circleRadius;
-					var cy = index * circleRadius;
-					return new SkillCircle(value.id, cx, cy, circleRadius)
-				});
+			
+			var random = new RandomlySpreadInSemiCircle()
+			var inactiveCircles = random.forSkills(inactiveSkills, selectedLocation, circleRadius);
 			
 			return new SkillCircles(activeCircles.concat(inactiveCircles));
 		}
@@ -137,9 +134,39 @@ module App
 	
 	export class SkillsAlongSettings
 	{
-		forSkills(idsAndActive:IdAndActiveCvData, selectedLocation:SelectedLocation): SkillCircles
+		forSkills(idsAndActive:IdAndActiveCvData, selectedLocation:SelectedLocation, circleRadius:number, offset:Center): SkillCircles
 		{
-			return null;
+			var selectedSettingId = idsAndActive.settings.filter(m => m.isActive)[0].id;
+			var startAndWidth = selectedLocation.settingStartAndWidths.filter(s => s.id === selectedSettingId)[0];
+			var width = startAndWidth.width;
+			var scaler = new MultipleLineScaler(circleRadius, width);
+			var activeSkills = idsAndActive.skills.filter(s => s.isActive);
+			var inactiveSkills = idsAndActive.skills.filter(s => s.isActive === false);
+			var scaledPositions = scaler.scale(activeSkills);
+			var activeCircles = scaledPositions.positions.map(
+				s => {
+					var cx = startAndWidth.start + s.scaled * width + offset.cx;
+					var cy = circleRadius * 2 * s.lineNumber + offset.cy;
+					return new SkillCircle(s.id, cx, cy, circleRadius);
+				});
+			var randomSpread = new RandomlySpreadInSemiCircle();
+			var inactiveCircles =  randomSpread.forSkills(inactiveSkills, selectedLocation, circleRadius);
+			return new SkillCircles(activeCircles.concat(inactiveCircles));
+		}
+	}
+	
+	export class RandomlySpreadInSemiCircle
+	{
+		forSkills(idsAndActive:IdAndActive[], selectedLocation:SelectedLocation, circleRadius:number)
+		{
+			return idsAndActive.map(
+				(value, index, arr) => {
+					var randomAngle = Math.PI * Math.random() - (Math.PI );
+					var randomDist = Math.random() * (selectedLocation.diameter / 2);
+					var cx = Math.cos(randomAngle) * randomDist;
+					var cy = Math.sin(randomAngle) * randomDist;
+					return new SkillCircle(value.id, cx, cy, circleRadius);
+				});
 		}
 	}
 	
@@ -168,7 +195,8 @@ module App
 			
 			if(selected.settingSelected){
 				var skillsAlongSettings = new SkillsAlongSettings();
-				return skillsAlongSettings.forSkills(idsAndActiveCvData, selectedLocation);
+				var offset = new Center(-1 * selectedLocation.diameter / 2, 0)
+				return skillsAlongSettings.forSkills(idsAndActiveCvData, selectedLocation, circleRadius, offset);
 			}
 			
 			return new SkillCircles(

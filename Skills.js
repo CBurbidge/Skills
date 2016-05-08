@@ -938,11 +938,8 @@ var App;
                 var cy = endY * position.scaled;
                 return new SkillCircle(value.id, cx, cy, circleRadius);
             });
-            var inactiveCircles = inactiveSkills.map(function (value, index, arr) {
-                var cx = index * circleRadius;
-                var cy = index * circleRadius;
-                return new SkillCircle(value.id, cx, cy, circleRadius);
-            });
+            var random = new RandomlySpreadInSemiCircle();
+            var inactiveCircles = random.forSkills(inactiveSkills, selectedLocation, circleRadius);
             return new SkillCircles(activeCircles.concat(inactiveCircles));
         };
         return SkillsInLineToMiddleOfMetaData;
@@ -951,12 +948,41 @@ var App;
     var SkillsAlongSettings = (function () {
         function SkillsAlongSettings() {
         }
-        SkillsAlongSettings.prototype.forSkills = function (idsAndActive, selectedLocation) {
-            return null;
+        SkillsAlongSettings.prototype.forSkills = function (idsAndActive, selectedLocation, circleRadius, offset) {
+            var selectedSettingId = idsAndActive.settings.filter(function (m) { return m.isActive; })[0].id;
+            var startAndWidth = selectedLocation.settingStartAndWidths.filter(function (s) { return s.id === selectedSettingId; })[0];
+            var width = startAndWidth.width;
+            var scaler = new MultipleLineScaler(circleRadius, width);
+            var activeSkills = idsAndActive.skills.filter(function (s) { return s.isActive; });
+            var inactiveSkills = idsAndActive.skills.filter(function (s) { return s.isActive === false; });
+            var scaledPositions = scaler.scale(activeSkills);
+            var activeCircles = scaledPositions.positions.map(function (s) {
+                var cx = startAndWidth.start + s.scaled * width + offset.cx;
+                var cy = circleRadius * 2 * s.lineNumber + offset.cy;
+                return new SkillCircle(s.id, cx, cy, circleRadius);
+            });
+            var randomSpread = new RandomlySpreadInSemiCircle();
+            var inactiveCircles = randomSpread.forSkills(inactiveSkills, selectedLocation, circleRadius);
+            return new SkillCircles(activeCircles.concat(inactiveCircles));
         };
         return SkillsAlongSettings;
     }());
     App.SkillsAlongSettings = SkillsAlongSettings;
+    var RandomlySpreadInSemiCircle = (function () {
+        function RandomlySpreadInSemiCircle() {
+        }
+        RandomlySpreadInSemiCircle.prototype.forSkills = function (idsAndActive, selectedLocation, circleRadius) {
+            return idsAndActive.map(function (value, index, arr) {
+                var randomAngle = Math.PI * Math.random() - (Math.PI);
+                var randomDist = Math.random() * (selectedLocation.diameter / 2);
+                var cx = Math.cos(randomAngle) * randomDist;
+                var cy = Math.sin(randomAngle) * randomDist;
+                return new SkillCircle(value.id, cx, cy, circleRadius);
+            });
+        };
+        return RandomlySpreadInSemiCircle;
+    }());
+    App.RandomlySpreadInSemiCircle = RandomlySpreadInSemiCircle;
     var SkillCirclesCalculator = (function () {
         function SkillCirclesCalculator(cvData) {
             var _this = this;
@@ -977,7 +1003,8 @@ var App;
                 }
                 if (selected.settingSelected) {
                     var skillsAlongSettings = new SkillsAlongSettings();
-                    return skillsAlongSettings.forSkills(idsAndActiveCvData, selectedLocation);
+                    var offset = new Center(-1 * selectedLocation.diameter / 2, 0);
+                    return skillsAlongSettings.forSkills(idsAndActiveCvData, selectedLocation, circleRadius, offset);
                 }
                 return new SkillCircles(_this.cvData.skills.map(function (s) {
                     var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length));
@@ -1047,20 +1074,20 @@ var App;
             var lengthScaler = new App.LengthScaler(cvData);
             var moveToMiddle = "translate(" + config.width / 2 + "," + (config.semiCircleRadius + config.semiCircleWidth) + ")";
             var settingsScaled = lengthScaler.getSettings();
-            var moveToLeftHandSideOfSemiCircle = "translate(" +
-                ((config.width / 2) - config.innerRadius - config.semiCircleWidth).toString() +
-                "," + (config.semiCircleRadius + (config.settingWidth * 2)) + ")";
-            var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
+            var settingsXStart = config.semiCircleWidth * 2;
+            var settingsYStart = config.semiCircleRadius + (config.settingWidth * 3);
+            var moveToLeftHandSideOfSemiCircle = "translate(" + settingsXStart + "," + settingsYStart + ")";
+            var settingsLength = config.innerRadius * 2;
             var gapBetweenSettings = 2;
             function getSettingStart(id) {
                 var scaled = settingsScaled;
                 var setting = scaled.getForId(id);
-                return setting.start * diameter;
+                return setting.start * settingsLength;
             }
             function getSettingWidth(id) {
                 var scaled = settingsScaled;
                 var setting = scaled.getForId(id);
-                var width = (setting.end - setting.start) * diameter;
+                var width = (setting.end - setting.start) * settingsLength;
                 return width;
             }
             var settingsGroup = svg
@@ -1098,7 +1125,7 @@ var App;
             var maxDate = App.LengthScaler.getMaxDate(cvData.settings);
             var x = d3.time.scale()
                 .domain([minDate, d3.time.month.offset(maxDate, 1)])
-                .rangeRound([0, diameter]);
+                .rangeRound([0, settingsLength]);
             var showTickEveryMonths = 4;
             var xAxis = d3.svg.axis()
                 .scale(x)
@@ -1107,9 +1134,10 @@ var App;
                 .tickFormat(d3.time.format('%m/%Y'))
                 .tickSize(3)
                 .tickPadding(5);
+            var timeScaleTranslate = 'translate(' + settingsXStart + ', ' + (settingsYStart - config.settingWidth) + ')';
             svg.append('g')
                 .attr('class', 'x axis')
-                .attr('transform', 'translate(' + config.semiCircleWidth + ', ' + (diameter / 2 + config.settingWidth) + ')')
+                .attr('transform', timeScaleTranslate)
                 .call(xAxis);
             var textOffset = config.semiCircleWidth * 0.7;
             function inThenOutInner(d, i) {
@@ -1215,15 +1243,15 @@ var App;
                     var start = getMetadataStartAngle(selected.metadata);
                     var end = getMetadataEndAngle(selected.metadata);
                     var diff = end - start;
-                    metaDataMidAngle = start + diff / 2;
+                    metaDataMidAngle = start + (diff / 2);
                     metaDataMidAngle -= Math.PI / 2;
                 }
                 var settingRange = null;
                 if (selected.settingSelected) {
                     var scaled = settingsScaled.getForId(selected.setting);
-                    settingRange = new App.ScaleAndLevel(selected.setting, diameter * scaled.start, diameter * scaled.end, null);
+                    settingRange = new App.ScaleAndLevel(selected.setting, settingsLength * scaled.start, settingsLength * scaled.end, null);
                 }
-                var selectedLocation = new App.SelectedLocation(metaDataMidAngle, settingRange, (diameter - 2 * config.settingWidth), settingsAndStartWidth);
+                var selectedLocation = new App.SelectedLocation(metaDataMidAngle, settingRange, config.innerRadius * 2, settingsAndStartWidth);
                 skillsGroup
                     .selectAll("circle")
                     .transition()

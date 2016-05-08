@@ -52,23 +52,24 @@ module App
 			
 			var settingsScaled = lengthScaler.getSettings();
 			
-			var moveToLeftHandSideOfSemiCircle = "translate(" + 
-				((config.width / 2) - config.innerRadius - config.semiCircleWidth).toString() + 
-				"," + (config.semiCircleRadius + (config.settingWidth * 2)) + ")"
+			var settingsXStart = config.semiCircleWidth * 2;
+			var settingsYStart = config.semiCircleRadius + (config.settingWidth * 3);
+			var moveToLeftHandSideOfSemiCircle = "translate(" + settingsXStart + "," + settingsYStart + ")";
 			
-			var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
+			var settingsLength = config.innerRadius * 2;
+			// var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
 			var gapBetweenSettings = 2;
 			
 			function getSettingStart(id:number){
 				var scaled = settingsScaled;
 				var setting = scaled.getForId(id);
-				return setting.start * diameter;
+				return setting.start * settingsLength;
 			}
 			
 			function getSettingWidth(id:number){
 				var scaled = settingsScaled;
 				var setting = scaled.getForId(id);
-				var width = (setting.end - setting.start) * diameter;
+				var width = (setting.end - setting.start) * settingsLength;
 				return width;
 			}
 			
@@ -118,7 +119,7 @@ module App
 			
 			var x = d3.time.scale()
 				.domain([minDate, d3.time.month.offset(maxDate, 1)])
-    			.rangeRound([0, diameter]);
+    			.rangeRound([0, settingsLength]);
 				
 			var showTickEveryMonths = 4;
 			var xAxis = d3.svg.axis()
@@ -129,9 +130,10 @@ module App
 				.tickSize(3)
 				.tickPadding(5); 
 			
+			var timeScaleTranslate = 'translate(' + settingsXStart + ', ' + (settingsYStart - config.settingWidth)  + ')'
 			svg.append('g')
 				.attr('class', 'x axis')
-				.attr('transform', 'translate(' + config.semiCircleWidth + ', ' + (diameter / 2 + config.settingWidth) + ')')
+				.attr('transform', timeScaleTranslate)
 				.call(xAxis);
 			
 			
@@ -271,20 +273,20 @@ module App
 					var start = getMetadataStartAngle(selected.metadata);
 					var end = getMetadataEndAngle(selected.metadata);
 					var diff = end - start;
-					metaDataMidAngle = start + diff / 2;
+					metaDataMidAngle = start + (diff / 2);
 					metaDataMidAngle -= Math.PI / 2;
 				}
 				
 				var settingRange = null;
 				if(selected.settingSelected){
 					var scaled = settingsScaled.getForId(selected.setting);
-					settingRange = new ScaleAndLevel(selected.setting, diameter * scaled.start, diameter * scaled.end, null);
+					settingRange = new ScaleAndLevel(selected.setting, settingsLength * scaled.start, settingsLength * scaled.end, null);
 				}
 				
 				var selectedLocation = new SelectedLocation(
 					metaDataMidAngle,
 					settingRange, 
-					(diameter - 2 * config.settingWidth), 
+					config.innerRadius * 2, 
 					settingsAndStartWidth
 				);
 				
