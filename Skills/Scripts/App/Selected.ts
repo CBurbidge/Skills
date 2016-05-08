@@ -2,12 +2,19 @@
 
 module App
 {
+	export class SettingStartAndWidth
+	{
+		constructor(public id:number, public start:number, public width:number){}
+	}
+	
 	export class SelectedLocation
 	{
 		constructor(
 			public midMetadataAngle:number,
 			public settingScaleAndLevel:ScaleAndLevel,
-			public diameter:number){}
+			public diameter:number,
+			public settingStartAndWidths:SettingStartAndWidth[]
+		){}
 			
 	}
 	

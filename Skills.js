@@ -767,11 +767,21 @@ var App;
 //# sourceMappingURL=Colours.js.map
 var App;
 (function (App) {
+    var SettingStartAndWidth = (function () {
+        function SettingStartAndWidth(id, start, width) {
+            this.id = id;
+            this.start = start;
+            this.width = width;
+        }
+        return SettingStartAndWidth;
+    }());
+    App.SettingStartAndWidth = SettingStartAndWidth;
     var SelectedLocation = (function () {
-        function SelectedLocation(midMetadataAngle, settingScaleAndLevel, diameter) {
+        function SelectedLocation(midMetadataAngle, settingScaleAndLevel, diameter, settingStartAndWidths) {
             this.midMetadataAngle = midMetadataAngle;
             this.settingScaleAndLevel = settingScaleAndLevel;
             this.diameter = diameter;
+            this.settingStartAndWidths = settingStartAndWidths;
         }
         return SelectedLocation;
     }());
@@ -871,25 +881,61 @@ var App;
         return SelectedSkillInMiddleOfOthers;
     }());
     App.SelectedSkillInMiddleOfOthers = SelectedSkillInMiddleOfOthers;
-    var SkillsInLineToMiddleOfMetaData = (function () {
-        function SkillsInLineToMiddleOfMetaData(cvData) {
-            this.cvData = cvData;
+    var ScaledPosition = (function () {
+        function ScaledPosition(id, scaled, lineNumber) {
+            this.id = id;
+            this.scaled = scaled;
+            this.lineNumber = lineNumber;
         }
-        SkillsInLineToMiddleOfMetaData.prototype.forSkill = function (idsAndActiveCvData, selectedLocation, circleRadius) {
+        return ScaledPosition;
+    }());
+    App.ScaledPosition = ScaledPosition;
+    var ScaledPositions = (function () {
+        function ScaledPositions(positions) {
+            this.positions = positions;
+        }
+        ScaledPositions.prototype.getId = function (id) {
+            return this.positions.filter(function (p) { return p.id === id; })[0];
+        };
+        return ScaledPositions;
+    }());
+    App.ScaledPositions = ScaledPositions;
+    var MultipleLineScaler = (function () {
+        function MultipleLineScaler(elementWidth, length) {
+            this.elementWidth = elementWidth;
+            this.length = length;
+        }
+        MultipleLineScaler.prototype.scale = function (idAndActives) {
+            var activeSkills = idAndActives;
+            var numberOfTimeCirclesFitOntoLine = Math.floor(this.length / this.elementWidth);
+            var numberOfLines = Math.ceil(activeSkills.length / numberOfTimeCirclesFitOntoLine);
+            var numberOfCirclesOnEachLine = Math.ceil(activeSkills.length / numberOfLines);
+            var positions = idAndActives.map(function (value, index, arr) {
+                var lineNum = Math.floor(index / numberOfCirclesOnEachLine);
+                var linePercentage = (index % numberOfCirclesOnEachLine) / numberOfCirclesOnEachLine;
+                return new ScaledPosition(value.id, linePercentage, lineNum);
+            });
+            return new ScaledPositions(positions);
+        };
+        return MultipleLineScaler;
+    }());
+    App.MultipleLineScaler = MultipleLineScaler;
+    var SkillsInLineToMiddleOfMetaData = (function () {
+        function SkillsInLineToMiddleOfMetaData() {
+        }
+        SkillsInLineToMiddleOfMetaData.prototype.forSkills = function (idsAndActiveCvData, selectedLocation, circleRadius) {
             var radius = selectedLocation.diameter / 2;
             var endX = radius * Math.cos(selectedLocation.midMetadataAngle);
             var endY = radius * Math.sin(selectedLocation.midMetadataAngle);
-            var numberOfTimeCirclesFitOntoLine = Math.floor(radius / (2 * circleRadius));
+            var circleDiameter = circleRadius * 2;
             var activeSkills = idsAndActiveCvData.skills.filter(function (s) { return s.isActive; });
             var inactiveSkills = idsAndActiveCvData.skills.filter(function (s) { return s.isActive === false; });
-            var numberOfLines = Math.ceil(activeSkills.length / numberOfTimeCirclesFitOntoLine);
-            var numberOfCirclesOnEachLine = Math.ceil(activeSkills.length / numberOfLines);
+            var activeSkillsLineScaler = new MultipleLineScaler(circleDiameter, radius);
+            var positions = activeSkillsLineScaler.scale(activeSkills);
             var activeCircles = activeSkills.map(function (value, index, array) {
-                var lineNum = Math.floor(index / numberOfCirclesOnEachLine);
-                var linePercentage = (index % numberOfCirclesOnEachLine) / numberOfCirclesOnEachLine;
-                var distBetweenLines = circleRadius * 2;
-                var cx = endX * linePercentage + (lineNum * distBetweenLines);
-                var cy = endY * linePercentage;
+                var position = positions.getId(value.id);
+                var cx = endX * position.scaled + (position.lineNumber * circleDiameter);
+                var cy = endY * position.scaled;
                 return new SkillCircle(value.id, cx, cy, circleRadius);
             });
             var inactiveCircles = inactiveSkills.map(function (value, index, arr) {
@@ -902,6 +948,15 @@ var App;
         return SkillsInLineToMiddleOfMetaData;
     }());
     App.SkillsInLineToMiddleOfMetaData = SkillsInLineToMiddleOfMetaData;
+    var SkillsAlongSettings = (function () {
+        function SkillsAlongSettings() {
+        }
+        SkillsAlongSettings.prototype.forSkills = function (idsAndActive, selectedLocation) {
+            return null;
+        };
+        return SkillsAlongSettings;
+    }());
+    App.SkillsAlongSettings = SkillsAlongSettings;
     var SkillCirclesCalculator = (function () {
         function SkillCirclesCalculator(cvData) {
             var _this = this;
@@ -917,8 +972,12 @@ var App;
                     return selectedSkillInMiddle.forSkill(selected.skill, circleRadius);
                 }
                 if (selected.metadataSelected) {
-                    var skillsInLineToMiddleOfMetaData = new SkillsInLineToMiddleOfMetaData(_this.cvData);
-                    return skillsInLineToMiddleOfMetaData.forSkill(idsAndActiveCvData, selectedLocation, circleRadius);
+                    var skillsInLineToMiddleOfMetaData = new SkillsInLineToMiddleOfMetaData();
+                    return skillsInLineToMiddleOfMetaData.forSkills(idsAndActiveCvData, selectedLocation, circleRadius);
+                }
+                if (selected.settingSelected) {
+                    var skillsAlongSettings = new SkillsAlongSettings();
+                    return skillsAlongSettings.forSkills(idsAndActiveCvData, selectedLocation);
                 }
                 return new SkillCircles(_this.cvData.skills.map(function (s) {
                     var sqRootModulus = Math.ceil(Math.sqrt(that.cvData.skills.length));
@@ -993,6 +1052,17 @@ var App;
                 "," + (config.semiCircleRadius + (config.settingWidth * 2)) + ")";
             var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
             var gapBetweenSettings = 2;
+            function getSettingStart(id) {
+                var scaled = settingsScaled;
+                var setting = scaled.getForId(id);
+                return setting.start * diameter;
+            }
+            function getSettingWidth(id) {
+                var scaled = settingsScaled;
+                var setting = scaled.getForId(id);
+                var width = (setting.end - setting.start) * diameter;
+                return width;
+            }
             var settingsGroup = svg
                 .append("g")
                 .attr("transform", moveToLeftHandSideOfSemiCircle)
@@ -1008,19 +1078,17 @@ var App;
                 .append("rect")
                 .attr("height", function (d) { return config.settingWidth - gapBetweenSettings; })
                 .attr("width", function (d) {
-                var setting = settingsScaled.getForId(d.id);
-                var width = (setting.end - setting.start) * diameter;
-                return width;
+                return getSettingWidth(d.id);
             })
                 .attr("x", function (d) {
-                var setting = settingsScaled.getForId(d.id);
-                return setting.start * diameter;
+                return getSettingStart(d.id);
             })
                 .attr("y", function (d) {
                 var setting = settingsScaled.getForId(d.id);
                 return setting.id * config.settingWidth;
             })
                 .attr("fill", function (d) { return colours.getSetting(d.id, App.Selected.initial(), idAndActiveSorter.forInitial()); });
+            var settingsAndStartWidth = cvData.settings.map(function (s) { return new App.SettingStartAndWidth(s.id, getSettingStart(s.id), getSettingWidth(s.id)); });
             settingsGroup
                 .selectAll("g.setting")
                 .append("text")
@@ -1155,7 +1223,7 @@ var App;
                     var scaled = settingsScaled.getForId(selected.setting);
                     settingRange = new App.ScaleAndLevel(selected.setting, diameter * scaled.start, diameter * scaled.end, null);
                 }
-                var selectedLocation = new App.SelectedLocation(metaDataMidAngle, settingRange, (diameter - 2 * config.settingWidth));
+                var selectedLocation = new App.SelectedLocation(metaDataMidAngle, settingRange, (diameter - 2 * config.settingWidth), settingsAndStartWidth);
                 skillsGroup
                     .selectAll("circle")
                     .transition()

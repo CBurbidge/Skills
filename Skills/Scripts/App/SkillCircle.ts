@@ -68,28 +68,61 @@ module App
 		}
 	}
 	
+	export class ScaledPosition
+	{
+		constructor(public id:number, public scaled:number, public lineNumber:number){}
+	}
+	
+	export class ScaledPositions
+	{
+		constructor(public positions:ScaledPosition[]){}
+		
+		getId(id:number){
+			return this.positions.filter(p => p.id === id)[0];
+		}
+	}
+	
+	export class MultipleLineScaler 
+	{
+		constructor(public elementWidth:number, public length:number){}
+		
+		scale(idAndActives:IdAndActive[]):ScaledPositions{
+			var activeSkills = idAndActives;
+			var numberOfTimeCirclesFitOntoLine = Math.floor(this.length / this.elementWidth);
+			var numberOfLines = Math.ceil(activeSkills.length / numberOfTimeCirclesFitOntoLine);
+			var numberOfCirclesOnEachLine = Math.ceil(activeSkills.length / numberOfLines);
+			
+			var positions = idAndActives.map((value, index, arr) => {
+				var lineNum = Math.floor(index / numberOfCirclesOnEachLine);
+				var linePercentage = (index % numberOfCirclesOnEachLine)/ numberOfCirclesOnEachLine;
+				return new ScaledPosition(value.id, linePercentage, lineNum);
+			});
+			
+			return new ScaledPositions(positions);
+		}
+	}
+		
 	export class SkillsInLineToMiddleOfMetaData
 	{
-		constructor(public cvData:CV.ICVData){}
-		
-		forSkill(idsAndActiveCvData:IdAndActiveCvData, selectedLocation:SelectedLocation, circleRadius:number):SkillCircles
+		forSkills(idsAndActiveCvData:IdAndActiveCvData, selectedLocation:SelectedLocation, circleRadius:number):SkillCircles
 		{
 			var radius = selectedLocation.diameter / 2
 			var endX = radius * Math.cos(selectedLocation.midMetadataAngle);
 			var endY = radius * Math.sin(selectedLocation.midMetadataAngle);
+			var circleDiameter = circleRadius * 2;
 			
-			var numberOfTimeCirclesFitOntoLine = Math.floor(radius / (2 *  circleRadius));
 			var activeSkills = idsAndActiveCvData.skills.filter(s => s.isActive);
 			var inactiveSkills = idsAndActiveCvData.skills.filter(s => s.isActive === false);
-			var numberOfLines = Math.ceil(activeSkills.length / numberOfTimeCirclesFitOntoLine);
-			var numberOfCirclesOnEachLine = Math.ceil(activeSkills.length / numberOfLines);
-			var activeCircles = activeSkills.map((value, index, array) => {
-				var lineNum = Math.floor(index / numberOfCirclesOnEachLine);
-				var linePercentage = (index % numberOfCirclesOnEachLine)/ numberOfCirclesOnEachLine;
-				var distBetweenLines = circleRadius * 2;
-				var cx = endX * linePercentage + (lineNum * distBetweenLines);
-				var cy = endY * linePercentage;
-				return new SkillCircle(value.id, cx, cy, circleRadius);
+			
+			var activeSkillsLineScaler = new MultipleLineScaler(circleDiameter, radius);
+			var positions = activeSkillsLineScaler.scale(activeSkills);
+			
+			var activeCircles = activeSkills.map(
+				(value, index, array) => {
+					var position = positions.getId(value.id);
+					var cx = endX * position.scaled + (position.lineNumber * circleDiameter);
+					var cy = endY * position.scaled;
+					return new SkillCircle(value.id, cx, cy, circleRadius);
 			});
 			var inactiveCircles = inactiveSkills.map(
 				(value, index, arr) => {
@@ -99,6 +132,14 @@ module App
 				});
 			
 			return new SkillCircles(activeCircles.concat(inactiveCircles));
+		}
+	}
+	
+	export class SkillsAlongSettings
+	{
+		forSkills(idsAndActive:IdAndActiveCvData, selectedLocation:SelectedLocation): SkillCircles
+		{
+			return null;
 		}
 	}
 	
@@ -121,8 +162,13 @@ module App
 			}
 			
 			if(selected.metadataSelected){
-				var skillsInLineToMiddleOfMetaData = new SkillsInLineToMiddleOfMetaData(this.cvData);
-				return skillsInLineToMiddleOfMetaData.forSkill(idsAndActiveCvData, selectedLocation, circleRadius);
+				var skillsInLineToMiddleOfMetaData = new SkillsInLineToMiddleOfMetaData();
+				return skillsInLineToMiddleOfMetaData.forSkills(idsAndActiveCvData, selectedLocation, circleRadius);
+			}
+			
+			if(selected.settingSelected){
+				var skillsAlongSettings = new SkillsAlongSettings();
+				return skillsAlongSettings.forSkills(idsAndActiveCvData, selectedLocation);
 			}
 			
 			return new SkillCircles(

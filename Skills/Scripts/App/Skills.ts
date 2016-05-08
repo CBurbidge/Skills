@@ -59,6 +59,19 @@ module App
 			var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
 			var gapBetweenSettings = 2;
 			
+			function getSettingStart(id:number){
+				var scaled = settingsScaled;
+				var setting = scaled.getForId(id);
+				return setting.start * diameter;
+			}
+			
+			function getSettingWidth(id:number){
+				var scaled = settingsScaled;
+				var setting = scaled.getForId(id);
+				var width = (setting.end - setting.start) * diameter;
+				return width;
+			}
+			
 			var settingsGroup = svg
 				.append("g")  
 				.attr("transform", moveToLeftHandSideOfSemiCircle)
@@ -76,20 +89,24 @@ module App
 				.append("rect")
 				.attr("height", (d:any) => {return config.settingWidth - gapBetweenSettings;})
 				.attr("width", d => {
-					var setting = settingsScaled.getForId(d.id);
-					var width = (setting.end - setting.start) * diameter;
-					return width;
+					return getSettingWidth(d.id);
+					// var setting = settingsScaled.getForId(d.id);
+					// var width = (setting.end - setting.start) * diameter;
+					// return width;
 				})
 				.attr("x", (d:any) => {
-					var setting = settingsScaled.getForId(d.id);
-					return setting.start * diameter;
+					return getSettingStart(d.id);
 				})
 				.attr("y", (d:any) => {
 					var setting = settingsScaled.getForId(d.id);
 					return setting.id * config.settingWidth;
 				})
 				.attr("fill", d => colours.getSetting(d.id, Selected.initial(), idAndActiveSorter.forInitial()));
-				
+			
+			var settingsAndStartWidth:SettingStartAndWidth[] = cvData.settings.map(
+				s => new SettingStartAndWidth(s.id, getSettingStart(s.id), getSettingWidth(s.id))
+			);
+			
 			settingsGroup
 				.selectAll("g.setting")
 				.append("text")
@@ -265,7 +282,10 @@ module App
 				}
 				
 				var selectedLocation = new SelectedLocation(
-					metaDataMidAngle, settingRange, (diameter - 2 * config.settingWidth)
+					metaDataMidAngle,
+					settingRange, 
+					(diameter - 2 * config.settingWidth), 
+					settingsAndStartWidth
 				);
 				
 				skillsGroup
