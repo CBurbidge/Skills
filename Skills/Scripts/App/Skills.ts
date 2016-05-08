@@ -171,6 +171,11 @@ module App
 				return slightlyShrunkRadialBitsEndAngle(id, scaled, -Math.PI / 2);
 			}
 			
+			function getDoubleMetadataEndAngle(id:number){
+				var scaled = metadatasScaled;
+				return twiceLongRadialEndAngle(id, scaled, -Math.PI / 2);
+			}
+			
 			var metadatasArc = d3.svg.arc()
 				.innerRadius((d, i) => config.innerRadius)
 				.outerRadius((d, i) => { return config.innerRadius + config.semiCircleWidth; })
@@ -181,7 +186,7 @@ module App
 				.innerRadius((d, i) => { return inThenOutInner(d, i); })
 				.outerRadius((d, i) => { return inThenOutOuter(d, i); })
 				.startAngle((d:any) => { return getMetadataStartAngle(d.id); })
-				.endAngle((d:any) => { return getMetadataEndAngle(d.id); }); 
+				.endAngle((d:any) => { return getDoubleMetadataEndAngle(d.id); }); 
 			
 			var metadatasGroup = svg
 				.append("g")
@@ -250,6 +255,7 @@ module App
 					var end = getMetadataEndAngle(selected.metadata);
 					var diff = end - start;
 					metaDataMidAngle = start + diff / 2;
+					metaDataMidAngle -= Math.PI / 2;
 				}
 				
 				var settingRange = null;

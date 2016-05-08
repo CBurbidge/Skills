@@ -76,9 +76,27 @@ module App
 			var endX = radius * Math.cos(selectedLocation.midMetadataAngle);
 			var endY = radius * Math.sin(selectedLocation.midMetadataAngle);
 			
-			var numberOfTimeCirclesFitOntoLine = radius / circleRadius; 
+			var numberOfTimeCirclesFitOntoLine = Math.floor(radius / (2 *  circleRadius));
+			var activeSkills = idsAndActiveCvData.skills.filter(s => s.isActive);
+			var inactiveSkills = idsAndActiveCvData.skills.filter(s => s.isActive === false);
+			var numberOfLines = Math.ceil(activeSkills.length / numberOfTimeCirclesFitOntoLine);
+			var numberOfCirclesOnEachLine = Math.ceil(activeSkills.length / numberOfLines);
+			var activeCircles = activeSkills.map((value, index, array) => {
+				var lineNum = Math.floor(index / numberOfCirclesOnEachLine);
+				var linePercentage = (index % numberOfCirclesOnEachLine)/ numberOfCirclesOnEachLine;
+				var distBetweenLines = circleRadius * 2;
+				var cx = endX * linePercentage + (lineNum * distBetweenLines);
+				var cy = endY * linePercentage;
+				return new SkillCircle(value.id, cx, cy, circleRadius);
+			});
+			var inactiveCircles = inactiveSkills.map(
+				(value, index, arr) => {
+					var cx = index * circleRadius;
+					var cy = index * circleRadius;
+					return new SkillCircle(value.id, cx, cy, circleRadius)
+				});
 			
-			return null;
+			return new SkillCircles(activeCircles.concat(inactiveCircles));
 		}
 	}
 	

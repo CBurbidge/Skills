@@ -877,8 +877,25 @@ var App;
             var radius = selectedLocation.diameter / 2;
             var endX = radius * Math.cos(selectedLocation.midMetadataAngle);
             var endY = radius * Math.sin(selectedLocation.midMetadataAngle);
-            var numberOfTimeCirclesFitOntoLine = radius / circleRadius;
-            return null;
+            var numberOfTimeCirclesFitOntoLine = Math.floor(radius / (2 * circleRadius));
+            var activeSkills = idsAndActiveCvData.skills.filter(function (s) { return s.isActive; });
+            var inactiveSkills = idsAndActiveCvData.skills.filter(function (s) { return s.isActive === false; });
+            var numberOfLines = Math.ceil(activeSkills.length / numberOfTimeCirclesFitOntoLine);
+            var numberOfCirclesOnEachLine = Math.ceil(activeSkills.length / numberOfLines);
+            var activeCircles = activeSkills.map(function (value, index, array) {
+                var lineNum = Math.floor(index / numberOfCirclesOnEachLine);
+                var linePercentage = (index % numberOfCirclesOnEachLine) / numberOfCirclesOnEachLine;
+                var distBetweenLines = circleRadius * 2;
+                var cx = endX * linePercentage + (lineNum * distBetweenLines);
+                var cy = endY * linePercentage;
+                return new SkillCircle(value.id, cx, cy, circleRadius);
+            });
+            var inactiveCircles = inactiveSkills.map(function (value, index, arr) {
+                var cx = index * circleRadius;
+                var cy = index * circleRadius;
+                return new SkillCircle(value.id, cx, cy, circleRadius);
+            });
+            return new SkillCircles(activeCircles.concat(inactiveCircles));
         };
         return SkillsInLineToMiddleOfMetaData;
     }());
@@ -1060,6 +1077,10 @@ var App;
                 var scaled = metadatasScaled;
                 return slightlyShrunkRadialBitsEndAngle(id, scaled, -Math.PI / 2);
             }
+            function getDoubleMetadataEndAngle(id) {
+                var scaled = metadatasScaled;
+                return twiceLongRadialEndAngle(id, scaled, -Math.PI / 2);
+            }
             var metadatasArc = d3.svg.arc()
                 .innerRadius(function (d, i) { return config.innerRadius; })
                 .outerRadius(function (d, i) { return config.innerRadius + config.semiCircleWidth; })
@@ -1069,7 +1090,7 @@ var App;
                 .innerRadius(function (d, i) { return inThenOutInner(d, i); })
                 .outerRadius(function (d, i) { return inThenOutOuter(d, i); })
                 .startAngle(function (d) { return getMetadataStartAngle(d.id); })
-                .endAngle(function (d) { return getMetadataEndAngle(d.id); });
+                .endAngle(function (d) { return getDoubleMetadataEndAngle(d.id); });
             var metadatasGroup = svg
                 .append("g")
                 .attr("transform", moveToMiddle)
@@ -1123,6 +1144,7 @@ var App;
                     var end = getMetadataEndAngle(selected.metadata);
                     var diff = end - start;
                     metaDataMidAngle = start + diff / 2;
+                    metaDataMidAngle -= Math.PI / 2;
                 }
                 var settingRange = null;
                 if (selected.settingSelected) {
