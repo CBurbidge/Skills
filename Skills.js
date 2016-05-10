@@ -974,7 +974,7 @@ var App;
         RandomlySpreadInSemiCircle.prototype.forSkills = function (idsAndActive, selectedLocation, circleRadius) {
             return idsAndActive.map(function (value, index, arr) {
                 var randomAngle = Math.PI * Math.random() - (Math.PI);
-                var randomDist = Math.random() * (selectedLocation.diameter / 2);
+                var randomDist = Math.random() * (selectedLocation.diameter / 2) * 0.7;
                 var cx = Math.cos(randomAngle) * randomDist;
                 var cy = Math.sin(randomAngle) * randomDist;
                 return new SkillCircle(value.id, cx, cy, circleRadius);
