@@ -38,6 +38,13 @@ module App
 				.attr("width", config.width)
 				.attr("height", config.height);
 			
+			var rectBackground = svg
+				.append("rect")
+				.attr("width", config.width)
+				.attr("height", config.height)
+				.attr("opacity", 0);
+			
+			
 			var cvData = CV.CVData.getData();
 			
 			var idAndActiveSorter = new IdAndActiveSorter(cvData);
@@ -250,8 +257,54 @@ module App
 				.attr("transform", moveToMiddle)
 				.attr("class", "circles");
 			
+			var skillCircleXValues = {};
+			var skillIds = cvData.skills.map(s => s.id); 
+			
+			function mousemove(){
+				var mouse = d3.mouse(skillsGroup.node());
+				var mouseX = mouse[0];
+				
+				// recalculate values if is falsey
+				if(!skillCircleXValues[0]){
+					skillGroups[0].map((elem:any) => {
+						var attributes = <NamedNodeMap>elem.attributes;
+						var skillX:number = detranslateX(attributes.getNamedItem("transform").value);
+						var id = elem.__data__.id;
+						skillCircleXValues[id] = skillX;
+					})
+				}
+				
+				var skillIdsToShow = skillIds.filter(s => {
+					var skillX = skillCircleXValues[s];
+					var diff = Math.abs(mouseX - skillX);
+					var proximity = circleDiameter / 1.5; 
+					if(diff < proximity){
+						return true;
+					}
+					return false;
+				});
+				
+				skillLabels.attr("opacity", d => {
+					if(skillIdsToShow.indexOf(d.id) === -1){
+						return 0
+					}
+					return 1;
+				})
+			}
+			
+			// setup the labels to change when the mouse is moved.
+			rectBackground.on("mousemove", mousemove);
+			
 			function translate(x, y){
 				return "translate(" + x + " , " + y + " )";
+			}
+			
+			function detranslateX(translateString:string):number{
+				var minusWordANdBrackets = translateString
+					.replace("translate(", "")
+					.replace(")", "");
+				var split = minusWordANdBrackets.split(",");
+				return parseFloat(split[0]);
 			}
 			
 			var skillGroups = skillsGroup
@@ -276,23 +329,16 @@ module App
 			var skillLabels = skillGroups
 				.append("text")
 				.text(d => d.name)
-				.attr("font-size", 0)
-				.attr("x", circleDiameter /2)
-				.attr("y", circleDiameter / 2)
+				.attr("opacity", 0)
+				//.attr("x", circleDiameter /2)
+				.attr("y", circleDiameter * 1.2)
 				;
-			
-			
-			function getTipWidth(d){
-				return 10 * d.name.length;
-			}
-			
-			
 			
 			var transitionLength = 500;
 			
 			function refresh(selected:Selected){
 				var idAndActiveCv = idAndActiveSorter.forSelected(selected);
-				var lessOpaque = 0.2 ;
+				var lessOpaque = 0.1 ;
 				
 				var metaDataMidAngle = null;
 				if(selected.metadataSelected){
@@ -345,6 +391,13 @@ module App
 					.duration(transitionLength)
 					.attr("fill", (d, i) => colours.getMetadata(d.id, selected, idAndActiveCv))
 					.attr("opacity", (d, i) => idAndActiveCv.metadataActive(d.id) ? 1.0 : lessOpaque)
+					
+					setTimeout(() => {
+						// need to reset this to an empty object to allow the labels to re-calculate when things are refreshed.
+						// do it in a timeout because otherwise it gets confused when things are transitioning.
+						skillCircleXValues = {}
+					}, transitionLength)
+				
 			}
 			
 			

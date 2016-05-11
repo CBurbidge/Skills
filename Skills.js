@@ -1068,6 +1068,11 @@ var App;
             var svg = divSvg.append("svg")
                 .attr("width", config.width)
                 .attr("height", config.height);
+            var rectBackground = svg
+                .append("rect")
+                .attr("width", config.width)
+                .attr("height", config.height)
+                .attr("opacity", 0);
             var cvData = CV.CVData.getData();
             var idAndActiveSorter = new App.IdAndActiveSorter(cvData);
             var colours = new App.Colours(cvData, new App.ColourRandomiser(config.colours));
@@ -1225,8 +1230,45 @@ var App;
                 .append("g")
                 .attr("transform", moveToMiddle)
                 .attr("class", "circles");
+            var skillCircleXValues = {};
+            var skillIds = cvData.skills.map(function (s) { return s.id; });
+            function mousemove() {
+                var mouse = d3.mouse(skillsGroup.node());
+                var mouseX = mouse[0];
+                if (!skillCircleXValues[0]) {
+                    skillGroups[0].map(function (elem) {
+                        var attributes = elem.attributes;
+                        var skillX = detranslateX(attributes.getNamedItem("transform").value);
+                        var id = elem.__data__.id;
+                        skillCircleXValues[id] = skillX;
+                    });
+                }
+                var skillIdsToShow = skillIds.filter(function (s) {
+                    var skillX = skillCircleXValues[s];
+                    var diff = Math.abs(mouseX - skillX);
+                    var proximity = circleDiameter / 1.5;
+                    if (diff < proximity) {
+                        return true;
+                    }
+                    return false;
+                });
+                skillLabels.attr("opacity", function (d) {
+                    if (skillIdsToShow.indexOf(d.id) === -1) {
+                        return 0;
+                    }
+                    return 1;
+                });
+            }
+            rectBackground.on("mousemove", mousemove);
             function translate(x, y) {
                 return "translate(" + x + " , " + y + " )";
+            }
+            function detranslateX(translateString) {
+                var minusWordANdBrackets = translateString
+                    .replace("translate(", "")
+                    .replace(")", "");
+                var split = minusWordANdBrackets.split(",");
+                return parseFloat(split[0]);
             }
             var skillGroups = skillsGroup
                 .selectAll("g")
@@ -1247,16 +1289,12 @@ var App;
             var skillLabels = skillGroups
                 .append("text")
                 .text(function (d) { return d.name; })
-                .attr("font-size", 0)
-                .attr("x", circleDiameter / 2)
-                .attr("y", circleDiameter / 2);
-            function getTipWidth(d) {
-                return 10 * d.name.length;
-            }
+                .attr("opacity", 0)
+                .attr("y", circleDiameter * 1.2);
             var transitionLength = 500;
             function refresh(selected) {
                 var idAndActiveCv = idAndActiveSorter.forSelected(selected);
-                var lessOpaque = 0.2;
+                var lessOpaque = 0.1;
                 var metaDataMidAngle = null;
                 if (selected.metadataSelected) {
                     var start = getMetadataStartAngle(selected.metadata);
@@ -1297,6 +1335,9 @@ var App;
                     .duration(transitionLength)
                     .attr("fill", function (d, i) { return colours.getMetadata(d.id, selected, idAndActiveCv); })
                     .attr("opacity", function (d, i) { return idAndActiveCv.metadataActive(d.id) ? 1.0 : lessOpaque; });
+                setTimeout(function () {
+                    skillCircleXValues = {};
+                }, transitionLength);
             }
             metadatasGroup
                 .selectAll("path")
