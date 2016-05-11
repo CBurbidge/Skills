@@ -1225,15 +1225,34 @@ var App;
                 .append("g")
                 .attr("transform", moveToMiddle)
                 .attr("class", "circles");
-            skillsGroup
+            function translate(x, y) {
+                return "translate(" + x + " , " + y + " )";
+            }
+            var skillGroups = skillsGroup
                 .selectAll("g")
                 .data(cvData.skills)
                 .enter()
+                .append("g")
+                .attr("class", "skill")
+                .attr("transform", function (d) {
+                var x = initialLocation.forId(d.id).cx;
+                var y = initialLocation.forId(d.id).cy;
+                return translate(x, y);
+            });
+            var skillGroupCircles = skillGroups
                 .append("circle")
                 .attr("r", function (d, i) { return initialLocation.forId(d.id).radius; })
-                .attr("cx", function (d, i) { return initialLocation.forId(d.id).cx; })
-                .attr("cy", function (d, i) { return initialLocation.forId(d.id).cy; })
                 .attr("fill", function (d, i) { return colours.getSkill(d.id, App.Selected.initial(), idAndActiveSorter.forInitial()); });
+            var circleDiameter = 20;
+            var skillLabels = skillGroups
+                .append("text")
+                .text(function (d) { return d.name; })
+                .attr("font-size", 0)
+                .attr("x", circleDiameter / 2)
+                .attr("y", circleDiameter / 2);
+            function getTipWidth(d) {
+                return 10 * d.name.length;
+            }
             var transitionLength = 500;
             function refresh(selected) {
                 var idAndActiveCv = idAndActiveSorter.forSelected(selected);
@@ -1252,14 +1271,19 @@ var App;
                     settingRange = new App.ScaleAndLevel(selected.setting, settingsLength * scaled.start, settingsLength * scaled.end, null);
                 }
                 var selectedLocation = new App.SelectedLocation(metaDataMidAngle, settingRange, config.innerRadius * 2, settingsAndStartWidth);
-                skillsGroup
-                    .selectAll("circle")
+                skillGroups
+                    .transition()
+                    .duration(transitionLength)
+                    .attr("transform", function (d) {
+                    var x = skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cx;
+                    var y = skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cy;
+                    return translate(x, y);
+                });
+                skillGroupCircles
                     .transition()
                     .duration(transitionLength)
                     .attr("fill", function (d, i) { return colours.getSkill(d.id, selected, idAndActiveCv); })
                     .attr("opacity", function (d, i) { return idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque; })
-                    .attr("cy", function (d, i) { return skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cy; })
-                    .attr("cx", function (d, i) { return skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cx; })
                     .attr("r", function (d, i) { return skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).radius; });
                 settingsGroup
                     .selectAll("rect")

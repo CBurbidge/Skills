@@ -250,17 +250,43 @@ module App
 				.attr("transform", moveToMiddle)
 				.attr("class", "circles");
 			
-			skillsGroup
+			function translate(x, y){
+				return "translate(" + x + " , " + y + " )";
+			}
+			
+			var skillGroups = skillsGroup
 				.selectAll("g")
 				.data(cvData.skills)
 				.enter()
+				.append("g")
+				.attr("class", "skill")
+				.attr("transform", d => {
+					var x = initialLocation.forId(d.id).cx;
+					var y = initialLocation.forId(d.id).cy;
+					return translate(x, y);
+				});
+			
+			var skillGroupCircles = skillGroups
 				.append("circle")
 				.attr("r", (d, i) => initialLocation.forId(d.id).radius)
-				.attr("cx", (d, i) => initialLocation.forId(d.id).cx)
-				.attr("cy", (d, i) => initialLocation.forId(d.id).cy)
-				.attr("fill", (d, i) => colours.getSkill(d.id, Selected.initial(), idAndActiveSorter.forInitial()))
+				.attr("fill", (d, i) => colours.getSkill(d.id, Selected.initial(), idAndActiveSorter.forInitial()));
+			
+			var circleDiameter = 20;
+						
+			var skillLabels = skillGroups
+				.append("text")
+				.text(d => d.name)
+				.attr("font-size", 0)
+				.attr("x", circleDiameter /2)
+				.attr("y", circleDiameter / 2)
 				;
-				
+			
+			
+			function getTipWidth(d){
+				return 10 * d.name.length;
+			}
+			
+			
 			
 			var transitionLength = 500;
 			
@@ -290,14 +316,20 @@ module App
 					settingsAndStartWidth
 				);
 				
-				skillsGroup
-					.selectAll("circle")
+				skillGroups
+					.transition()
+					.duration(transitionLength)
+					.attr("transform", d => {
+						var x =  skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cx;
+						var y =  skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cy;
+						return translate(x, y);
+					});
+				
+				skillGroupCircles
 					.transition()
 					.duration(transitionLength)
 					.attr("fill", (d, i) => colours.getSkill(d.id, selected, idAndActiveCv))
 					.attr("opacity", (d, i) => idAndActiveCv.skillActive(d.id) ? 1.0 : lessOpaque)
-					.attr("cy", (d, i) => skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cy)
-					.attr("cx", (d, i) => skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).cx)
 					.attr("r", (d, i) => skillCirclesCalculator.forSelected(selected, selectedLocation, idAndActiveCv).forId(d.id).radius)
 					
 				settingsGroup
