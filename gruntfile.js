@@ -71,6 +71,7 @@ module.exports = function(grunt) {
 				"Skills/Scripts/CV/CvData.js",
 
 				"Skills/Scripts/App/IdAndActive.js",
+				"Skills/Scripts/App/Information.js",
 				"Skills/Scripts/App/LengthScaler.js",
 				"Skills/Scripts/App/Colours.js",
 				"Skills/Scripts/App/Selected.js",

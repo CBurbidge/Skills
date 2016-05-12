@@ -629,6 +629,45 @@ var App;
 //# sourceMappingURL=IdAndActive.js.map
 var App;
 (function (App) {
+    var Information = (function () {
+        function Information(cvData) {
+            this.cvData = cvData;
+        }
+        Information.prototype.forSelected = function (selected) {
+            if (selected.allSelected)
+                return new TitleAndDescription("", []);
+            if (selected.metadataSelected) {
+                var metadata = this.cvData.metadatas.filter(function (m) { return m.id === selected.metadata; })[0];
+                var title = metadata.name + ":";
+                return new TitleAndDescription(title, [metadata.description]);
+            }
+            if (selected.settingSelected) {
+                var setting = this.cvData.settings.filter(function (m) { return m.id === selected.setting; })[0];
+                var startDate = setting.dateRange.startDate.getFullYear() + "/" + setting.dateRange.startDate.getMonth();
+                var endDate = setting.dateRange.endDate.getFullYear() + "/" + setting.dateRange.endDate.getMonth();
+                var title = setting.name + ":";
+                var description = startDate + " -> " + endDate + " - " + setting.description;
+                return new TitleAndDescription(title, [description]);
+            }
+            var skill = this.cvData.skills.filter(function (m) { return m.id === selected.skill; })[0];
+            var title = skill.name + ":";
+            return new TitleAndDescription(title, [skill.description]);
+        };
+        return Information;
+    }());
+    App.Information = Information;
+    var TitleAndDescription = (function () {
+        function TitleAndDescription(title, description) {
+            this.title = title;
+            this.description = description;
+        }
+        return TitleAndDescription;
+    }());
+    App.TitleAndDescription = TitleAndDescription;
+})(App || (App = {}));
+//# sourceMappingURL=Information.js.map
+var App;
+(function (App) {
     var Scaled = (function () {
         function Scaled(scaled) {
             this.scaled = scaled;
