@@ -2,6 +2,7 @@
 /// <reference path='../CV/_external_references.ts' />
 
 /// <reference path='./IdAndActive.ts' />
+/// <reference path='./Information.ts' />
 /// <reference path='./LengthScaler.ts' />
 /// <reference path='./Colours.ts' />
 /// <reference path='./Selected.ts' />

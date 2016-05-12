@@ -15,7 +15,7 @@ module App
 			public colours: string[]
 		){
 			this.width = 2 * semiCircleRadius + 2 * semiCircleWidth;
-			this.height = semiCircleRadius * 1.5 + semiCircleWidth;
+			this.height = semiCircleRadius * 2.5 + semiCircleWidth;
 			this.innerRadius = semiCircleRadius - semiCircleWidth;	
 		}
 		
@@ -64,7 +64,7 @@ module App
 			var moveToLeftHandSideOfSemiCircle = "translate(" + settingsXStart + "," + settingsYStart + ")";
 			
 			var settingsLength = config.innerRadius * 2;
-			// var diameter = config.innerRadius * 2 + config.semiCircleWidth * 2;
+			
 			var gapBetweenSettings = 2;
 			
 			function getSettingStart(id:number){
@@ -96,15 +96,8 @@ module App
 				.selectAll("g.setting")
 				.append("rect")
 				.attr("height", (d:any) => {return config.settingWidth - gapBetweenSettings;})
-				.attr("width", d => {
-					return getSettingWidth(d.id);
-					// var setting = settingsScaled.getForId(d.id);
-					// var width = (setting.end - setting.start) * diameter;
-					// return width;
-				})
-				.attr("x", (d:any) => {
-					return getSettingStart(d.id);
-				})
+				.attr("width", d =>  getSettingWidth(d.id))
+				.attr("x", (d:any) => getSettingStart(d.id))
 				.attr("y", (d:any) => {
 					var setting = settingsScaled.getForId(d.id);
 					return setting.id * config.settingWidth;
@@ -330,15 +323,41 @@ module App
 				.append("text")
 				.text(d => d.name)
 				.attr("opacity", 0)
-				//.attr("x", circleDiameter /2)
 				.attr("y", circleDiameter * 1.2)
 				;
+				
+			var information = new Information(cvData);
+			var settingsHeight = (cvData.settings.length + 2) * config.settingWidth;
+			
+			var informationTranslation = translate(settingsXStart, (settingsYStart + settingsHeight));
+			var informationGroup = svg
+				.append("g")
+				.attr("class", "information")
+				.attr("transform", informationTranslation);
+			
+			var titleTextSize = 30;
+			var informationTitle = informationGroup
+				.append("text")
+				.attr("class", "information-title")
+				.attr("font-size", titleTextSize)
+				.text("Click on things");
+			
+			var informationDescription = informationGroup
+				.append("text")
+				.attr("class", "information-description")
+				.attr("y", titleTextSize);
+			
+			var skillsUsedGroup = informationGroup
+				.append("g")
+				.attr("transform", translate(0, titleTextSize * 2))
+				.attr("class", "skills-used");
+			
 			
 			var transitionLength = 500;
 			
 			function refresh(selected:Selected){
 				var idAndActiveCv = idAndActiveSorter.forSelected(selected);
-				var lessOpaque = 0.1 ;
+				var lessOpaque = 0.2 ;
 				
 				var metaDataMidAngle = null;
 				if(selected.metadataSelected){
@@ -391,12 +410,40 @@ module App
 					.duration(transitionLength)
 					.attr("fill", (d, i) => colours.getMetadata(d.id, selected, idAndActiveCv))
 					.attr("opacity", (d, i) => idAndActiveCv.metadataActive(d.id) ? 1.0 : lessOpaque)
-					
-					setTimeout(() => {
-						// need to reset this to an empty object to allow the labels to re-calculate when things are refreshed.
-						// do it in a timeout because otherwise it gets confused when things are transitioning.
-						skillCircleXValues = {}
-					}, transitionLength)
+				
+				var titleAndDescription = information.forSelected(selected);
+				
+				informationTitle.text(titleAndDescription.title);
+				informationDescription.text(titleAndDescription.description[0]);
+				
+				var skillsUsedIds = idAndActiveCv.skills
+					.filter(s => s.isActive)
+					.map(s => s.id);
+				
+				var skillsUsedData = cvData.skills.filter(s => skillsUsedIds.indexOf(s.id) !== -1);
+				var skillUsedTextSize = 10;
+				
+				var skillsUsed = skillsUsedGroup
+					.selectAll("g")
+					;
+			
+				var skillElements = skillsUsed.data(skillsUsedData);
+				
+				skillElements
+					.enter()
+					.append("text")
+					.attr("y", d => {return skillsUsedIds.indexOf(d.id) * 2 * skillUsedTextSize;})
+					.text(d => d.name)
+					.on("click", d => refresh(Selected.fromSkill(d.id)))
+					;
+				
+				skillElements.exit().remove();
+				
+				setTimeout(() => {
+					// need to reset this to an empty object to allow the labels to re-calculate when things are refreshed.
+					// do it in a timeout because otherwise it gets confused when things are transitioning.
+					skillCircleXValues = {}
+				}, transitionLength)
 				
 			}
 			
