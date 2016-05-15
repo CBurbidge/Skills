@@ -33,19 +33,22 @@ module App
 			divSvg.select("svg").remove();
 			
             var config = ChartConfig.Standard;
-						
+			
+			var cvData = CV.CVData.getData();
+			
+			var skillUsedTextSize = 10;
+			
+			var height = config.height + cvData.skills.length * skillUsedTextSize;
+			
             var svg = divSvg.append("svg")
 				.attr("width", config.width)
-				.attr("height", config.height);
+				.attr("height", height);
 			
 			var rectBackground = svg
 				.append("rect")
 				.attr("width", config.width)
 				.attr("height", config.height)
 				.attr("opacity", 0);
-			
-			
-			var cvData = CV.CVData.getData();
 			
 			var idAndActiveSorter = new IdAndActiveSorter(cvData);
 			
@@ -347,11 +350,32 @@ module App
 				.attr("class", "information-description")
 				.attr("y", titleTextSize);
 			
-			var skillsUsedGroup = informationGroup
-				.append("g")
-				.attr("transform", translate(0, titleTextSize * 2))
-				.attr("class", "skills-used");
 			
+			function updateSkillInfos(skillsUsedIds:number[]){
+				var skillsUsedData = cvData.skills.filter(s => skillsUsedIds.indexOf(s.id) !== -1);
+				
+				informationGroup.selectAll("g.skills-used").remove();
+				
+				var skillsUsedGroup = informationGroup
+					.append("g")
+					.attr("transform", translate(0, titleTextSize * 2))
+					.attr("class", "skills-used");
+			
+				var groups = skillsUsedGroup
+					.selectAll("g")
+					.data(skillsUsedData);
+				
+				var newText = groups.enter()
+					.append("g")
+					.attr("class", "skill-info")
+					.append("text")
+					.attr("y", d => {
+						var ind = skillsUsedIds.indexOf(d.id)
+						return ind * 2 * skillUsedTextSize;
+					})
+					.text(d => d.name)
+					.on("click", d => refresh(Selected.fromSkill(d.id)))
+			}
 			
 			var transitionLength = 500;
 			
@@ -420,24 +444,8 @@ module App
 					.filter(s => s.isActive)
 					.map(s => s.id);
 				
-				var skillsUsedData = cvData.skills.filter(s => skillsUsedIds.indexOf(s.id) !== -1);
-				var skillUsedTextSize = 10;
+				updateSkillInfos(skillsUsedIds);
 				
-				var skillsUsed = skillsUsedGroup
-					.selectAll("g")
-					;
-			
-				var skillElements = skillsUsed.data(skillsUsedData);
-				
-				skillElements
-					.enter()
-					.append("text")
-					.attr("y", d => {return skillsUsedIds.indexOf(d.id) * 2 * skillUsedTextSize;})
-					.text(d => d.name)
-					.on("click", d => refresh(Selected.fromSkill(d.id)))
-					;
-				
-				skillElements.exit().remove();
 				
 				setTimeout(() => {
 					// need to reset this to an empty object to allow the labels to re-calculate when things are refreshed.

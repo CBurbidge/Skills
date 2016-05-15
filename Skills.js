@@ -1104,15 +1104,17 @@ var App;
             var divSvg = d3.select("#skills_svg");
             divSvg.select("svg").remove();
             var config = ChartConfig.Standard;
+            var cvData = CV.CVData.getData();
+            var skillUsedTextSize = 10;
+            var height = config.height + cvData.skills.length * skillUsedTextSize;
             var svg = divSvg.append("svg")
                 .attr("width", config.width)
-                .attr("height", config.height);
+                .attr("height", height);
             var rectBackground = svg
                 .append("rect")
                 .attr("width", config.width)
                 .attr("height", config.height)
                 .attr("opacity", 0);
-            var cvData = CV.CVData.getData();
             var idAndActiveSorter = new App.IdAndActiveSorter(cvData);
             var colours = new App.Colours(cvData, new App.ColourRandomiser(config.colours));
             var lengthScaler = new App.LengthScaler(cvData);
@@ -1343,10 +1345,27 @@ var App;
                 .append("text")
                 .attr("class", "information-description")
                 .attr("y", titleTextSize);
-            var skillsUsedGroup = informationGroup
-                .append("g")
-                .attr("transform", translate(0, titleTextSize * 2))
-                .attr("class", "skills-used");
+            function updateSkillInfos(skillsUsedIds) {
+                var skillsUsedData = cvData.skills.filter(function (s) { return skillsUsedIds.indexOf(s.id) !== -1; });
+                informationGroup.selectAll("g.skills-used").remove();
+                var skillsUsedGroup = informationGroup
+                    .append("g")
+                    .attr("transform", translate(0, titleTextSize * 2))
+                    .attr("class", "skills-used");
+                var groups = skillsUsedGroup
+                    .selectAll("g")
+                    .data(skillsUsedData);
+                var newText = groups.enter()
+                    .append("g")
+                    .attr("class", "skill-info")
+                    .append("text")
+                    .attr("y", function (d) {
+                    var ind = skillsUsedIds.indexOf(d.id);
+                    return ind * 2 * skillUsedTextSize;
+                })
+                    .text(function (d) { return d.name; })
+                    .on("click", function (d) { return refresh(App.Selected.fromSkill(d.id)); });
+            }
             var transitionLength = 500;
             function refresh(selected) {
                 var idAndActiveCv = idAndActiveSorter.forSelected(selected);
@@ -1397,18 +1416,7 @@ var App;
                 var skillsUsedIds = idAndActiveCv.skills
                     .filter(function (s) { return s.isActive; })
                     .map(function (s) { return s.id; });
-                var skillsUsedData = cvData.skills.filter(function (s) { return skillsUsedIds.indexOf(s.id) !== -1; });
-                var skillUsedTextSize = 10;
-                var skillsUsed = skillsUsedGroup
-                    .selectAll("g");
-                var skillElements = skillsUsed.data(skillsUsedData);
-                skillElements
-                    .enter()
-                    .append("text")
-                    .attr("y", function (d) { return skillsUsedIds.indexOf(d.id) * 2 * skillUsedTextSize; })
-                    .text(function (d) { return d.name; })
-                    .on("click", function (d) { return refresh(App.Selected.fromSkill(d.id)); });
-                skillElements.exit().remove();
+                updateSkillInfos(skillsUsedIds);
                 setTimeout(function () {
                     skillCircleXValues = {};
                 }, transitionLength);
