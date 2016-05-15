@@ -1345,6 +1345,54 @@ var App;
                 .append("text")
                 .attr("class", "information-description")
                 .attr("y", titleTextSize);
+            function updateSettingAndMetadataInfos(selected, idsAndSelected) {
+                var activeSettingIds = idsAndSelected.settings
+                    .filter(function (s) { return s.isActive; })
+                    .map(function (s) { return s.id; });
+                var settingsActive = cvData.settings.filter(function (s) { return activeSettingIds.indexOf(s.id) !== -1; });
+                var activeMetadataIds = idsAndSelected.metadatas
+                    .filter(function (s) { return s.isActive; })
+                    .map(function (s) { return s.id; });
+                var metadatasActive = cvData.metadatas.filter(function (s) { return activeMetadataIds.indexOf(s.id) !== -1; });
+                informationGroup.selectAll("g.settings-used").remove();
+                if (selected.skillSelected) {
+                    var settingsUsedGroup = informationGroup
+                        .append("g")
+                        .attr("transform", translate(0, titleTextSize * 2))
+                        .attr("class", "settings-used");
+                    var settingsGroups = settingsUsedGroup
+                        .selectAll("g")
+                        .data(settingsActive)
+                        .enter()
+                        .append("g")
+                        .append("text")
+                        .attr("y", function (d) {
+                        var ind = activeSettingIds.indexOf(d.id);
+                        return ind * 2 * skillUsedTextSize;
+                    })
+                        .text(function (d) { return d.name; })
+                        .on("click", function (d) { return refresh(App.Selected.fromSetting(d.id)); });
+                }
+                informationGroup.selectAll("g.metadatas-used").remove();
+                if (selected.skillSelected) {
+                    var metadatasUsedGroup = informationGroup
+                        .append("g")
+                        .attr("transform", translate(config.width / 2, titleTextSize * 2))
+                        .attr("class", "metadatas-used");
+                    var metadatasGroups = metadatasUsedGroup
+                        .selectAll("g")
+                        .data(metadatasActive)
+                        .enter()
+                        .append("g")
+                        .append("text")
+                        .attr("y", function (d) {
+                        var ind = activeMetadataIds.indexOf(d.id);
+                        return ind * 2 * skillUsedTextSize;
+                    })
+                        .text(function (d) { return d.name; })
+                        .on("click", function (d) { return refresh(App.Selected.fromMetadata(d.id)); });
+                }
+            }
             function updateSkillInfos(skillsUsedIds) {
                 var skillsUsedData = cvData.skills.filter(function (s) { return skillsUsedIds.indexOf(s.id) !== -1; });
                 informationGroup.selectAll("g.skills-used").remove();
@@ -1416,7 +1464,13 @@ var App;
                 var skillsUsedIds = idAndActiveCv.skills
                     .filter(function (s) { return s.isActive; })
                     .map(function (s) { return s.id; });
-                updateSkillInfos(skillsUsedIds);
+                if (selected.skillSelected) {
+                    updateSkillInfos([]);
+                }
+                else {
+                    updateSkillInfos(skillsUsedIds);
+                }
+                updateSettingAndMetadataInfos(selected, idAndActiveCv);
                 setTimeout(function () {
                     skillCircleXValues = {};
                 }, transitionLength);

@@ -351,6 +351,65 @@ module App
 				.attr("y", titleTextSize);
 			
 			
+			function updateSettingAndMetadataInfos(selected:Selected, idsAndSelected:IdAndActiveCvData){
+				
+				var activeSettingIds = idsAndSelected.settings
+					.filter(s => s.isActive)
+					.map(s => s.id);
+				var settingsActive = cvData.settings.filter(s => activeSettingIds.indexOf(s.id) !== -1);
+				
+				var activeMetadataIds = idsAndSelected.metadatas
+					.filter(s => s.isActive)
+					.map(s => s.id);
+				var metadatasActive = cvData.metadatas.filter(s => activeMetadataIds.indexOf(s.id) !== -1);
+				
+				informationGroup.selectAll("g.settings-used").remove();
+				
+				if(selected.skillSelected){
+					var settingsUsedGroup = informationGroup
+						.append("g")
+						.attr("transform", translate(0, titleTextSize * 2))
+						.attr("class", "settings-used");
+				
+					var settingsGroups = settingsUsedGroup
+						.selectAll("g")
+						.data(settingsActive)
+						.enter()
+						.append("g")
+						.append("text")
+						.attr("y", d => {
+							var ind = activeSettingIds.indexOf(d.id)
+							return ind * 2 * skillUsedTextSize;
+						})
+						.text(d => d.name)
+						.on("click", d => refresh(Selected.fromSetting(d.id)))
+				}	
+					
+				informationGroup.selectAll("g.metadatas-used").remove();
+				
+				if(selected.skillSelected){
+					var metadatasUsedGroup = informationGroup
+						.append("g")
+						.attr("transform", translate(config.width / 2, titleTextSize * 2))
+						.attr("class", "metadatas-used");
+					var metadatasGroups = metadatasUsedGroup
+						.selectAll("g")
+						.data(metadatasActive)
+						.enter()
+						.append("g")
+						.append("text")
+						.attr("y", d => {
+							var ind = activeMetadataIds.indexOf(d.id)
+							return ind * 2 * skillUsedTextSize;
+						})
+						.text(d => d.name)
+						.on("click", d => refresh(Selected.fromMetadata(d.id)))
+			
+				}
+				
+			}
+			
+			
 			function updateSkillInfos(skillsUsedIds:number[]){
 				var skillsUsedData = cvData.skills.filter(s => skillsUsedIds.indexOf(s.id) !== -1);
 				
@@ -444,7 +503,13 @@ module App
 					.filter(s => s.isActive)
 					.map(s => s.id);
 				
-				updateSkillInfos(skillsUsedIds);
+				if(selected.skillSelected){
+					updateSkillInfos([]);
+				} else {
+					updateSkillInfos(skillsUsedIds);
+				}
+				
+				updateSettingAndMetadataInfos(selected, idAndActiveCv);
 				
 				
 				setTimeout(() => {
