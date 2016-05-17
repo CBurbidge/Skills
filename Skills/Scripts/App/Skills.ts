@@ -368,18 +368,21 @@ module App
 				if(selected.skillSelected){
 					var settingsUsedGroup = informationGroup
 						.append("g")
-						.attr("transform", translate(0, titleTextSize * 2))
+						.attr("transform", translate(0, skillsEtcDistanceBelowInformation))
 						.attr("class", "settings-used");
-				
+					
+					settingsUsedGroup.append("text").text("Skills used at:")
+					
 					var settingsGroups = settingsUsedGroup
 						.selectAll("g")
 						.data(settingsActive)
 						.enter()
 						.append("g")
 						.append("text")
+						.attr("fill", d => colours.getOriginalSetting(d.id))
 						.attr("y", d => {
 							var ind = activeSettingIds.indexOf(d.id)
-							return ind * 2 * skillUsedTextSize;
+							return scaleListedItem(ind);
 						})
 						.text(d => d.name)
 						.on("click", d => refresh(Selected.fromSetting(d.id)))
@@ -390,25 +393,33 @@ module App
 				if(selected.skillSelected){
 					var metadatasUsedGroup = informationGroup
 						.append("g")
-						.attr("transform", translate(config.width / 2, titleTextSize * 2))
+						.attr("transform", translate(config.width / 2, skillsEtcDistanceBelowInformation))
 						.attr("class", "metadatas-used");
+						
+					metadatasUsedGroup.append("text").text("Types of skill:")
+					
 					var metadatasGroups = metadatasUsedGroup
 						.selectAll("g")
 						.data(metadatasActive)
 						.enter()
 						.append("g")
 						.append("text")
+						.attr("fill", d => colours.getOriginalMetadata(d.id))
 						.attr("y", d => {
 							var ind = activeMetadataIds.indexOf(d.id)
-							return ind * 2 * skillUsedTextSize;
+							return scaleListedItem(ind);
 						})
 						.text(d => d.name)
 						.on("click", d => refresh(Selected.fromMetadata(d.id)))
 			
-				}
-				
+				}	
 			}
 			
+			var skillsEtcDistanceBelowInformation = titleTextSize * 3;
+			
+			function scaleListedItem(ind:number){
+				return (ind + 1) * 2 * skillUsedTextSize;
+			}
 			
 			function updateSkillInfos(skillsUsedIds:number[]){
 				var skillsUsedData = cvData.skills.filter(s => skillsUsedIds.indexOf(s.id) !== -1);
@@ -417,8 +428,10 @@ module App
 				
 				var skillsUsedGroup = informationGroup
 					.append("g")
-					.attr("transform", translate(0, titleTextSize * 2))
+					.attr("transform", translate(0, skillsEtcDistanceBelowInformation))
 					.attr("class", "skills-used");
+			
+				skillsUsedGroup.append("text").text("Skills used:")
 			
 				var groups = skillsUsedGroup
 					.selectAll("g")
@@ -428,9 +441,10 @@ module App
 					.append("g")
 					.attr("class", "skill-info")
 					.append("text")
+					.attr("fill", d => colours.getOriginalSkill(d.id))
 					.attr("y", d => {
 						var ind = skillsUsedIds.indexOf(d.id)
-						return ind * 2 * skillUsedTextSize;
+						return scaleListedItem(ind);
 					})
 					.text(d => d.name)
 					.on("click", d => refresh(Selected.fromSkill(d.id)))
