@@ -646,6 +646,7 @@
 			SkillUsages.moqAbide,
 			SkillUsages.nunitFundslibrary,
 			SkillUsages.nunitAbide,
+			SkillUsages.octopusDeployAbide,
 			SkillUsages.powershellFundslibrary,
 			SkillUsages.powershellAbide,
 			SkillUsages.pythonCodeclub,
