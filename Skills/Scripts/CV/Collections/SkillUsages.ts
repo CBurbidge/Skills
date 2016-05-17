@@ -10,11 +10,29 @@
 			Skills.angularJs.id,
 			Settings.hobby.id);
 
+		static angularJsAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.angularJs.id,
+			Settings.abideFinancial.id);
+
+		static akkaDotNetAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.akkaDotNet.id,
+			Settings.abideFinancial.id);
+
 		static aspDotNetMvcFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
 			"Built websites with MVC pattern",
 			Skills.aspDotNetMvc.id,
 			Settings.fundslibrary.id);
+
+		static aspDotNetMvcAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"Built websites with MVC pattern",
+			Skills.aspDotNetMvc.id,
+			Settings.abideFinancial.id);
 
 		static aspDotNetWebFormsFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
@@ -46,11 +64,23 @@
 			Skills.bootstrap.id,
 			Settings.chesterBurbidgeDotCom.id);
 
+		static bootstrapAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.bootstrap.id,
+			Settings.abideFinancial.id);
+
 		static continuousIntegrationFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
 			"Used Cruise control dot net to make builds, run tests.",
 			Skills.continuousIntegration.id,
 			Settings.fundslibrary.id);
+
+		static continuousIntegrationAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.continuousIntegration.id,
+			Settings.abideFinancial.id);
 
 		static cordovaHobby = new SkillUsage(
 			SkillUsages.counter++,
@@ -76,6 +106,12 @@
 			Skills.cSharp.id,
 			Settings.fundslibrary.id);
 
+		static cSharpAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.cSharp.id,
+			Settings.abideFinancial.id);
+
 		static cssToplevel = new SkillUsage(
 			SkillUsages.counter++,
 			"Css",
@@ -99,6 +135,12 @@
 			"Taught CSS at a codeclub",
 			Skills.css.id,
 			Settings.codeclub.id);
+
+		static cssAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.css.id,
+			Settings.abideFinancial.id);
 
 		static d3Fundslibrary = new SkillUsage(
 			SkillUsages.counter++,
@@ -124,6 +166,12 @@
 			Skills.dotNetFramework.id,
 			Settings.toplevelComputing.id);
 
+		static dotNetFrameworkAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.dotNetFramework.id,
+			Settings.abideFinancial.id);
+
 		static es6PromisesFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
 			"Used Promise paradigm for asynchronous programming",
@@ -147,6 +195,12 @@
 			"Used git at home, have many remote repositories.",
 			Skills.git.id,
 			Settings.hobby.id);
+
+		static gitAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.git.id,
+			Settings.abideFinancial.id);
 
 		static gruntFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
@@ -183,6 +237,12 @@
 			"Taught HTML to kids at a codeclub",
 			Skills.html.id,
 			Settings.codeclub.id);
+
+		static htmlAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.html.id,
+			Settings.abideFinancial.id);
 
 		static ionicFrameworkHobby = new SkillUsage(
 			SkillUsages.counter++,
@@ -225,6 +285,12 @@
 			"Used JIRA to pick up tasks",
 			Skills.jira.id,
 			Settings.fundslibrary.id);
+
+		static jiraAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.jira.id,
+			Settings.abideFinancial.id);
 
 		static jqueryFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
@@ -286,6 +352,12 @@
 			Skills.linq.id,
 			Settings.fundslibrary.id);
 
+		static linqAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.linq.id,
+			Settings.abideFinancial.id);
+
 		static linqToplevel = new SkillUsage(
 			SkillUsages.counter++,
 			"",
@@ -298,11 +370,23 @@
 			Skills.moq.id,
 			Settings.fundslibrary.id);
 
+		static moqAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.moq.id,
+			Settings.abideFinancial.id);
+
 		static nunitFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
 			"Used to run C# tests",
 			Skills.nunit.id,
 			Settings.fundslibrary.id);
+
+		static nunitAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.nunit.id,
+			Settings.abideFinancial.id);
 
 		static powershellFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
@@ -310,11 +394,29 @@
 			Skills.powershell.id,
 			Settings.fundslibrary.id);
 
+		static octopusDeployAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.octopusDeploy.id,
+			Settings.abideFinancial.id);
+
+		static powershellAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"Automating tasks",
+			Skills.powershell.id,
+			Settings.abideFinancial.id);
+
 		static pythonHobby = new SkillUsage(
 			SkillUsages.counter++,
 			"",
 			Skills.python.id,
 			Settings.hobby.id);
+
+		static pythonAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.python.id,
+			Settings.abideFinancial.id);
 
 		static pythonCodeclub = new SkillUsage(
 			SkillUsages.counter++,
@@ -328,6 +430,12 @@
 			Skills.resharper.id,
 			Settings.fundslibrary.id);
 
+		static resharperAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.resharper.id,
+			Settings.abideFinancial.id);
+
 		static resharperHobby = new SkillUsage(
 			SkillUsages.counter++,
 			"Used resharper",
@@ -339,6 +447,12 @@
 			"Setup and maintained RESTFul webvices.",
 			Skills.restfulWebservices.id,
 			Settings.fundslibrary.id);
+
+		static restWebservicesAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.restfulWebservices.id,
+			Settings.abideFinancial.id);
 
 		static rlanguageHobby = new SkillUsage(
 			SkillUsages.counter++,
@@ -364,11 +478,23 @@
 			Skills.sqlServerManagementStudio.id,
 			Settings.fundslibrary.id);
 
+		static ssmsAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.sqlServerManagementStudio.id,
+			Settings.abideFinancial.id);
+
 		static tfsToplevel = new SkillUsage(
 			SkillUsages.counter++,
 			"",
 			Skills.tfs.id,
 			Settings.toplevelComputing.id);
+
+		static teamcityAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.teamcity.id,
+			Settings.abideFinancial.id);
 
 		static tSqlToplevel = new SkillUsage(
 			SkillUsages.counter++,
@@ -381,6 +507,12 @@
 			"",
 			Skills.tSql.id,
 			Settings.fundslibrary.id);
+
+		static tSqlAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.tSql.id,
+			Settings.abideFinancial.id);
 
 		static typescriptFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
@@ -405,6 +537,12 @@
 			"",
 			Skills.visualStudio.id,
 			Settings.toplevelComputing.id);
+
+		static vsAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.visualStudio.id,
+			Settings.abideFinancial.id);
 
 		static vsFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
@@ -436,38 +574,54 @@
 			Skills.xslt.id,
 			Settings.fundslibrary.id);
 
+		static xmlAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.xml.id,
+			Settings.abideFinancial.id);
+
 
 		static all = [
 			SkillUsages.angularJsIonicApp,
+			SkillUsages.angularJsAbideFinancial,
+			SkillUsages.akkaDotNetAbideFinancial,
 			SkillUsages.aspDotNetMvcFundslibrary,
+			SkillUsages.aspDotNetMvcAbideFinancial,
 			SkillUsages.aspDotNetWebFormsFundslibrary,
 			SkillUsages.bashscriptingGitBash,
 			SkillUsages.bashscriptingHome,
 			SkillUsages.bootstrapChesterBurbidgeDotCom,
 			SkillUsages.bootstrapFundslibrary,
+			SkillUsages.bootstrapAbideFinancial,
 			SkillUsages.cordovaHobby,
 			SkillUsages.cPlusPlusToplevel,
 			SkillUsages.cSharpFundsLibrary,
 			SkillUsages.cSharpToplevel,
+			SkillUsages.cSharpAbide,
 			SkillUsages.continuousIntegrationFundslibrary,
+			SkillUsages.continuousIntegrationAbideFinancial,
 			SkillUsages.cssChesterBurbidgeDotCom,
 			SkillUsages.cssCodeclub,
 			SkillUsages.cssFundsLibrary,
 			SkillUsages.cssToplevel,
+			SkillUsages.cssAbide,
 			SkillUsages.d3ChesterBurbidgeDotCom,
 			SkillUsages.d3Fundslibrary,
 			SkillUsages.dotNetFrameworkFundslibrary,
 			SkillUsages.dotNetFrameworkToplevel,
+			SkillUsages.dotNetFrameworkAbide,
 			SkillUsages.es6PromisesFundslibrary,
 			SkillUsages.es6PromisesIonicApp,
 			SkillUsages.gitFundslibrary,
 			SkillUsages.gitHobby,
+			SkillUsages.gitAbide,
 			SkillUsages.gruntChesterBurbidgeDotCom,
 			SkillUsages.gruntFundslibrary,
 			SkillUsages.htmlChesterBurbidgeDotCom,
 			SkillUsages.htmlCodeclub,
 			SkillUsages.htmlFundsLibrary,
 			SkillUsages.htmlToplevel,
+			SkillUsages.htmlAbide,
 			SkillUsages.ionicFrameworkHobby,
 			SkillUsages.jasmineChesterBurbidgeDotCom,
 			SkillUsages.jasmineFundslibrary,
@@ -475,6 +629,7 @@
 			SkillUsages.javascriptFundslibrary,
 			SkillUsages.javascriptHobby,
 			SkillUsages.jiraFundslibrary,
+			SkillUsages.jiraAbideFinancial,
 			SkillUsages.jqueryCodeclub,
 			SkillUsages.jqueryFundslibrary,
 			SkillUsages.jqueryHobby,
@@ -486,21 +641,31 @@
 			SkillUsages.lessHobby,
 			SkillUsages.linqFundslibrary,
 			SkillUsages.linqToplevel,
+			SkillUsages.linqAbide,
 			SkillUsages.moqFundslibrary,
+			SkillUsages.moqAbide,
 			SkillUsages.nunitFundslibrary,
+			SkillUsages.nunitAbide,
 			SkillUsages.powershellFundslibrary,
+			SkillUsages.powershellAbide,
 			SkillUsages.pythonCodeclub,
 			SkillUsages.pythonHobby,
+			SkillUsages.pythonAbide,
 			SkillUsages.resharperFundslibrary,
 			SkillUsages.resharperHobby,
+			SkillUsages.resharperAbide,
 			SkillUsages.restWebservicesFundslibrary,
+			SkillUsages.restWebservicesAbide,
 			SkillUsages.rlanguageHobby,
 			SkillUsages.sourcesafeToplevel,
 			SkillUsages.ssmsFundslibrary,
 			SkillUsages.ssmsToplevel,
+			SkillUsages.ssmsAbide,
 			SkillUsages.tSqlFundslibrary,
+			SkillUsages.tSqlAbideFinancial,
 			SkillUsages.tSqlToplevel,
 			SkillUsages.tfsToplevel,
+			SkillUsages.teamcityAbideFinancial,
 			SkillUsages.typescriptChesterBurbidgeDotCom,
 			SkillUsages.typescriptFundslibrary,
 			SkillUsages.typescriptHobby,
@@ -508,8 +673,10 @@
 			SkillUsages.vsChesterBurbidgeDotCom,
 			SkillUsages.vsFundslibrary,
 			SkillUsages.vsHobby,
+			SkillUsages.vsAbide,
 			SkillUsages.vsToplevel,
-			SkillUsages.xsltFundslibrary
+			SkillUsages.xsltFundslibrary,
+			SkillUsages.xmlAbide
 		];
 	}
 }
