@@ -40,6 +40,30 @@
 			Skills.aspDotNetWebforms.id,
 			Settings.fundslibrary.id);
 
+		static awsS3Abide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsS3.id,
+			Settings.abideFinancial.id);
+
+		static awsSqsAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsSQS.id,
+			Settings.abideFinancial.id);
+
+		static awsKinesisAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsKinesis.id,
+			Settings.abideFinancial.id);
+
+		static awsRedshiftAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsRedshift.id,
+			Settings.abideFinancial.id);
+
 		static bashscriptingHome = new SkillUsage(
 			SkillUsages.counter++,
 			"Using bash terminal",
@@ -588,6 +612,9 @@
 			SkillUsages.aspDotNetMvcFundslibrary,
 			SkillUsages.aspDotNetMvcAbideFinancial,
 			SkillUsages.aspDotNetWebFormsFundslibrary,
+			SkillUsages.awsS3Abide,
+			SkillUsages.awsSqsAbide,
+			SkillUsages.awsKinesisAbide,
 			SkillUsages.bashscriptingGitBash,
 			SkillUsages.bashscriptingHome,
 			SkillUsages.bootstrapChesterBurbidgeDotCom,

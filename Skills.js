@@ -132,6 +132,18 @@ var CV;
         Skills.aspDotNetWebforms = new CV.Skill(Skills.counter++, "ASP.NET WebForms", "Webforms.", [
             CV.Metadatas.professional
         ]);
+        Skills.awsS3 = new CV.Skill(Skills.counter++, "AWS S3", "Amazon storage", [
+            CV.Metadatas.professional
+        ]);
+        Skills.awsSQS = new CV.Skill(Skills.counter++, "AWS SQS", "Amazon simple queue system", [
+            CV.Metadatas.professional
+        ]);
+        Skills.awsKinesis = new CV.Skill(Skills.counter++, "AWS Kinesis", "Amazon Kinesis queue", [
+            CV.Metadatas.professional
+        ]);
+        Skills.awsRedshift = new CV.Skill(Skills.counter++, "AWS Redshift", "Amazon Redshift", [
+            CV.Metadatas.professional
+        ]);
         Skills.bashScripting = new CV.Skill(Skills.counter++, "bash scripting", "Writing scripts to be run on bash terminals", [
             CV.Metadatas.hobby,
             CV.Metadatas.professional
@@ -395,6 +407,10 @@ var CV;
         SkillUsages.aspDotNetMvcFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Built websites with MVC pattern", CV.Skills.aspDotNetMvc.id, CV.Settings.fundslibrary.id);
         SkillUsages.aspDotNetMvcAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "Built websites with MVC pattern", CV.Skills.aspDotNetMvc.id, CV.Settings.abideFinancial.id);
         SkillUsages.aspDotNetWebFormsFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Built websites with ASP.NET Webforms", CV.Skills.aspDotNetWebforms.id, CV.Settings.fundslibrary.id);
+        SkillUsages.awsS3Abide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsS3.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsSqsAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsSQS.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsKinesisAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsKinesis.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsRedshiftAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsRedshift.id, CV.Settings.abideFinancial.id);
         SkillUsages.bashscriptingHome = new CV.SkillUsage(SkillUsages.counter++, "Using bash terminal", CV.Skills.bashScripting.id, CV.Settings.hobby.id);
         SkillUsages.bashscriptingGitBash = new CV.SkillUsage(SkillUsages.counter++, "Using git bash", CV.Skills.bashScripting.id, CV.Settings.fundslibrary.id);
         SkillUsages.bootstrapFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Made responsive websites", CV.Skills.bootstrap.id, CV.Settings.fundslibrary.id);
@@ -492,6 +508,9 @@ var CV;
             SkillUsages.aspDotNetMvcFundslibrary,
             SkillUsages.aspDotNetMvcAbideFinancial,
             SkillUsages.aspDotNetWebFormsFundslibrary,
+            SkillUsages.awsS3Abide,
+            SkillUsages.awsSqsAbide,
+            SkillUsages.awsKinesisAbide,
             SkillUsages.bashscriptingGitBash,
             SkillUsages.bashscriptingHome,
             SkillUsages.bootstrapChesterBurbidgeDotCom,
