@@ -183,6 +183,15 @@
 				Metadatas.professional
 			]);
 
+		static fSharp = new Skill(
+			Skills.counter++,
+			"F#",
+			"An open source functional programming language, similar to OCaml",
+			[
+				Metadatas.hobby,
+				Metadatas.professional
+			]);
+
 		static grunt = new Skill(
 			Skills.counter++,
 			"grunt",

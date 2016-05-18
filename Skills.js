@@ -199,6 +199,10 @@ var CV;
             CV.Metadatas.hobby,
             CV.Metadatas.professional
         ]);
+        Skills.fSharp = new CV.Skill(Skills.counter++, "F#", "An open source functional programming language, similar to OCaml", [
+            CV.Metadatas.hobby,
+            CV.Metadatas.professional
+        ]);
         Skills.grunt = new CV.Skill(Skills.counter++, "grunt", "A javascript task runner.", [
             CV.Metadatas.frontEnd,
             CV.Metadatas.professional,
@@ -435,6 +439,7 @@ var CV;
         SkillUsages.dotNetFrameworkAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.dotNetFramework.id, CV.Settings.abideFinancial.id);
         SkillUsages.es6PromisesFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used Promise paradigm for asynchronous programming", CV.Skills.esSixPromises.id, CV.Settings.fundslibrary.id);
         SkillUsages.es6PromisesIonicApp = new CV.SkillUsage(SkillUsages.counter++, "Used Promise paradigm for asynchronous programming", CV.Skills.esSixPromises.id, CV.Settings.hobby.id);
+        SkillUsages.fSharpAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.fSharp.id, CV.Settings.abideFinancial.id);
         SkillUsages.gitFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used git through git bash.", CV.Skills.git.id, CV.Settings.fundslibrary.id);
         SkillUsages.gitHobby = new CV.SkillUsage(SkillUsages.counter++, "Used git at home, have many remote repositories.", CV.Skills.git.id, CV.Settings.hobby.id);
         SkillUsages.gitAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.git.id, CV.Settings.abideFinancial.id);

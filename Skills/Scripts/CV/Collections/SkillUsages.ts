@@ -208,6 +208,12 @@
 			Skills.esSixPromises.id,
 			Settings.hobby.id);
 
+		static fSharpAbide = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.fSharp.id,
+			Settings.abideFinancial.id);
+
 		static gitFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
 			"Used git through git bash.",
