@@ -6,3 +6,4 @@ Tests/**/*.js.map
 .tscache
 .grunt
 _SpecRunner.html
+_site/*
