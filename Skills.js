@@ -91,12 +91,14 @@ var CV;
         function Settings() {
         }
         Settings.counter = 0;
+        Settings.abideFinancial = new CV.Setting(Settings.counter++, "Abide Financial", "Regulatory reporting for financial markets", new CV.DateRange(new Date(2015, 3), new Date()));
         Settings.chesterBurbidgeDotCom = new CV.Setting(Settings.counter++, "Personal website", "My own personal website", new CV.DateRange(new Date(2015, 2), new Date(2015, 4)));
         Settings.codeclub = new CV.Setting(Settings.counter++, "Code club", "Teaching a 'code club' to a local school", new CV.DateRange(new Date(2013, 9), new Date(2014, 4)));
         Settings.fundslibrary = new CV.Setting(Settings.counter++, "Fundslibrary", "Fundslibrary - Junior Developer", new CV.DateRange(new Date(2014, 3), new Date(2015, 2)));
         Settings.hobby = new CV.Setting(-1, "Hobby", "Hobby programming", new CV.DateRange(new Date(2012, 11), new Date(2015, 4)));
         Settings.toplevelComputing = new CV.Setting(Settings.counter++, "Toplevel computing", "Toplevel computing - Graduate Developer", new CV.DateRange(new Date(2013, 3), new Date(2014, 3)));
         Settings.all = [
+            Settings.abideFinancial,
             Settings.chesterBurbidgeDotCom,
             Settings.codeclub,
             Settings.fundslibrary,
@@ -115,6 +117,13 @@ var CV;
         Skills.counter = 0;
         Skills.angularJs = new CV.Skill(Skills.counter++, "Angular Js", "Angular Js is a javascript MV* Single Page Application framework.", [
             CV.Metadatas.frontEnd,
+            CV.Metadatas.professional,
+            CV.Metadatas.hobby
+        ]);
+        Skills.akkaDotNet = new CV.Skill(Skills.counter++, "AKKA.NET", ".NET actor system implementation framework, port of the popular scala framework.", [
+            CV.Metadatas.backEnd,
+            CV.Metadatas.professional,
+            CV.Metadatas.asynchronousProgramming,
             CV.Metadatas.hobby
         ]);
         Skills.aspDotNetMvc = new CV.Skill(Skills.counter++, "ASP.NET MVC", "A varied web development framework that ephasises the Model View Controller pattern.", [
@@ -248,6 +257,10 @@ var CV;
             CV.Metadatas.professional,
             CV.Metadatas.testDrivenDevelopment
         ]);
+        Skills.octopusDeploy = new CV.Skill(Skills.counter++, "Octopus Deploy", "A deployment technology", [
+            CV.Metadatas.backEnd,
+            CV.Metadatas.professional
+        ]);
         Skills.powershell = new CV.Skill(Skills.counter++, "Powershell", "Microsoft's scripting language", [
             CV.Metadatas.professional
         ]);
@@ -281,6 +294,9 @@ var CV;
         Skills.tfs = new CV.Skill(Skills.counter++, "TFS", "Project management and source control software.", [
             CV.Metadatas.professional
         ]);
+        Skills.teamcity = new CV.Skill(Skills.counter++, "Teamcity", "Continuous integration software", [
+            CV.Metadatas.professional
+        ]);
         Skills.tSql = new CV.Skill(Skills.counter++, "T-SQL", "Microsoft's flavour of SQL.", [
             CV.Metadatas.backEnd,
             CV.Metadatas.professional
@@ -311,7 +327,12 @@ var CV;
             CV.Metadatas.backEnd,
             CV.Metadatas.professional
         ]);
+        Skills.xml = new CV.Skill(Skills.counter++, "XML", "A heavily used markup language", [
+            CV.Metadatas.backEnd,
+            CV.Metadatas.professional
+        ]);
         Skills.all = [
+            Skills.akkaDotNet,
             Skills.angularJs,
             Skills.aspDotNetMvc,
             Skills.aspDotNetWebforms,
@@ -340,6 +361,7 @@ var CV;
             Skills.linq,
             Skills.moq,
             Skills.nunit,
+            Skills.octopusDeploy,
             Skills.powershell,
             Skills.python,
             Skills.resharper,
@@ -349,10 +371,12 @@ var CV;
             Skills.sqlServerManagementStudio,
             Skills.tSql,
             Skills.tfs,
+            Skills.teamcity,
             Skills.typescript,
             Skills.vbDotNet,
             Skills.visualStudio,
-            Skills.xslt
+            Skills.xslt,
+            Skills.xml
         ];
         return Skills;
     }());
@@ -366,35 +390,45 @@ var CV;
         }
         SkillUsages.counter = 0;
         SkillUsages.angularJsIonicApp = new CV.SkillUsage(SkillUsages.counter++, "Angular js used in ionic app for cordova app.", CV.Skills.angularJs.id, CV.Settings.hobby.id);
+        SkillUsages.angularJsAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.angularJs.id, CV.Settings.abideFinancial.id);
+        SkillUsages.akkaDotNetAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.akkaDotNet.id, CV.Settings.abideFinancial.id);
         SkillUsages.aspDotNetMvcFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Built websites with MVC pattern", CV.Skills.aspDotNetMvc.id, CV.Settings.fundslibrary.id);
+        SkillUsages.aspDotNetMvcAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "Built websites with MVC pattern", CV.Skills.aspDotNetMvc.id, CV.Settings.abideFinancial.id);
         SkillUsages.aspDotNetWebFormsFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Built websites with ASP.NET Webforms", CV.Skills.aspDotNetWebforms.id, CV.Settings.fundslibrary.id);
         SkillUsages.bashscriptingHome = new CV.SkillUsage(SkillUsages.counter++, "Using bash terminal", CV.Skills.bashScripting.id, CV.Settings.hobby.id);
         SkillUsages.bashscriptingGitBash = new CV.SkillUsage(SkillUsages.counter++, "Using git bash", CV.Skills.bashScripting.id, CV.Settings.fundslibrary.id);
         SkillUsages.bootstrapFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Made responsive websites", CV.Skills.bootstrap.id, CV.Settings.fundslibrary.id);
         SkillUsages.bootstrapChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "Personal website CV page", CV.Skills.bootstrap.id, CV.Settings.chesterBurbidgeDotCom.id);
+        SkillUsages.bootstrapAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.bootstrap.id, CV.Settings.abideFinancial.id);
         SkillUsages.continuousIntegrationFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used Cruise control dot net to make builds, run tests.", CV.Skills.continuousIntegration.id, CV.Settings.fundslibrary.id);
+        SkillUsages.continuousIntegrationAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.continuousIntegration.id, CV.Settings.abideFinancial.id);
         SkillUsages.cordovaHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.cordova.id, CV.Settings.hobby.id);
         SkillUsages.cPlusPlusToplevel = new CV.SkillUsage(SkillUsages.counter++, "Made modifications to existing C++ code.", CV.Skills.cPlusPlus.id, CV.Settings.toplevelComputing.id);
         SkillUsages.cSharpToplevel = new CV.SkillUsage(SkillUsages.counter++, "Did some cSharp at toplevel", CV.Skills.cSharp.id, CV.Settings.toplevelComputing.id);
         SkillUsages.cSharpFundsLibrary = new CV.SkillUsage(SkillUsages.counter++, "Did some cSharp at fundslibrary", CV.Skills.cSharp.id, CV.Settings.fundslibrary.id);
+        SkillUsages.cSharpAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.cSharp.id, CV.Settings.abideFinancial.id);
         SkillUsages.cssToplevel = new CV.SkillUsage(SkillUsages.counter++, "Css", CV.Skills.css.id, CV.Settings.toplevelComputing.id);
         SkillUsages.cssFundsLibrary = new CV.SkillUsage(SkillUsages.counter++, "Css", CV.Skills.css.id, CV.Settings.fundslibrary.id);
         SkillUsages.cssChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.css.id, CV.Settings.chesterBurbidgeDotCom.id);
         SkillUsages.cssCodeclub = new CV.SkillUsage(SkillUsages.counter++, "Taught CSS at a codeclub", CV.Skills.css.id, CV.Settings.codeclub.id);
+        SkillUsages.cssAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.css.id, CV.Settings.abideFinancial.id);
         SkillUsages.d3Fundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used D3 for charts and graphs.", CV.Skills.d3.id, CV.Settings.fundslibrary.id);
         SkillUsages.d3ChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "Used D3 for this skills chart", CV.Skills.d3.id, CV.Settings.chesterBurbidgeDotCom.id);
         SkillUsages.dotNetFrameworkFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used .Net framework 4", CV.Skills.dotNetFramework.id, CV.Settings.fundslibrary.id);
         SkillUsages.dotNetFrameworkToplevel = new CV.SkillUsage(SkillUsages.counter++, "Used .Net framework 2 and 4", CV.Skills.dotNetFramework.id, CV.Settings.toplevelComputing.id);
+        SkillUsages.dotNetFrameworkAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.dotNetFramework.id, CV.Settings.abideFinancial.id);
         SkillUsages.es6PromisesFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used Promise paradigm for asynchronous programming", CV.Skills.esSixPromises.id, CV.Settings.fundslibrary.id);
         SkillUsages.es6PromisesIonicApp = new CV.SkillUsage(SkillUsages.counter++, "Used Promise paradigm for asynchronous programming", CV.Skills.esSixPromises.id, CV.Settings.hobby.id);
         SkillUsages.gitFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used git through git bash.", CV.Skills.git.id, CV.Settings.fundslibrary.id);
         SkillUsages.gitHobby = new CV.SkillUsage(SkillUsages.counter++, "Used git at home, have many remote repositories.", CV.Skills.git.id, CV.Settings.hobby.id);
+        SkillUsages.gitAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.git.id, CV.Settings.abideFinancial.id);
         SkillUsages.gruntFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used grunt to compile less and typescript.", CV.Skills.grunt.id, CV.Settings.fundslibrary.id);
         SkillUsages.gruntChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "grunt compiles less, typescript, runs jasmine tests.", CV.Skills.grunt.id, CV.Settings.chesterBurbidgeDotCom.id);
         SkillUsages.htmlToplevel = new CV.SkillUsage(SkillUsages.counter++, "HTML", CV.Skills.html.id, CV.Settings.toplevelComputing.id);
         SkillUsages.htmlFundsLibrary = new CV.SkillUsage(SkillUsages.counter++, "HTML", CV.Skills.html.id, CV.Settings.fundslibrary.id);
         SkillUsages.htmlChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "HTML", CV.Skills.html.id, CV.Settings.chesterBurbidgeDotCom.id);
         SkillUsages.htmlCodeclub = new CV.SkillUsage(SkillUsages.counter++, "Taught HTML to kids at a codeclub", CV.Skills.html.id, CV.Settings.codeclub.id);
+        SkillUsages.htmlAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.html.id, CV.Settings.abideFinancial.id);
         SkillUsages.ionicFrameworkHobby = new CV.SkillUsage(SkillUsages.counter++, "Used ionic framework to try and create cross platform app", CV.Skills.ionicFramework.id, CV.Settings.hobby.id);
         SkillUsages.jasmineFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used jasmine to run tests", CV.Skills.jasmine.id, CV.Settings.fundslibrary.id);
         SkillUsages.jasmineHobby = new CV.SkillUsage(SkillUsages.counter++, "Used jasmine to run tests", CV.Skills.jasmine.id, CV.Settings.hobby.id);
@@ -402,6 +436,7 @@ var CV;
         SkillUsages.javascriptFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Wrote javascript client side code", CV.Skills.javascript.id, CV.Settings.fundslibrary.id);
         SkillUsages.javascriptHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.javascript.id, CV.Settings.hobby.id);
         SkillUsages.jiraFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used JIRA to pick up tasks", CV.Skills.jira.id, CV.Settings.fundslibrary.id);
+        SkillUsages.jiraAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.jira.id, CV.Settings.abideFinancial.id);
         SkillUsages.jqueryFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.jquery.id, CV.Settings.fundslibrary.id);
         SkillUsages.jqueryHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.jquery.id, CV.Settings.hobby.id);
         SkillUsages.jqueryCodeclub = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.jquery.id, CV.Settings.codeclub.id);
@@ -412,62 +447,85 @@ var CV;
         SkillUsages.lessHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.less.id, CV.Settings.hobby.id);
         SkillUsages.lessChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.less.id, CV.Settings.chesterBurbidgeDotCom.id);
         SkillUsages.linqFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.linq.id, CV.Settings.fundslibrary.id);
+        SkillUsages.linqAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.linq.id, CV.Settings.abideFinancial.id);
         SkillUsages.linqToplevel = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.linq.id, CV.Settings.toplevelComputing.id);
         SkillUsages.moqFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used the mocking library to write C# tests", CV.Skills.moq.id, CV.Settings.fundslibrary.id);
+        SkillUsages.moqAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.moq.id, CV.Settings.abideFinancial.id);
         SkillUsages.nunitFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used to run C# tests", CV.Skills.nunit.id, CV.Settings.fundslibrary.id);
+        SkillUsages.nunitAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.nunit.id, CV.Settings.abideFinancial.id);
         SkillUsages.powershellFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Automating tasks", CV.Skills.powershell.id, CV.Settings.fundslibrary.id);
+        SkillUsages.octopusDeployAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.octopusDeploy.id, CV.Settings.abideFinancial.id);
+        SkillUsages.powershellAbide = new CV.SkillUsage(SkillUsages.counter++, "Automating tasks", CV.Skills.powershell.id, CV.Settings.abideFinancial.id);
         SkillUsages.pythonHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.python.id, CV.Settings.hobby.id);
+        SkillUsages.pythonAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.python.id, CV.Settings.abideFinancial.id);
         SkillUsages.pythonCodeclub = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.python.id, CV.Settings.codeclub.id);
         SkillUsages.resharperFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used resharper", CV.Skills.resharper.id, CV.Settings.fundslibrary.id);
+        SkillUsages.resharperAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.resharper.id, CV.Settings.abideFinancial.id);
         SkillUsages.resharperHobby = new CV.SkillUsage(SkillUsages.counter++, "Used resharper", CV.Skills.resharper.id, CV.Settings.hobby.id);
         SkillUsages.restWebservicesFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Setup and maintained RESTFul webvices.", CV.Skills.restfulWebservices.id, CV.Settings.fundslibrary.id);
+        SkillUsages.restWebservicesAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.restfulWebservices.id, CV.Settings.abideFinancial.id);
         SkillUsages.rlanguageHobby = new CV.SkillUsage(SkillUsages.counter++, "Used R for statistical analysis", CV.Skills.rlanguage.id, CV.Settings.hobby.id);
         SkillUsages.sourcesafeToplevel = new CV.SkillUsage(SkillUsages.counter++, "Used sourcesafe for source control", CV.Skills.sourceSafe.id, CV.Settings.toplevelComputing.id);
         SkillUsages.ssmsToplevel = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.sqlServerManagementStudio.id, CV.Settings.toplevelComputing.id);
         SkillUsages.ssmsFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.sqlServerManagementStudio.id, CV.Settings.fundslibrary.id);
+        SkillUsages.ssmsAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.sqlServerManagementStudio.id, CV.Settings.abideFinancial.id);
         SkillUsages.tfsToplevel = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.tfs.id, CV.Settings.toplevelComputing.id);
+        SkillUsages.teamcityAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.teamcity.id, CV.Settings.abideFinancial.id);
         SkillUsages.tSqlToplevel = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.tSql.id, CV.Settings.toplevelComputing.id);
         SkillUsages.tSqlFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.tSql.id, CV.Settings.fundslibrary.id);
+        SkillUsages.tSqlAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.tSql.id, CV.Settings.abideFinancial.id);
         SkillUsages.typescriptFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.typescript.id, CV.Settings.fundslibrary.id);
         SkillUsages.typescriptHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.typescript.id, CV.Settings.hobby.id);
         SkillUsages.typescriptChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.typescript.id, CV.Settings.chesterBurbidgeDotCom.id);
         SkillUsages.vsToplevel = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.visualStudio.id, CV.Settings.toplevelComputing.id);
+        SkillUsages.vsAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.visualStudio.id, CV.Settings.abideFinancial.id);
         SkillUsages.vsFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.visualStudio.id, CV.Settings.fundslibrary.id);
         SkillUsages.vsHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.visualStudio.id, CV.Settings.hobby.id);
         SkillUsages.vsChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.visualStudio.id, CV.Settings.chesterBurbidgeDotCom.id);
         SkillUsages.vbDotNetToplevel = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.vbDotNet.id, CV.Settings.toplevelComputing.id);
         SkillUsages.xsltFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.xslt.id, CV.Settings.fundslibrary.id);
+        SkillUsages.xmlAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.xml.id, CV.Settings.abideFinancial.id);
         SkillUsages.all = [
             SkillUsages.angularJsIonicApp,
+            SkillUsages.angularJsAbideFinancial,
+            SkillUsages.akkaDotNetAbideFinancial,
             SkillUsages.aspDotNetMvcFundslibrary,
+            SkillUsages.aspDotNetMvcAbideFinancial,
             SkillUsages.aspDotNetWebFormsFundslibrary,
             SkillUsages.bashscriptingGitBash,
             SkillUsages.bashscriptingHome,
             SkillUsages.bootstrapChesterBurbidgeDotCom,
             SkillUsages.bootstrapFundslibrary,
+            SkillUsages.bootstrapAbideFinancial,
             SkillUsages.cordovaHobby,
             SkillUsages.cPlusPlusToplevel,
             SkillUsages.cSharpFundsLibrary,
             SkillUsages.cSharpToplevel,
+            SkillUsages.cSharpAbide,
             SkillUsages.continuousIntegrationFundslibrary,
+            SkillUsages.continuousIntegrationAbideFinancial,
             SkillUsages.cssChesterBurbidgeDotCom,
             SkillUsages.cssCodeclub,
             SkillUsages.cssFundsLibrary,
             SkillUsages.cssToplevel,
+            SkillUsages.cssAbide,
             SkillUsages.d3ChesterBurbidgeDotCom,
             SkillUsages.d3Fundslibrary,
             SkillUsages.dotNetFrameworkFundslibrary,
             SkillUsages.dotNetFrameworkToplevel,
+            SkillUsages.dotNetFrameworkAbide,
             SkillUsages.es6PromisesFundslibrary,
             SkillUsages.es6PromisesIonicApp,
             SkillUsages.gitFundslibrary,
             SkillUsages.gitHobby,
+            SkillUsages.gitAbide,
             SkillUsages.gruntChesterBurbidgeDotCom,
             SkillUsages.gruntFundslibrary,
             SkillUsages.htmlChesterBurbidgeDotCom,
             SkillUsages.htmlCodeclub,
             SkillUsages.htmlFundsLibrary,
             SkillUsages.htmlToplevel,
+            SkillUsages.htmlAbide,
             SkillUsages.ionicFrameworkHobby,
             SkillUsages.jasmineChesterBurbidgeDotCom,
             SkillUsages.jasmineFundslibrary,
@@ -475,6 +533,7 @@ var CV;
             SkillUsages.javascriptFundslibrary,
             SkillUsages.javascriptHobby,
             SkillUsages.jiraFundslibrary,
+            SkillUsages.jiraAbideFinancial,
             SkillUsages.jqueryCodeclub,
             SkillUsages.jqueryFundslibrary,
             SkillUsages.jqueryHobby,
@@ -486,21 +545,32 @@ var CV;
             SkillUsages.lessHobby,
             SkillUsages.linqFundslibrary,
             SkillUsages.linqToplevel,
+            SkillUsages.linqAbide,
             SkillUsages.moqFundslibrary,
+            SkillUsages.moqAbide,
             SkillUsages.nunitFundslibrary,
+            SkillUsages.nunitAbide,
+            SkillUsages.octopusDeployAbide,
             SkillUsages.powershellFundslibrary,
+            SkillUsages.powershellAbide,
             SkillUsages.pythonCodeclub,
             SkillUsages.pythonHobby,
+            SkillUsages.pythonAbide,
             SkillUsages.resharperFundslibrary,
             SkillUsages.resharperHobby,
+            SkillUsages.resharperAbide,
             SkillUsages.restWebservicesFundslibrary,
+            SkillUsages.restWebservicesAbide,
             SkillUsages.rlanguageHobby,
             SkillUsages.sourcesafeToplevel,
             SkillUsages.ssmsFundslibrary,
             SkillUsages.ssmsToplevel,
+            SkillUsages.ssmsAbide,
             SkillUsages.tSqlFundslibrary,
+            SkillUsages.tSqlAbideFinancial,
             SkillUsages.tSqlToplevel,
             SkillUsages.tfsToplevel,
+            SkillUsages.teamcityAbideFinancial,
             SkillUsages.typescriptChesterBurbidgeDotCom,
             SkillUsages.typescriptFundslibrary,
             SkillUsages.typescriptHobby,
@@ -508,8 +578,10 @@ var CV;
             SkillUsages.vsChesterBurbidgeDotCom,
             SkillUsages.vsFundslibrary,
             SkillUsages.vsHobby,
+            SkillUsages.vsAbide,
             SkillUsages.vsToplevel,
-            SkillUsages.xsltFundslibrary
+            SkillUsages.xsltFundslibrary,
+            SkillUsages.xmlAbide
         ];
         return SkillUsages;
     }());

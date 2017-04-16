@@ -4,6 +4,12 @@ module CV
 	{
 		static counter = 0;
 
+		static abideFinancial = new Setting(
+			Settings.counter++,
+			"Abide Financial",
+			"Regulatory reporting for financial markets",
+			new DateRange(new Date(2015, 3), new Date()));
+
 		static chesterBurbidgeDotCom = new Setting(
 			Settings.counter++,
 			"Personal website",
@@ -36,6 +42,7 @@ module CV
 
 
 		static all = [
+			Settings.abideFinancial,
 			Settings.chesterBurbidgeDotCom,
 			Settings.codeclub,
 			Settings.fundslibrary,

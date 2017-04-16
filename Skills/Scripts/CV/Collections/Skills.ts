@@ -10,6 +10,18 @@
 			"Angular Js is a javascript MV* Single Page Application framework.",
 			[
 				Metadatas.frontEnd,
+				Metadatas.professional,
+				Metadatas.hobby
+			]);
+
+		static akkaDotNet = new Skill(
+			Skills.counter++,
+			"AKKA.NET",
+			".NET actor system implementation framework, port of the popular scala framework.",
+			[
+				Metadatas.backEnd,
+				Metadatas.professional,
+				Metadatas.asynchronousProgramming,
 				Metadatas.hobby
 			]);
 
@@ -284,6 +296,15 @@
 				Metadatas.testDrivenDevelopment
 			]);
 		
+		static octopusDeploy = new Skill(
+			Skills.counter++,
+			"Octopus Deploy",
+			"A deployment technology",
+			[
+				Metadatas.backEnd,
+				Metadatas.professional
+			]);
+		
 		static powershell = new Skill(
 			Skills.counter++,
 			"Powershell",
@@ -357,6 +378,14 @@
 				Metadatas.professional
 			]);
 
+		static teamcity = new Skill(
+			Skills.counter++,
+			"Teamcity",
+			"Continuous integration software",
+			[
+				Metadatas.professional
+			]);
+
 		static tSql = new Skill(
 			Skills.counter++,
 			"T-SQL",
@@ -411,9 +440,19 @@
 				Metadatas.backEnd,
 				Metadatas.professional
 			]);
+		
+		static xml = new Skill(
+			Skills.counter++,
+			"XML",
+			"A heavily used markup language",
+			[
+				Metadatas.backEnd,
+				Metadatas.professional
+			]);
 
 
 		static all = [
+			Skills.akkaDotNet,
 			Skills.angularJs,
 			Skills.aspDotNetMvc,
 			Skills.aspDotNetWebforms,
@@ -442,6 +481,7 @@
 			Skills.linq,
 			Skills.moq,
 			Skills.nunit,
+			Skills.octopusDeploy,
 			Skills.powershell,
 			Skills.python,
 			Skills.resharper,
@@ -451,10 +491,12 @@
 			Skills.sqlServerManagementStudio,
 			Skills.tSql,
 			Skills.tfs,
+			Skills.teamcity,
 			Skills.typescript,
 			Skills.vbDotNet,
 			Skills.visualStudio,
-			Skills.xslt
+			Skills.xslt,
+			Skills.xml
 		];
 	}
 }
