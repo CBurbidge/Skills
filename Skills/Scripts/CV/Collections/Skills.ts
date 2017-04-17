@@ -30,6 +30,7 @@
 			"ASP.NET MVC",
 			"A varied web development framework that ephasises the Model View Controller pattern.",
 			[
+				Metadatas.backEnd,
 				Metadatas.professional
 			]);
 
@@ -38,6 +39,95 @@
 			"ASP.NET WebForms",
 			"Webforms.",
 			[
+				Metadatas.backEnd,
+				Metadatas.professional
+			]);
+
+		static awsCloudformation = new Skill(
+			Skills.counter++,
+			"AWS Cloudformation",
+			"Infrastructure automation",
+			[
+				Metadatas.cloud,
+				Metadatas.professional
+			]);
+
+		static awsDynamoDB = new Skill(
+			Skills.counter++,
+			"AWS DynamoDB",
+			"AWS DynamoDB for data storage",
+			[
+				Metadatas.cloud,
+				Metadatas.backEnd,
+				Metadatas.professional
+			]);
+
+		static awsEC2 = new Skill(
+			Skills.counter++,
+			"AWS EC2",
+			"AWS EC2 for virtual machines",
+			[
+				Metadatas.cloud,
+				Metadatas.professional
+			]);
+
+		static awsLambda = new Skill(
+			Skills.counter++,
+			"AWS Lambda",
+			"AWS Lambda for data processing and other automation tasks",
+			[
+				Metadatas.cloud,
+				Metadatas.devops,
+				Metadatas.professional
+			]);
+
+		static awsKinesis = new Skill(
+			Skills.counter++,
+			"AWS Kinesis",
+			"AWS Kinesis for data streaming",
+			[
+				Metadatas.cloud,
+				Metadatas.backEnd,
+				Metadatas.professional
+			]);
+
+		static awsOpsworks = new Skill(
+			Skills.counter++,
+			"AWS Opsworks",
+			"AWS Opsworks for chef provisioning",
+			[
+				Metadatas.cloud,
+				Metadatas.devops,
+				Metadatas.professional
+			]);
+
+		static awsRedshift = new Skill(
+			Skills.counter++,
+			"AWS Redshift",
+			"AWS Redshift for data storage",
+			[
+				Metadatas.backEnd,
+				Metadatas.cloud,
+				Metadatas.professional
+			]);
+
+		static awsSqs = new Skill(
+			Skills.counter++,
+			"AWS SQS",
+			"AWS SQS for queueing applications",
+			[
+				Metadatas.backEnd,
+				Metadatas.cloud,
+				Metadatas.professional
+			]);
+
+		static awsS3 = new Skill(
+			Skills.counter++,
+			"AWS S3",
+			"AWS S3 for data storage",
+			[
+				Metadatas.backEnd,
+				Metadatas.cloud,
 				Metadatas.professional
 			]);
 
@@ -78,6 +168,7 @@
 			"bash scripting",
 			"Writing scripts to be run on bash terminals",
 			[
+				Metadatas.devops,
 				Metadatas.hobby,
 				Metadatas.professional
 			]);
@@ -93,11 +184,30 @@
 				Metadatas.frontEnd
 			]);
 
+		static cake = new Skill(
+			Skills.counter++,
+			"Cake",
+			"C# DSL for build automation",
+			[
+				Metadatas.devops,
+				Metadatas.professional
+			]);
+
+		static chef = new Skill(
+			Skills.counter++,
+			"Chef",
+			"Server configuration automation",
+			[
+				Metadatas.devops,
+				Metadatas.professional
+			]);
+
 		static continuousIntegration = new Skill(
 			Skills.counter++,
 			"Continuous integration",
 			"A style of software deployment that uses automated tests and short feedback loops.",
 			[
+				Metadatas.devops,
 				Metadatas.professional
 			]);
 
@@ -174,6 +284,16 @@
 				Metadatas.hobby
 			]);
 
+		static fSharp = new Skill(
+			Skills.counter++,
+			"F#",
+			"A functional programming language",
+			[
+				Metadatas.functionalProgramming,
+				Metadatas.hobby,
+				Metadatas.professional
+			]);
+
 		static git = new Skill(
 			Skills.counter++,
 			"git",
@@ -197,6 +317,7 @@
 			"grunt",
 			"A javascript task runner.",
 			[
+				Metadatas.devops,
 				Metadatas.frontEnd,
 				Metadatas.professional,
 				Metadatas.hobby
@@ -343,6 +464,16 @@
 			"A deployment technology",
 			[
 				Metadatas.backEnd,
+				Metadatas.devops,
+				Metadatas.professional
+			]);
+		
+		static packer = new Skill(
+			Skills.counter++,
+			"Packer",
+			"Server provisioning",
+			[
+				Metadatas.devops,
 				Metadatas.professional
 			]);
 		
@@ -351,6 +482,8 @@
 			"Powershell",
 			"Microsoft's scripting language",
 			[
+				Metadatas.cloud,
+				Metadatas.devops,
 				Metadatas.professional
 			]);
 
@@ -424,6 +557,7 @@
 			"Teamcity",
 			"Continuous integration software",
 			[
+				Metadatas.devops,
 				Metadatas.professional
 			]);
 
@@ -497,8 +631,19 @@
 			Skills.angularJs,
 			Skills.aspDotNetMvc,
 			Skills.aspDotNetWebforms,
+			Skills.awsCloudformation,
+			Skills.awsDynamoDB,
+			Skills.awsEC2,
+			Skills.awsLambda,
+			Skills.awsKinesis,
+			Skills.awsOpsworks,
+			Skills.awsRedshift,
+			Skills.awsSqs,
+			Skills.awsS3,
 			Skills.bashScripting,
 			Skills.bootstrap,
+			Skills.cake,
+			Skills.chef,
 			Skills.cPlusPlus,
 			Skills.cordova,
 			Skills.cSharp,
@@ -507,6 +652,7 @@
 			Skills.d3,
 			Skills.dotNetFramework,
 			Skills.esSixPromises,
+			Skills.fSharp,
 			Skills.git,
 			Skills.grunt,
 			Skills.html,
@@ -523,6 +669,7 @@
 			Skills.moq,
 			Skills.nunit,
 			Skills.octopusDeploy,
+			Skills.packer,
 			Skills.powershell,
 			Skills.python,
 			Skills.resharper,

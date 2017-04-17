@@ -58,6 +58,8 @@ var CV;
         Metadatas.counter = 0;
         Metadatas.asynchronousProgramming = new CV.Metadata(Metadatas.counter++, "Asynchronous", "The practice of writing asynchronous code.");
         Metadatas.backEnd = new CV.Metadata(Metadatas.counter++, "'Back end'", "'Back end' development concerns server side technologies like C#.");
+        Metadatas.cloud = new CV.Metadata(Metadatas.counter++, "Cloud", "cloud development skills, mostly AWS");
+        Metadatas.devops = new CV.Metadata(Metadatas.counter++, "Devops", "devops, automation and continuous delivery practices");
         Metadatas.frontEnd = new CV.Metadata(Metadatas.counter++, "'Front end'", "'Front end' development concerns client side technologies like javascript.");
         Metadatas.functionalProgramming = new CV.Metadata(Metadatas.counter++, "Functional", "A style of programming.");
         Metadatas.hobby = new CV.Metadata(Metadatas.counter++, "Hobby", "Skills that I have used in hobby projects.");
@@ -70,14 +72,13 @@ var CV;
         Metadatas.all = [
             Metadatas.asynchronousProgramming,
             Metadatas.backEnd,
+            Metadatas.cloud,
+            Metadatas.devops,
             Metadatas.frontEnd,
             Metadatas.functionalProgramming,
             Metadatas.hobby,
             Metadatas.objectOrientedProgramming,
             Metadatas.professional,
-            Metadatas.refactoring,
-            Metadatas.responsiveDesign,
-            Metadatas.solidPrinciples,
             Metadatas.testDrivenDevelopment
         ];
         return Metadatas;
@@ -127,9 +128,54 @@ var CV;
             CV.Metadatas.hobby
         ]);
         Skills.aspDotNetMvc = new CV.Skill(Skills.counter++, "ASP.NET MVC", "A varied web development framework that ephasises the Model View Controller pattern.", [
+            CV.Metadatas.backEnd,
             CV.Metadatas.professional
         ]);
         Skills.aspDotNetWebforms = new CV.Skill(Skills.counter++, "ASP.NET WebForms", "Webforms.", [
+            CV.Metadatas.backEnd,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsCloudformation = new CV.Skill(Skills.counter++, "AWS Cloudformation", "Infrastructure automation", [
+            CV.Metadatas.cloud,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsDynamoDB = new CV.Skill(Skills.counter++, "AWS DynamoDB", "AWS DynamoDB for data storage", [
+            CV.Metadatas.cloud,
+            CV.Metadatas.backEnd,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsEC2 = new CV.Skill(Skills.counter++, "AWS EC2", "AWS EC2 for virtual machines", [
+            CV.Metadatas.cloud,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsLambda = new CV.Skill(Skills.counter++, "AWS Lambda", "AWS Lambda for data processing and other automation tasks", [
+            CV.Metadatas.cloud,
+            CV.Metadatas.devops,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsKinesis = new CV.Skill(Skills.counter++, "AWS Kinesis", "AWS Kinesis for data streaming", [
+            CV.Metadatas.cloud,
+            CV.Metadatas.backEnd,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsOpsworks = new CV.Skill(Skills.counter++, "AWS Opsworks", "AWS Opsworks for chef provisioning", [
+            CV.Metadatas.cloud,
+            CV.Metadatas.devops,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsRedshift = new CV.Skill(Skills.counter++, "AWS Redshift", "AWS Redshift for data storage", [
+            CV.Metadatas.backEnd,
+            CV.Metadatas.cloud,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsSqs = new CV.Skill(Skills.counter++, "AWS SQS", "AWS SQS for queueing applications", [
+            CV.Metadatas.backEnd,
+            CV.Metadatas.cloud,
+            CV.Metadatas.professional
+        ]);
+        Skills.awsS3 = new CV.Skill(Skills.counter++, "AWS S3", "AWS S3 for data storage", [
+            CV.Metadatas.backEnd,
+            CV.Metadatas.cloud,
             CV.Metadatas.professional
         ]);
         Skills.awsS3 = new CV.Skill(Skills.counter++, "AWS S3", "Amazon storage", [
@@ -145,6 +191,7 @@ var CV;
             CV.Metadatas.professional
         ]);
         Skills.bashScripting = new CV.Skill(Skills.counter++, "bash scripting", "Writing scripts to be run on bash terminals", [
+            CV.Metadatas.devops,
             CV.Metadatas.hobby,
             CV.Metadatas.professional
         ]);
@@ -154,7 +201,16 @@ var CV;
             CV.Metadatas.hobby,
             CV.Metadatas.frontEnd
         ]);
+        Skills.cake = new CV.Skill(Skills.counter++, "Cake", "C# DSL for build automation", [
+            CV.Metadatas.devops,
+            CV.Metadatas.professional
+        ]);
+        Skills.chef = new CV.Skill(Skills.counter++, "Chef", "Server configuration automation", [
+            CV.Metadatas.devops,
+            CV.Metadatas.professional
+        ]);
         Skills.continuousIntegration = new CV.Skill(Skills.counter++, "Continuous integration", "A style of software deployment that uses automated tests and short feedback loops.", [
+            CV.Metadatas.devops,
             CV.Metadatas.professional
         ]);
         Skills.cordova = new CV.Skill(Skills.counter++, "Apache Cordova (Phone Gap)", "An open source way of making cross platform mobile phone apps", [
@@ -195,6 +251,11 @@ var CV;
             CV.Metadatas.frontEnd,
             CV.Metadatas.hobby
         ]);
+        Skills.fSharp = new CV.Skill(Skills.counter++, "F#", "A functional programming language", [
+            CV.Metadatas.functionalProgramming,
+            CV.Metadatas.hobby,
+            CV.Metadatas.professional
+        ]);
         Skills.git = new CV.Skill(Skills.counter++, "git", "An open source source code control system", [
             CV.Metadatas.hobby,
             CV.Metadatas.professional
@@ -204,6 +265,7 @@ var CV;
             CV.Metadatas.professional
         ]);
         Skills.grunt = new CV.Skill(Skills.counter++, "grunt", "A javascript task runner.", [
+            CV.Metadatas.devops,
             CV.Metadatas.frontEnd,
             CV.Metadatas.professional,
             CV.Metadatas.hobby
@@ -275,9 +337,16 @@ var CV;
         ]);
         Skills.octopusDeploy = new CV.Skill(Skills.counter++, "Octopus Deploy", "A deployment technology", [
             CV.Metadatas.backEnd,
+            CV.Metadatas.devops,
+            CV.Metadatas.professional
+        ]);
+        Skills.packer = new CV.Skill(Skills.counter++, "Packer", "Server provisioning", [
+            CV.Metadatas.devops,
             CV.Metadatas.professional
         ]);
         Skills.powershell = new CV.Skill(Skills.counter++, "Powershell", "Microsoft's scripting language", [
+            CV.Metadatas.cloud,
+            CV.Metadatas.devops,
             CV.Metadatas.professional
         ]);
         Skills.python = new CV.Skill(Skills.counter++, "python", "A general purpose programming language", [
@@ -311,6 +380,7 @@ var CV;
             CV.Metadatas.professional
         ]);
         Skills.teamcity = new CV.Skill(Skills.counter++, "Teamcity", "Continuous integration software", [
+            CV.Metadatas.devops,
             CV.Metadatas.professional
         ]);
         Skills.tSql = new CV.Skill(Skills.counter++, "T-SQL", "Microsoft's flavour of SQL.", [
@@ -352,8 +422,19 @@ var CV;
             Skills.angularJs,
             Skills.aspDotNetMvc,
             Skills.aspDotNetWebforms,
+            Skills.awsCloudformation,
+            Skills.awsDynamoDB,
+            Skills.awsEC2,
+            Skills.awsLambda,
+            Skills.awsKinesis,
+            Skills.awsOpsworks,
+            Skills.awsRedshift,
+            Skills.awsSqs,
+            Skills.awsS3,
             Skills.bashScripting,
             Skills.bootstrap,
+            Skills.cake,
+            Skills.chef,
             Skills.cPlusPlus,
             Skills.cordova,
             Skills.cSharp,
@@ -362,6 +443,7 @@ var CV;
             Skills.d3,
             Skills.dotNetFramework,
             Skills.esSixPromises,
+            Skills.fSharp,
             Skills.git,
             Skills.grunt,
             Skills.html,
@@ -378,6 +460,7 @@ var CV;
             Skills.moq,
             Skills.nunit,
             Skills.octopusDeploy,
+            Skills.packer,
             Skills.powershell,
             Skills.python,
             Skills.resharper,
@@ -411,15 +494,22 @@ var CV;
         SkillUsages.aspDotNetMvcFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Built websites with MVC pattern", CV.Skills.aspDotNetMvc.id, CV.Settings.fundslibrary.id);
         SkillUsages.aspDotNetMvcAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "Built websites with MVC pattern", CV.Skills.aspDotNetMvc.id, CV.Settings.abideFinancial.id);
         SkillUsages.aspDotNetWebFormsFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Built websites with ASP.NET Webforms", CV.Skills.aspDotNetWebforms.id, CV.Settings.fundslibrary.id);
-        SkillUsages.awsS3Abide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsS3.id, CV.Settings.abideFinancial.id);
-        SkillUsages.awsSqsAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsSQS.id, CV.Settings.abideFinancial.id);
-        SkillUsages.awsKinesisAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsKinesis.id, CV.Settings.abideFinancial.id);
-        SkillUsages.awsRedshiftAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsRedshift.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsCloudformationAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsCloudformation.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsDynamoDBAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsDynamoDB.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsEC2AbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsEC2.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsLambdaAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsLambda.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsKinesisAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsKinesis.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsOpsworksAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsOpsworks.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsRedshiftAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsRedshift.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsSqsAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsSqs.id, CV.Settings.abideFinancial.id);
+        SkillUsages.awsS3AbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.awsS3.id, CV.Settings.abideFinancial.id);
         SkillUsages.bashscriptingHome = new CV.SkillUsage(SkillUsages.counter++, "Using bash terminal", CV.Skills.bashScripting.id, CV.Settings.hobby.id);
         SkillUsages.bashscriptingGitBash = new CV.SkillUsage(SkillUsages.counter++, "Using git bash", CV.Skills.bashScripting.id, CV.Settings.fundslibrary.id);
         SkillUsages.bootstrapFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Made responsive websites", CV.Skills.bootstrap.id, CV.Settings.fundslibrary.id);
         SkillUsages.bootstrapChesterBurbidgeDotCom = new CV.SkillUsage(SkillUsages.counter++, "Personal website CV page", CV.Skills.bootstrap.id, CV.Settings.chesterBurbidgeDotCom.id);
         SkillUsages.bootstrapAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.bootstrap.id, CV.Settings.abideFinancial.id);
+        SkillUsages.cakeAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.cake.id, CV.Settings.abideFinancial.id);
+        SkillUsages.chefAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.chef.id, CV.Settings.abideFinancial.id);
         SkillUsages.continuousIntegrationFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used Cruise control dot net to make builds, run tests.", CV.Skills.continuousIntegration.id, CV.Settings.fundslibrary.id);
         SkillUsages.continuousIntegrationAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.continuousIntegration.id, CV.Settings.abideFinancial.id);
         SkillUsages.cordovaHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.cordova.id, CV.Settings.hobby.id);
@@ -439,7 +529,8 @@ var CV;
         SkillUsages.dotNetFrameworkAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.dotNetFramework.id, CV.Settings.abideFinancial.id);
         SkillUsages.es6PromisesFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used Promise paradigm for asynchronous programming", CV.Skills.esSixPromises.id, CV.Settings.fundslibrary.id);
         SkillUsages.es6PromisesIonicApp = new CV.SkillUsage(SkillUsages.counter++, "Used Promise paradigm for asynchronous programming", CV.Skills.esSixPromises.id, CV.Settings.hobby.id);
-        SkillUsages.fSharpAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.fSharp.id, CV.Settings.abideFinancial.id);
+        SkillUsages.fSharpHobby = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.fSharp.id, CV.Settings.hobby.id);
+        SkillUsages.fSharpAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.fSharp.id, CV.Settings.abideFinancial.id);
         SkillUsages.gitFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used git through git bash.", CV.Skills.git.id, CV.Settings.fundslibrary.id);
         SkillUsages.gitHobby = new CV.SkillUsage(SkillUsages.counter++, "Used git at home, have many remote repositories.", CV.Skills.git.id, CV.Settings.hobby.id);
         SkillUsages.gitAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.git.id, CV.Settings.abideFinancial.id);
@@ -474,6 +565,7 @@ var CV;
         SkillUsages.moqAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.moq.id, CV.Settings.abideFinancial.id);
         SkillUsages.nunitFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Used to run C# tests", CV.Skills.nunit.id, CV.Settings.fundslibrary.id);
         SkillUsages.nunitAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.nunit.id, CV.Settings.abideFinancial.id);
+        SkillUsages.packerAbideFinancial = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.packer.id, CV.Settings.abideFinancial.id);
         SkillUsages.powershellFundslibrary = new CV.SkillUsage(SkillUsages.counter++, "Automating tasks", CV.Skills.powershell.id, CV.Settings.fundslibrary.id);
         SkillUsages.octopusDeployAbide = new CV.SkillUsage(SkillUsages.counter++, "", CV.Skills.octopusDeploy.id, CV.Settings.abideFinancial.id);
         SkillUsages.powershellAbide = new CV.SkillUsage(SkillUsages.counter++, "Automating tasks", CV.Skills.powershell.id, CV.Settings.abideFinancial.id);
@@ -513,14 +605,22 @@ var CV;
             SkillUsages.aspDotNetMvcFundslibrary,
             SkillUsages.aspDotNetMvcAbideFinancial,
             SkillUsages.aspDotNetWebFormsFundslibrary,
-            SkillUsages.awsS3Abide,
-            SkillUsages.awsSqsAbide,
-            SkillUsages.awsKinesisAbide,
+            SkillUsages.awsCloudformationAbideFinancial,
+            SkillUsages.awsDynamoDBAbideFinancial,
+            SkillUsages.awsEC2AbideFinancial,
+            SkillUsages.awsLambdaAbideFinancial,
+            SkillUsages.awsKinesisAbideFinancial,
+            SkillUsages.awsOpsworksAbideFinancial,
+            SkillUsages.awsRedshiftAbideFinancial,
+            SkillUsages.awsSqsAbideFinancial,
+            SkillUsages.awsS3AbideFinancial,
             SkillUsages.bashscriptingGitBash,
             SkillUsages.bashscriptingHome,
             SkillUsages.bootstrapChesterBurbidgeDotCom,
             SkillUsages.bootstrapFundslibrary,
             SkillUsages.bootstrapAbideFinancial,
+            SkillUsages.cakeAbideFinancial,
+            SkillUsages.chefAbideFinancial,
             SkillUsages.cordovaHobby,
             SkillUsages.cPlusPlusToplevel,
             SkillUsages.cSharpFundsLibrary,
@@ -540,6 +640,8 @@ var CV;
             SkillUsages.dotNetFrameworkAbide,
             SkillUsages.es6PromisesFundslibrary,
             SkillUsages.es6PromisesIonicApp,
+            SkillUsages.fSharpAbideFinancial,
+            SkillUsages.fSharpHobby,
             SkillUsages.gitFundslibrary,
             SkillUsages.gitHobby,
             SkillUsages.gitAbide,
@@ -575,6 +677,7 @@ var CV;
             SkillUsages.nunitFundslibrary,
             SkillUsages.nunitAbide,
             SkillUsages.octopusDeployAbide,
+            SkillUsages.packerAbideFinancial,
             SkillUsages.powershellFundslibrary,
             SkillUsages.powershellAbide,
             SkillUsages.pythonCodeclub,
@@ -1190,7 +1293,7 @@ var App;
         }
         ChartConfig.Standard = new ChartConfig(400, 25, 30, [
             "maroon", "red", "purple", "fuchsia",
-            "green", "lime", "olive", "yellow"]);
+            "green", "olive"]);
         return ChartConfig;
     }());
     var Skills = (function () {

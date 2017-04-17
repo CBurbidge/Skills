@@ -22,7 +22,7 @@ module App
 		static Standard = new ChartConfig(400, 25, 30,
 			[//"black", "silver", "gray", "white",
 			"maroon", "red", "purple", "fuchsia",
-			"green", "lime", "olive", "yellow"]
+			"green", "olive"]
 			);
 	}
 	
