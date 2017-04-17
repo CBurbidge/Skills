@@ -131,38 +131,6 @@
 				Metadatas.professional
 			]);
 
-		static awsS3 = new Skill(
-			Skills.counter++,
-			"AWS S3",
-			"Amazon storage",
-			[
-				Metadatas.professional
-			]);
-			
-		static awsSQS = new Skill(
-			Skills.counter++,
-			"AWS SQS",
-			"Amazon simple queue system",
-			[
-				Metadatas.professional
-			]);
-
-		static awsKinesis = new Skill(
-			Skills.counter++,
-			"AWS Kinesis",
-			"Amazon Kinesis queue",
-			[
-				Metadatas.professional
-			]);
-
-		static awsRedshift = new Skill(
-			Skills.counter++,
-			"AWS Redshift",
-			"Amazon Redshift",
-			[
-				Metadatas.professional
-			]);
-
 		static bashScripting = new Skill(
 			Skills.counter++,
 			"bash scripting",
@@ -298,15 +266,6 @@
 			Skills.counter++,
 			"git",
 			"An open source source code control system",
-			[
-				Metadatas.hobby,
-				Metadatas.professional
-			]);
-
-		static fSharp = new Skill(
-			Skills.counter++,
-			"F#",
-			"An open source functional programming language, similar to OCaml",
 			[
 				Metadatas.hobby,
 				Metadatas.professional

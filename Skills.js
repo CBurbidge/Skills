@@ -178,18 +178,6 @@ var CV;
             CV.Metadatas.cloud,
             CV.Metadatas.professional
         ]);
-        Skills.awsS3 = new CV.Skill(Skills.counter++, "AWS S3", "Amazon storage", [
-            CV.Metadatas.professional
-        ]);
-        Skills.awsSQS = new CV.Skill(Skills.counter++, "AWS SQS", "Amazon simple queue system", [
-            CV.Metadatas.professional
-        ]);
-        Skills.awsKinesis = new CV.Skill(Skills.counter++, "AWS Kinesis", "Amazon Kinesis queue", [
-            CV.Metadatas.professional
-        ]);
-        Skills.awsRedshift = new CV.Skill(Skills.counter++, "AWS Redshift", "Amazon Redshift", [
-            CV.Metadatas.professional
-        ]);
         Skills.bashScripting = new CV.Skill(Skills.counter++, "bash scripting", "Writing scripts to be run on bash terminals", [
             CV.Metadatas.devops,
             CV.Metadatas.hobby,
@@ -257,10 +245,6 @@ var CV;
             CV.Metadatas.professional
         ]);
         Skills.git = new CV.Skill(Skills.counter++, "git", "An open source source code control system", [
-            CV.Metadatas.hobby,
-            CV.Metadatas.professional
-        ]);
-        Skills.fSharp = new CV.Skill(Skills.counter++, "F#", "An open source functional programming language, similar to OCaml", [
             CV.Metadatas.hobby,
             CV.Metadatas.professional
         ]);
