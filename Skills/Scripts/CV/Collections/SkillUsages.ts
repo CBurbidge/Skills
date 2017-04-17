@@ -1,4 +1,6 @@
-﻿module CV
+﻿/// <references path='../_external_references.ts' />
+
+module CV
 {
 	export class SkillUsages
 	{
@@ -40,6 +42,60 @@
 			Skills.aspDotNetWebforms.id,
 			Settings.fundslibrary.id);
 
+		static awsCloudformationAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsCloudformation.id,
+			Settings.abideFinancial.id);
+
+		static awsDynamoDBAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsDynamoDB.id,
+			Settings.abideFinancial.id);
+
+		static awsEC2AbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsEC2.id,
+			Settings.abideFinancial.id);
+
+		static awsLambdaAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsLambda.id,
+			Settings.abideFinancial.id);
+
+		static awsKinesisAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsKinesis.id,
+			Settings.abideFinancial.id);
+
+		static awsOpsworksAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsOpsworks.id,
+			Settings.abideFinancial.id);
+
+		static awsRedshiftAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsRedshift.id,
+			Settings.abideFinancial.id);
+
+		static awsSqsAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsSqs.id,
+			Settings.abideFinancial.id);
+
+		static awsS3AbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.awsS3.id,
+			Settings.abideFinancial.id);
+
 		static bashscriptingHome = new SkillUsage(
 			SkillUsages.counter++,
 			"Using bash terminal",
@@ -68,6 +124,18 @@
 			SkillUsages.counter++,
 			"",
 			Skills.bootstrap.id,
+			Settings.abideFinancial.id);
+
+		static cakeAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.cake.id,
+			Settings.abideFinancial.id);
+
+		static chefAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.chef.id,
 			Settings.abideFinancial.id);
 
 		static continuousIntegrationFundslibrary = new SkillUsage(
@@ -183,6 +251,18 @@
 			"Used Promise paradigm for asynchronous programming",
 			Skills.esSixPromises.id,
 			Settings.hobby.id);
+
+		static fSharpHobby = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.fSharp.id,
+			Settings.hobby.id);
+
+		static fSharpAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.fSharp.id,
+			Settings.abideFinancial.id);
 
 		static gitFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
@@ -388,6 +468,12 @@
 			Skills.nunit.id,
 			Settings.abideFinancial.id);
 
+		static packerAbideFinancial = new SkillUsage(
+			SkillUsages.counter++,
+			"",
+			Skills.packer.id,
+			Settings.abideFinancial.id);
+
 		static powershellFundslibrary = new SkillUsage(
 			SkillUsages.counter++,
 			"Automating tasks",
@@ -588,11 +674,22 @@
 			SkillUsages.aspDotNetMvcFundslibrary,
 			SkillUsages.aspDotNetMvcAbideFinancial,
 			SkillUsages.aspDotNetWebFormsFundslibrary,
+			SkillUsages.awsCloudformationAbideFinancial,
+			SkillUsages.awsDynamoDBAbideFinancial,
+			SkillUsages.awsEC2AbideFinancial,
+			SkillUsages.awsLambdaAbideFinancial,
+			SkillUsages.awsKinesisAbideFinancial,
+			SkillUsages.awsOpsworksAbideFinancial,
+			SkillUsages.awsRedshiftAbideFinancial,
+			SkillUsages.awsSqsAbideFinancial,
+			SkillUsages.awsS3AbideFinancial,
 			SkillUsages.bashscriptingGitBash,
 			SkillUsages.bashscriptingHome,
 			SkillUsages.bootstrapChesterBurbidgeDotCom,
 			SkillUsages.bootstrapFundslibrary,
 			SkillUsages.bootstrapAbideFinancial,
+			SkillUsages.cakeAbideFinancial,
+			SkillUsages.chefAbideFinancial,
 			SkillUsages.cordovaHobby,
 			SkillUsages.cPlusPlusToplevel,
 			SkillUsages.cSharpFundsLibrary,
@@ -612,6 +709,8 @@
 			SkillUsages.dotNetFrameworkAbide,
 			SkillUsages.es6PromisesFundslibrary,
 			SkillUsages.es6PromisesIonicApp,
+			SkillUsages.fSharpAbideFinancial,
+			SkillUsages.fSharpHobby,
 			SkillUsages.gitFundslibrary,
 			SkillUsages.gitHobby,
 			SkillUsages.gitAbide,
@@ -647,6 +746,7 @@
 			SkillUsages.nunitFundslibrary,
 			SkillUsages.nunitAbide,
 			SkillUsages.octopusDeployAbide,
+			SkillUsages.packerAbideFinancial,
 			SkillUsages.powershellFundslibrary,
 			SkillUsages.powershellAbide,
 			SkillUsages.pythonCodeclub,

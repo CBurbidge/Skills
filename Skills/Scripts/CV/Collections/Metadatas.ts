@@ -17,6 +17,18 @@ module CV
 			"'Back end' development concerns server side technologies like C#."
 			);
 
+		static cloud = new Metadata(
+			Metadatas.counter++,
+			"Cloud",
+			"cloud development skills, mostly AWS"
+			);
+
+		static devops = new Metadata(
+			Metadatas.counter++,
+			"Devops",
+			"devops, automation and continuous delivery practices"
+			);
+
 		static frontEnd = new Metadata(
 			Metadatas.counter++,
 			"'Front end'",
@@ -68,14 +80,16 @@ module CV
 		static all = [
 			Metadatas.asynchronousProgramming,
 			Metadatas.backEnd,
+			Metadatas.cloud,
+			Metadatas.devops,
 			Metadatas.frontEnd,
 			Metadatas.functionalProgramming,
 			Metadatas.hobby,
 			Metadatas.objectOrientedProgramming,
 			Metadatas.professional,
-			Metadatas.refactoring,
-			Metadatas.responsiveDesign,
-			Metadatas.solidPrinciples,
+			//Metadatas.refactoring,
+			//Metadatas.responsiveDesign,
+			//Metadatas.solidPrinciples,
 			Metadatas.testDrivenDevelopment
 		];
 	}
