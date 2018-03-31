@@ -1,5 +1,7 @@
 # Skills
 
+UPDATE: Going to take this code in a different direction, see my CV repo for the progression of this. 
+
 The result of this code can be seen at: 
 http://cburbidge.github.io/Skills/ 
 
